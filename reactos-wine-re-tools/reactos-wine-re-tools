@@ -1,0 +1,57 @@
+#!/bin/sh
+set -eu
+
+tool_root=/usr/share/reactos-wine-re-tools
+prefix=${REACTOS_WINE_RE_TOOLS_PREFIX:-${XDG_DATA_HOME:-"${HOME}/.local/share"}/reactos-wine-re-tools/prefix}
+wine_debug=${WINEDEBUG:--all}
+
+case "${0##*/}" in
+    dependencies-cli-x64)
+        executable="${tool_root}/dependencies-x64/Dependencies.exe"
+        ;;
+    dependencies-cli-x86)
+        executable="${tool_root}/dependencies-x86/Dependencies.exe"
+        ;;
+    dependencies-x64)
+        executable="${tool_root}/dependencies-x64/DependenciesGui.exe"
+        ;;
+    dependencies-x86)
+        executable="${tool_root}/dependencies-x86/DependenciesGui.exe"
+        ;;
+    dnspyex)
+        executable="${tool_root}/dnspyex/dnSpy.exe"
+        ;;
+    dnspyex-x86)
+        executable="${tool_root}/dnspyex/dnSpy-x86.exe"
+        ;;
+    pe-bear-wine)
+        executable=/usr/share/windows/pe-bear/PE-bear.exe
+        ;;
+    x32dbg)
+        executable="${tool_root}/x64dbg/x32/x32dbg.exe"
+        ;;
+    x64dbg)
+        executable="${tool_root}/x64dbg/x64/x64dbg.exe"
+        ;;
+    x96dbg)
+        executable="${tool_root}/x64dbg/x96dbg.exe"
+        ;;
+    *)
+        printf 'Unsupported launcher name: %s\n' "${0##*/}" >&2
+        exit 64
+        ;;
+esac
+
+if [ ! -f "${executable}" ]; then
+    printf 'Windows executable is missing: %s\n' "${executable}" >&2
+    exit 66
+fi
+
+mkdir -p "${prefix}"
+if [ ! -f "${prefix}/system.reg" ]; then
+    WINEPREFIX="${prefix}" WINEDEBUG="${wine_debug}" wineboot -u
+fi
+
+cd "${executable%/*}"
+exec env WINEPREFIX="${prefix}" WINEDEBUG="${wine_debug}" \
+    wine "${executable}" "$@"

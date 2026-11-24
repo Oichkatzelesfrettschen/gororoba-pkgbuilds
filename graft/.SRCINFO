@@ -1,0 +1,25 @@
+pkgbase = graft
+	pkgdesc = Repository context graphs and tools for coding agents
+	pkgver = 0.21.1
+	pkgrel = 1
+	url = https://github.com/Oichkatzelesfrettschen/graft-gororoba
+	arch = x86_64
+	license = MIT
+	makedepends = npm
+	makedepends = python
+	makedepends = git
+	depends = bash
+	depends = glibc
+	depends = libgcc
+	depends = libstdc++
+	depends = nodejs>=20
+	options = !debug
+	options = !emptydirs
+	source = graft-012bb4e418e7aa9b437a66d6be108651fbfcca0b.tar.gz::https://api.github.com/repos/Oichkatzelesfrettschen/graft-gororoba/tarball/012bb4e418e7aa9b437a66d6be108651fbfcca0b
+	source = php-scanner-fallthrough.patch
+	source = python-scanner-discard-pop.patch
+	sha256sums = bd87871dc3fcf9ba99ec2b7b9d771c7dfdc90cf6b9034b96737b426af3c4fcd4
+	sha256sums = 3fe711732b86082f45572d1e159ccc3d0d08e3755115947f497cf3781d3f0ce6
+	sha256sums = a0571c5fd9972b1236b8bd3fd07ec96d5edbfe043e452dd82e697f5a7d18cde3
+
+pkgname = graft

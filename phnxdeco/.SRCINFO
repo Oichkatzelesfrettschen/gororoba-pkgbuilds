@@ -1,0 +1,14 @@
+pkgbase = phnxdeco
+	pkgdesc = Decompress flash files equipped with a Phoenix BIOS
+	pkgver = 0.33
+	pkgrel = 1
+	url = https://web.archive.org/web/20070608175640/http://www.kaos.ru/biosgfx/
+	arch = x86_64
+	arch = i686
+	license = GPL-2.0-or-later
+	source = https://snapshot.debian.org/archive/debian/20061006T000000Z/pool/main/p/phnxdeco/phnxdeco_0.33.orig.tar.gz
+	source = https://snapshot.debian.org/archive/debian/20240619T203839Z/pool/main/p/phnxdeco/phnxdeco_0.33-3.2.debian.tar.xz
+	sha256sums = 72d92897fbb082d2b62190b8cc59404b40de6c5456350d8be49e67f5e8330ec6
+	sha256sums = 0f47924463d33ad0354bc793a705f1427c21f417c4e2c068ec7f4e6f2d0e45d4
+
+pkgname = phnxdeco

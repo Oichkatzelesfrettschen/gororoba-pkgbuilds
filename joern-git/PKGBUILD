@@ -1,0 +1,68 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+# Maintainer: Noor Christensen <archlinux_AT_technopragmatics_DOT_org>
+#
+# Local fork, two changes against the AUR package:
+#
+# 1. package() unzipped 'target/joern-cli.zip'. sbt createDistribution now emits
+#    a platform-suffixed name, target/joern-cli-linux-x86_64.zip, so the literal
+#    path misses and the build dies at package() after a fully successful
+#    compile ("[success] All package validations passed"). The glob below tracks
+#    whatever suffix upstream uses.
+#
+# 2. build() pins JAVA_HOME to JDK 21. Under the JDK 26 default, HotSpot's C2
+#    compiler thread segfaults (SIGSEGV at libjvm.so, si_addr 0x2c) while JIT
+#    compiling dotty.tools.scaladoc.translators.SignatureBuilder::list. That is
+#    a native VM crash, not heap exhaustion -- an OutOfMemoryError would surface
+#    as a Java exception instead, and .sbtopts already grants -Xmx4G against
+#    31GiB of RAM. JDK 21 is the newest LTS and compiles the same sources clean.
+_pkgname=joern
+pkgname=$_pkgname-git
+pkgver=4.0.614.r0.g9b1de27
+pkgrel=1
+pkgdesc="The Bug Hunter's Workbench"
+arch=('any')
+url='https://joern.io/'
+license=('Apache-2.0')
+groups=('reverse-engineering')
+depends=('java-runtime>=19')
+makedepends=('git' 'unzip' 'sbt' 'java-environment>=19')
+optdepends=(
+	'glibc: for csharpsrc2cpg frontend support (C# and .NET)'
+	'libgcc: for csharpsrc2cpg frontend support (C# and .NET)'
+	'libstdc++: for csharpsrc2cpg frontend support (C# and .NET)'
+	'zlib: for csharpsrc2cpg frontend support (C# and .NET)'
+)
+source=('git+https://github.com/joernio/joern.git')
+sha256sums=('SKIP')
+
+_jdk=/usr/lib/jvm/java-21-openjdk
+
+pkgver() {
+	cd "$_pkgname"
+	git describe --long --abbrev=7 --tags | sed 's/^v//;s/\([^-]*-g\)/r\1/;s/-/./g'
+}
+
+build() {
+	cd "$_pkgname"
+	if [ -d "$_jdk" ]; then
+		export JAVA_HOME="$_jdk"
+		export PATH="$_jdk/bin:$PATH"
+	fi
+	java -version
+	sbt stage
+	sbt createDistribution
+	sbt querydb/createDistribution
+}
+
+package() {
+	cd "$_pkgname"
+	local _dist
+	_dist=$(find target -maxdepth 1 -name 'joern-cli*.zip' -print -quit)
+	[ -n "$_dist" ] || { echo "no joern-cli*.zip under target/" >&2; return 1; }
+	echo "packaging distribution: $_dist"
+	mkdir -p "$pkgdir/opt/joern"
+	unzip -qo -d "$pkgdir/opt/joern" "$_dist"
+	cd "$pkgdir/opt/joern/joern-cli/"
+	./joern --remove-plugin querydb
+	./joern --add-plugin "$srcdir/$_pkgname/querydb/target/querydb.zip"
+}

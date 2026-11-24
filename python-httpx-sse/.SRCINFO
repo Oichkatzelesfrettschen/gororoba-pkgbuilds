@@ -1,0 +1,18 @@
+pkgbase = python-httpx-sse
+	pkgdesc = Consume Server-Sent Event messages with HTTPX
+	pkgver = 0.4.3
+	pkgrel = 1
+	url = https://github.com/florimondmanca/httpx-sse
+	arch = any
+	license = MIT
+	makedepends = python-build
+	makedepends = python-installer
+	makedepends = python-wheel
+	makedepends = python-hatchling
+	makedepends = python-setuptools-scm
+	depends = python
+	depends = python-httpx
+	source = https://files.pythonhosted.org/packages/source/h/httpx-sse/httpx_sse-0.4.3.tar.gz
+	sha256sums = 9b1ed0127459a66014aec3c56bebd93da3c1bc8bb6618c8082039a44889a755d
+
+pkgname = python-httpx-sse

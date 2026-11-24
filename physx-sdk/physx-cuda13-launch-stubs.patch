@@ -1,0 +1,38 @@
+nvcc 13 emits a host stub for every __global__ function that calls
+__cudaGetKernel and __cudaLaunchKernel, two libcudart entry points, so a
+PhysX GPU object compiled under CUDA 13 carries them as undefined symbols
+whether or not any source launches through <<<>>>. The SDK links no CUDA
+runtime by design: CudaKernelWrangler.cpp defines __cudaRegisterFatBinary
+and __cudaRegisterFunction itself and loads every kernel through the driver
+API, so libPhysXGpu_64.so is linked with the two new symbols unresolved and
+dlopen(RTLD_NOW) from PxLoadPhysxGPUModule refuses it with "undefined
+symbol: __cudaLaunchKernel"; PhysX then reports the CUDA context invalid
+and every scene runs on the CPU. Linking libcudart_static instead collides
+with the SDK's own registration stubs. The two entry points join the
+existing link-dependency stubs: nothing in the SDK launches through them, so
+each returns cudaSuccess and touches nothing.
+
+
+--- a/physx/source/cudamanager/src/CudaKernelWrangler.cpp
++++ b/physx/source/cudamanager/src/CudaKernelWrangler.cpp
+@@ -202,6 +202,20 @@
+ 	return cudaSuccess;
+ }
+ 
++#if CUDA_VERSION >= 13000
++extern "C"
++cudaError_t CUDARTAPI __cudaGetKernel(cudaKernel_t*, const void*)
++{
++	return cudaSuccess;
++}
++
++extern "C"
++cudaError_t CUDARTAPI __cudaLaunchKernel(cudaKernel_t, dim3, dim3, void**, size_t, cudaStream_t)
++{
++	return cudaSuccess;
++}
++#endif
++
+ extern "C"
+ cudaError_t CUDARTAPI cudaSetupArgument(const void*, size_t, size_t)
+ {

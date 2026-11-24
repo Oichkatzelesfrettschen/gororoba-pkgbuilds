@@ -1,0 +1,86 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+# Why: The AUR carries PhysX 4.1 only. PhysX SDK 5.9.0 at tag
+#      110.1-omni-and-physx-5.9.0 (517a00737151) carries the GPU solver,
+#      broad phase, narrow phase, and articulation sources under physx/source
+#      and builds them into libPhysXGpu_64.so from cmakegpu, so the package
+#      compiles the whole SDK from source rather than fetching the binary
+#      packman used to download. The SDK's own generate_projects.sh drives
+#      packman for rapidjson and a metadata clang that the SDK cmake tree never
+#      reads, so cmake is invoked directly on physx/compiler/public with the
+#      linux-gcc preset's switches spelled out. nvcc refuses a host compiler
+#      newer than GCC 15, so g++-15 is both the C++ and the CUDA host compiler.
+#      The GPU SASS list is cut to sm_89 alone: the workstation's RTX 4070 Ti
+#      is the only device this build serves, and the upstream list of seven
+#      architectures multiplies the CUDA compile time by that count. Snippets
+#      and the PVD runtime are off; the qwen-physics-service is the consumer.
+#      Installed under /opt/nvidia/physx with a loader entry. makepkg build
+#      flags are off because -Werror=format-security from makepkg.conf meets
+#      the SDK's own -Werror set and fails PhysXFoundation. nvcc 13's host
+#      stubs call __cudaGetKernel and __cudaLaunchKernel, and the SDK links no
+#      CUDA runtime by design, so physx-cuda13-launch-stubs.patch adds both to
+#      the wrangler's link-dependency shims; the cmake default of compute_75
+#      is overridden so the fatbin carries sm_89 alone.
+
+pkgname=physx-sdk
+pkgver=5.9.0
+pkgrel=4
+_commit=517a0073715120e114ee055b63b26c95e00d9039
+pkgdesc='NVIDIA PhysX SDK 5.9.0 with the GPU library built from source for sm_89'
+arch=(x86_64)
+url='https://github.com/NVIDIA-Omniverse/PhysX'
+license=('BSD-3-Clause')
+depends=('cuda>=13' 'nvidia-utils>=580')
+makedepends=(cmake ninja gcc15)
+provides=(physx-sdk)
+options=(!strip !buildflags !lto)
+
+source=("PhysX-${pkgver}-${_commit}.tar.gz::https://github.com/NVIDIA-Omniverse/PhysX/archive/${_commit}.tar.gz"
+        physx-cuda13-ctxcreate.patch
+        physx-cuda13-launch-stubs.patch)
+sha256sums=('bc894626070f0658a3235231c825c3e0f8ad1fd9d5077a63cb5bdaffe8816407'
+            'ae2084b25ffc1233d3f568b271ffb15c8aaa7bb3d2223ab505cbc11d4f0eb0de'
+            '42df8dbbe5c09553e9bcd5413d89df20942008cdbf0b45018f747eadf340ead8')
+
+_root() { printf '%s/PhysX-%s/physx' "${srcdir}" "${_commit}"; }
+
+prepare() {
+    local root
+    root=$(_root)
+    patch -d "${root}/.." -p1 <"${srcdir}/physx-cuda13-ctxcreate.patch"
+    patch -d "${root}/.." -p1 <"${srcdir}/physx-cuda13-launch-stubs.patch"
+    # One architecture. The macro emits one --generate-code per listed SASS
+    # arch; the upstream list is 70,80,86,89,90,100,120 plus PTX 120.
+    sed -i 's/GENERATE_ARCH_CODE_LIST(SASS "70,80,86,89,90,100,120" PTX "120")/GENERATE_ARCH_CODE_LIST(SASS "89")/' \
+        "${root}/source/compiler/cmakegpu/CMakeLists.txt"
+    grep -q 'GENERATE_ARCH_CODE_LIST(SASS "89")' "${root}/source/compiler/cmakegpu/CMakeLists.txt"
+}
+
+build() {
+    local root
+    root=$(_root)
+    PHYSX_ROOT_DIR="${root}" cmake -S "${root}/compiler/public" -B "${srcdir}/build" -G Ninja \
+        -DPHYSX_ROOT_DIR="${root}" \
+        -DTARGET_BUILD_PLATFORM=linux \
+        -DPX_OUTPUT_ARCH=x86 \
+        -DCMAKE_BUILD_TYPE=release \
+        -DPX_GENERATE_GPU_PROJECTS=ON \
+        -DCMAKE_CUDA_ARCHITECTURES=89 \
+        -DPX_BUILDSNIPPETS=OFF \
+        -DPX_BUILDPVDRUNTIME=OFF \
+        -DPX_GENERATE_STATIC_LIBRARIES=OFF \
+        -DCMAKE_C_COMPILER=/usr/bin/gcc-15 \
+        -DCMAKE_CXX_COMPILER=/usr/bin/g++-15 \
+        -DCMAKE_CUDA_COMPILER=/opt/cuda/bin/nvcc \
+        -DCMAKE_CUDA_HOST_COMPILER=/usr/bin/g++-15 \
+        -DCMAKE_INSTALL_PREFIX=/opt/nvidia/physx \
+        -DPX_OUTPUT_LIB_DIR="${srcdir}/output" \
+        -DPX_OUTPUT_BIN_DIR="${srcdir}/output"
+    cmake --build "${srcdir}/build"
+}
+
+package() {
+    DESTDIR="${pkgdir}" cmake --install "${srcdir}/build"
+    install -d "${pkgdir}/etc/ld.so.conf.d"
+    printf '/opt/nvidia/physx/bin/linux.x86_64/release\n' >"${pkgdir}/etc/ld.so.conf.d/physx.conf"
+    install -Dm644 "$(_root)/../LICENSE.md" "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE.md"
+}
