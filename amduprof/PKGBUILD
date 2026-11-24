@@ -1,0 +1,42 @@
+# To auto-download: python download_uprof.py --version 5.2.606
+# Or: python download_uprof.py --check-artifacts (finds previous downloads)
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+# AMD uProf 5.2.606 - Performance analysis tool
+# Downloaded from https://www.amd.com/en/developer/uprof.html (EULA required)
+
+pkgname=amduprof
+pkgver=5.2.606
+pkgrel=2
+pkgdesc="AMD uProf performance analysis tool for CPU and GPU profiling"
+arch=('x86_64')
+url="https://www.amd.com/en/developer/uprof.html"
+license=('custom:AMD')
+depends=('glib2' 'freetype2' 'fontconfig' 'numactl' 'dbus'
+         'libglvnd' 'libxkbcommon' 'libarchive' 'elfutils')
+optdepends=('dkms: kernel module support')
+options=('staticlibs' '!strip')
+# makepkg reads a bare file name from the PKGBUILD directory; download_uprof.py places the tarball there and prints
+# its sha256, which replaces SKIP once a download has been verified.
+source=("AMDuProf_Linux_x64_${pkgver}.tar.bz2")
+sha256sums=('SKIP')
+
+_prefix=/opt/${pkgname}
+
+package() {
+    install -d "${pkgdir}${_prefix}"
+    cp -dr "${srcdir}/AMDuProf_Linux_x64_${pkgver}/"* "${pkgdir}${_prefix}/"
+
+    # Symlink key binaries to /usr/bin
+    install -d "${pkgdir}/usr/bin"
+    for bin in AMDuProf AMDuProfCLI AMDuProfSys AMDPowerProfilerDriver.sh; do
+        if [ -f "${pkgdir}${_prefix}/bin/${bin}" ]; then
+            ln -s "${_prefix}/bin/${bin}" "${pkgdir}/usr/bin/$(echo ${bin} | tr '[:upper:]' '[:lower:]' | sed 's/\.sh$//')"
+        fi
+    done
+
+    # License
+    install -d "${pkgdir}/usr/share/licenses/${pkgname}"
+    find "${pkgdir}${_prefix}" -iname "*license*" -o -iname "*eula*" | head -1 | while read f; do
+        ln -s "${f#${pkgdir}}" "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
+    done
+}

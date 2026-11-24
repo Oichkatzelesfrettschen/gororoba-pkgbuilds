@@ -1,0 +1,25 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+
+pkgname=python-mathdunders
+_pkg=mathdunders
+pkgver=0.4.2
+pkgrel=1
+pkgdesc="Decorator that automatically adds math dunders to a Python class"
+arch=('any')
+url="https://github.com/discretegames/mathdunders"
+license=('MIT')
+depends=('python')
+makedepends=('python-build' 'python-installer' 'python-setuptools' 'python-wheel')
+source=("https://files.pythonhosted.org/packages/source/m/$_pkg/$_pkg-$pkgver.tar.gz")
+sha256sums=('ff9b624725fafd34c51decbe3e661eb91b79bbd3841ab04d2256704df0845ce5')
+
+build() {
+	cd "$_pkg-$pkgver"
+	python -m build --wheel --no-isolation
+}
+
+package() {
+	cd "$_pkg-$pkgver"
+	python -m installer --destdir="$pkgdir" dist/*.whl
+	install -Dm644 LICENSE.txt "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}

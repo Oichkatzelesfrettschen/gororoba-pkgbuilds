@@ -1,0 +1,25 @@
+pkgbase = qxelarator-python313
+	pkgdesc = QX cQASM emulator in an isolated CPython 3.13 runtime
+	pkgver = 0.11.0
+	pkgrel = 1
+	url = https://github.com/QuTech-Delft/qx-simulator
+	arch = x86_64
+	license = Apache-2.0
+	makedepends = uv
+	makedepends = patchelf
+	depends = python313
+	depends = libgcc
+	depends = libstdc++
+	depends = glibc
+	depends = bash
+	options = !strip
+	source = https://files.pythonhosted.org/packages/39/4e/bec242e9f7b3cad2377006101d7d04785d2f6d8f47bb220f4dbdf701a884/qxelarator-0.11.0-cp313-cp313-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl
+	source = qxelarator-python
+	source = test_qxelarator.py
+	source = bell_pair.cq
+	sha256sums = bdf4192dad30dabc2c39b11b7e06f63c156dbe487ee63fb1a314ee20344bcef9
+	sha256sums = bf079c5065eb22b127a729a099d76e278a648544241076591b6f12f8e88a2ce4
+	sha256sums = 380163c0d6d30cabceca43dbbd05eb93554c509f29f31f8d56da4f040f59e968
+	sha256sums = 50be05e59ce6bff730d8209a8cf1dc6f34af5876f33ebd74e59a80c47a4b325e
+
+pkgname = qxelarator-python313

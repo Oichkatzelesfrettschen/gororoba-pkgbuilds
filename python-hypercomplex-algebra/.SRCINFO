@@ -1,0 +1,17 @@
+pkgbase = python-hypercomplex-algebra
+	pkgdesc = Application layer for hypercomplex algebras (Standard, Split, Dual, Tensor)
+	pkgver = 0.2.1
+	pkgrel = 1
+	url = https://github.com/maher1719/hypercomplex-algebra
+	arch = any
+	license = Apache-2.0
+	makedepends = python-build
+	makedepends = python-installer
+	makedepends = python-hatchling
+	makedepends = python-wheel
+	depends = python
+	depends = python-hypercomplex-engine
+	source = https://files.pythonhosted.org/packages/source/h/hypercomplex_algebra/hypercomplex_algebra-0.2.1.tar.gz
+	sha256sums = 5ec3b7810cd67c5f879d287924f3c3fcec998a5a4e80aa450f37ddbc9591c386
+
+pkgname = python-hypercomplex-algebra

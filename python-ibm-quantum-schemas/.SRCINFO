@@ -1,0 +1,23 @@
+pkgbase = python-ibm-quantum-schemas
+	pkgdesc = Pydantic models of the IBM Quantum Platform API payloads
+	pkgver = 0.13.20261016
+	pkgrel = 1
+	url = https://github.com/Qiskit/ibm-quantum-schemas
+	arch = any
+	license = Apache-2.0
+	makedepends = python-build
+	makedepends = python-installer
+	makedepends = python-setuptools
+	makedepends = python-setuptools-scm
+	makedepends = python-wheel
+	depends = python
+	depends = python-pydantic
+	depends = python-qiskit
+	depends = python-qiskit-qasm3-import
+	depends = python-samplomatic
+	depends = python-numpy
+	depends = python-pybase64
+	source = https://files.pythonhosted.org/packages/source/i/ibm_quantum_schemas/ibm_quantum_schemas-0.13.20261016.tar.gz
+	b2sums = 59ee6bf6c530c4275b2fa55808697c63248909b0221f97d2e427cf3e2c0ec01bd6e57dd3ac586f2fe7fece93306ee47d2699bfa067890acc26fec5e7da44a1de
+
+pkgname = python-ibm-quantum-schemas

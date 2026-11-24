@@ -1,0 +1,45 @@
+pkgbase = python-qiskit-aer-cuda
+	pkgdesc = Qiskit Aer with the CUDA GPU backend and cuStateVec/cuTensorNet (cuQuantum) for NVIDIA Ada GPUs
+	pkgver = 0.18.4
+	pkgrel = 1
+	url = https://github.com/Qiskit/qiskit-aer
+	arch = x86_64
+	license = Apache-2.0
+	makedepends = cmake
+	makedepends = ipython
+	makedepends = ninja
+	makedepends = pybind11
+	makedepends = python-build
+	makedepends = python-installer
+	makedepends = python-scikit-build
+	makedepends = python-setuptools
+	depends = cuda>=13
+	depends = cuda<14
+	depends = cuquantum
+	depends = cutensor>=2.8
+	depends = blas
+	depends = lapack
+	depends = fmt
+	depends = spdlog
+	depends = python-dateutil
+	depends = python-numpy
+	depends = python-psutil
+	depends = python-qiskit
+	depends = python-scipy
+	depends = python-sympy
+	optdepends = openmp: parallelization with OpenMP
+	optdepends = python-cvxpy: support convex optimization
+	optdepends = python-dask: parallel computing with task scheduling
+	optdepends = python-distributed: distributed task scheduler for Dask
+	provides = python-qiskit-aer=0.18.4
+	conflicts = python-qiskit-aer
+	source = qiskit-aer-0.18.4.tar.gz::https://github.com/Qiskit/qiskit-aer/archive/0.18.4.tar.gz
+	source = nlohmann-json-3.10.2.tar.gz::https://github.com/nlohmann/json/archive/refs/tags/v3.10.2.tar.gz
+	source = aer-cccl3-unary-function.patch
+	source = aer-provider-unique-names.patch
+	b2sums = c1a21c654afb5037f23afece6655d2fab89523e3b7e67d33e9045294aee66faf01acd3c532c743a15f1b71a81427e3d47dd1001fcde3655530fdd844ca4e460f
+	b2sums = e7da213fb75d528b1f5425822f5b598e882f232a67670aaae2d8f89c76e72ee23fa3344d1acfef2b0338a6a423d17b231b7e047ff064c984c2ec7783b721a22c
+	b2sums = cf3f6507317591e12fa4fed5601c76ff469900cf3d5ec3eadd682319dbc48b279acddbbd893090c8f6489fddaa1e7b5b997395c20d08aa5ee5cbdf2d0b6e1788
+	b2sums = 8d423b89d8d482fbc215c7fa89de8e8f33d8b0ff07e9aa525c76940023872e50e0d8881e6463c884ca68d9b4bb205e136015e62acaf7e40cd6a89b52eaea4f46
+
+pkgname = python-qiskit-aer-cuda

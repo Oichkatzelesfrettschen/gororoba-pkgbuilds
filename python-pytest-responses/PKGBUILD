@@ -1,0 +1,19 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+
+pkgname=python-pytest-responses
+_pkg=pytest_responses
+pkgver=0.6.0
+pkgrel=1
+pkgdesc="pytest plugin that activates the responses HTTP mock for every test (perceval-quandela test requirement)"
+arch=('any')
+url="https://github.com/getsentry/pytest-responses"
+license=('Apache-2.0')
+depends=('python' 'python-pytest' 'python-responses')
+makedepends=('python-installer')
+source=("https://files.pythonhosted.org/packages/ba/e7/b4712a52ac5a4a87186a57bc974b3eadd5b7253a413edd41ff3f966dc2ce/$_pkg-$pkgver-py3-none-any.whl")
+noextract=("$_pkg-$pkgver-py3-none-any.whl")
+sha256sums=('e94717b5235a2e1f66b27bcfc895dfa6705e79678e5c05eae9bb06fcf95a0182')
+
+package() {
+	python -m installer --destdir="$pkgdir" "$_pkg-$pkgver-py3-none-any.whl"
+}

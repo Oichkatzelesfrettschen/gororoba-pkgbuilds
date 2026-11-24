@@ -1,0 +1,21 @@
+pkgbase = cuquantum
+	pkgdesc = NVIDIA cuQuantum SDK libraries for CUDA 13: cuStateVec, cuTensorNet, cuDensityMat, cuPauliProp, cuStabilizer
+	pkgver = 26.09.0.8
+	pkgrel = 1
+	url = https://developer.nvidia.com/cuquantum-sdk
+	arch = x86_64
+	license = LicenseRef-NVIDIA-cuQuantum
+	depends = cuda>=13
+	depends = cuda<14
+	depends = cutensor>=2.8
+	provides = libcustatevec.so=1-64
+	provides = libcutensornet.so=2-64
+	provides = libcudensitymat.so=0-64
+	provides = libcupauliprop.so=0-64
+	provides = libcustabilizer.so=0-64
+	options = !strip
+	options = !debug
+	source = https://developer.download.nvidia.com/compute/cuquantum/redist/cuquantum/linux-x86_64/cuquantum-linux-x86_64-26.09.0.8_cuda13-archive.tar.xz
+	sha256sums = 92ecbba2b5783db20a966aa67e24206501eef3907ec09dd51cfb4753aea65731
+
+pkgname = cuquantum

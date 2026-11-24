@@ -1,0 +1,19 @@
+pkgbase = python-aws-glue-schema-registry
+	pkgdesc = Serde client for the AWS Glue Schema Registry
+	pkgver = 1.1.3
+	pkgrel = 1
+	url = https://github.com/DisasterAWARE/aws-glue-schema-registry-python
+	arch = any
+	license = Apache-2.0
+	makedepends = python-installer
+	depends = python
+	depends = python-boto3
+	depends = python-fastavro
+	depends = python-fastjsonschema>=2.15
+	depends = python-fastjsonschema<3
+	depends = python-orjson>=3.7.7
+	noextract = aws_glue_schema_registry-1.1.3-py3-none-any.whl
+	source = aws_glue_schema_registry-1.1.3-py3-none-any.whl::https://files.pythonhosted.org/packages/cc/32/025a53122c8648d9acb896d3516c30714f3260a78ead44f90e199e18cfd2/aws_glue_schema_registry-1.1.3-py3-none-any.whl
+	sha256sums = 590b95edd8b135c9ac74f985c05d117ea79ef6e56209ab90bc0b2fcc222e8fff
+
+pkgname = python-aws-glue-schema-registry

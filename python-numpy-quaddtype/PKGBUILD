@@ -1,0 +1,60 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+
+pkgname=python-numpy-quaddtype
+_pkg=numpy_quaddtype
+pkgver=1.0.0
+pkgrel=1
+_sleef=3.9.0
+_qblas=9468e24a02b731563eba2aee0350e9219b36c102
+_capi=d3ebabff3a4b43e40f7b3db5f55b8a54f84b0091
+pkgdesc="IEEE binary128 quad-precision NumPy dtype (SLEEF quad arithmetic, QuadBLAS kernels)"
+arch=('x86_64')
+url="https://github.com/numpy/numpy-quaddtype"
+license=('BSD-3-Clause' 'BSL-1.0')
+depends=('python' 'python-numpy' 'glibc' 'gcc-libs')
+makedepends=('python-build' 'python-installer' 'meson-python' 'meson' 'ninja' 'cmake' 'git' 'patch')
+checkdepends=('python-pytest' 'python-mpmath')
+# The sdist resolves SLEEF, QBLAS and pythoncapi-compat as meson wrap-git
+# subprojects; the pinned checkouts below replace those network fetches, and
+# prepare() applies each wrap's packagefiles exactly as meson would. SLEEF 3.9.0
+# with quad support is not packaged, so it builds as the bundled subproject.
+source=("https://files.pythonhosted.org/packages/source/n/numpy-quaddtype/$_pkg-$pkgver.tar.gz"
+        "sleef::git+https://github.com/shibatch/sleef.git#tag=$_sleef"
+        "qblas::git+https://github.com/SwayamInSync/QBLAS.git#commit=$_qblas"
+        "pythoncapi-compat::git+https://github.com/python/pythoncapi-compat.git#commit=$_capi")
+sha256sums=('e2844e879dd6f4b44971e318d17cf2c5fa1f9fd2f04d0a50fe8813139e6dcf29'
+            'SKIP'
+            'SKIP'
+            'SKIP')
+
+prepare() {
+	cd "$_pkg-$pkgver/subprojects"
+	for name in sleef qblas pythoncapi-compat; do
+		rm -rf "$name"
+		cp -a "$srcdir/$name" "$name"
+	done
+	cp -a packagefiles/qblas/. qblas/
+	cp -a packagefiles/sleef/meson.build packagefiles/sleef/meson.options sleef/
+	patch -d sleef -p1 < packagefiles/sleef/fix-purecfma-scalar-x86.patch
+}
+
+build() {
+	cd "$_pkg-$pkgver"
+	python -m build --wheel --no-isolation --skip-dependency-check \
+		-Csetup-args=--wrap-mode=nodownload
+}
+
+check() {
+	cd "$_pkg-$pkgver"
+	rm -rf test-env
+	python -m installer --destdir=test-env dist/*.whl
+	local site
+	site=$(python -c 'import sysconfig; print(sysconfig.get_path("platlib"))')
+	PYTHONPATH="$PWD/test-env$site" python -m pytest -q -p no:cacheprovider tests
+}
+
+package() {
+	cd "$_pkg-$pkgver"
+	python -m installer --destdir="$pkgdir" dist/*.whl
+	install -Dm644 LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}

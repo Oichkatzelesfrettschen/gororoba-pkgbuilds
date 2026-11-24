@@ -1,0 +1,27 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+
+# The BASIC SHELL statement runs its argument through subprocess with
+# shell=True outside agent mode; a .bas program can run any command.
+pkgname=python-qubasic
+_name=qubasic
+pkgver=0.34.0
+pkgrel=1
+pkgdesc="Quantum BASIC interactive terminal on Qiskit Aer"
+arch=('any')
+url="https://github.com/CharlesCNorton/qubasic"
+license=('MIT')
+depends=('python' 'python-qiskit' 'python-qiskit-aer' 'python-numpy' 'python-scipy' 'python-rustworkx' 'python-psutil' 'python-rich')
+makedepends=('python-build' 'python-installer' 'python-setuptools' 'python-wheel')
+source=("https://files.pythonhosted.org/packages/source/${_name::1}/$_name/$_name-$pkgver.tar.gz")
+b2sums=('372dee60a24955084a48b20f2d21c8518c80587f2800c5ec7e101b3d2b62f00eb28d45b27784fc046d4a618d09eae063e55e8978db66f151e9b996e2a902a0e7')
+
+build() {
+	cd "$_name-$pkgver"
+	python -m build --wheel --no-isolation
+}
+
+package() {
+	cd "$_name-$pkgver"
+	python -m installer --destdir="$pkgdir" dist/*.whl
+	install -Dm644 LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}

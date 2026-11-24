@@ -1,0 +1,65 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+
+# ZPGenerator pins qutip==4.7.3, scipy==1.11.4 and matplotlib==3.7.0 and
+# calls the qutip 4 Qobj, rand_unitary_haar and Options interfaces that qutip 5
+# removed; on Python 3.14 against qutip 5.3.1, scipy 1.18.1 and numpy 2.5.4,
+# 98 of its 228 tests fail even after those three names are ported. The stack keeps its pins under /opt on
+# Python 3.11, the newest interpreter qutip 4.7.3 and scipy 1.11.4 ship
+# wheels for. Upstream tags no release and publishes nothing to PyPI, so
+# the source is the commit setup.py names 0.2.0.
+pkgname=zpgenerator-stack
+pkgver=0.2.0
+pkgrel=1
+_commit=0b1f5502ff2b2607d6481492994ccd481597daba
+pkgdesc="Quandela's ZPGenerator photonic source simulator on its pinned qutip 4.7.3 as a hash-locked Python 3.11 environment"
+arch=('x86_64')
+url="https://github.com/Quandela/ZPGenerator"
+license=('MIT')
+depends=(python311 gcc-libs glibc)
+makedepends=(git)
+_prefix=/opt/$pkgname
+source=("ZPGenerator::git+https://github.com/Quandela/ZPGenerator.git#commit=$_commit"
+        requirements.in requirements.lock zpgenerator-python)
+b2sums=('76a49a9a9b233d4d40d303791b89a7498581b3b661aaee640d7e0da9b92c170c8d9a7d691b3b3c19bbec854eaa272f327188d6576e35a8b3dc4cdb72569585b4'
+        '6e3a70a2a1ca67bb788a8ee6a0c7c5ecb44a2f111645c1380f736c962d015f605a6d03149217347c79ca21cb25014ff4f2d0f0193bdfee28d2a96c33685aaf9a'
+        'e006a0b9d250e658a195513a6c089853a06937c5f2891f064883161ded724b35fce19e2b05a9fc56cbefd5a98013fecf9ff4058caec7638584422daaa0f5dcc6'
+        'e9aa9cf8c451a33dd00aabb4d7314f3aadb6daf5645b5033d6140ab5fdce60390d29c7aadfc8f6f25cd960369822ebf6eb7bc0a51596330ec5c5e2083461f54d')
+
+prepare() {
+	# ZPGenerator ships no pytest configuration, so pytest would adopt the first
+	# one above $BUILDDIR; an empty one makes the source tree the rootdir.
+	printf '[pytest]\n' > ZPGenerator/pytest.ini
+}
+
+build() {
+	/usr/bin/python3.11 -m venv --clear "$srcdir/stack"
+	"$srcdir/stack/bin/python" -m pip install -q --no-cache-dir --upgrade pip==25.3
+	# --require-hashes binds every distribution to the lock and --no-deps keeps
+	# the installed set equal to it.
+	"$srcdir/stack/bin/python" -m pip install -q --no-cache-dir --require-hashes --no-deps --only-binary :all: \
+		-r "$srcdir/requirements.lock"
+	"$srcdir/stack/bin/python" -m pip install -q --no-cache-dir --no-deps --no-build-isolation "$srcdir/ZPGenerator"
+}
+
+check() {
+	cd "$srcdir/ZPGenerator"
+	# test_pulse_base_sum compares a quadrature area with == against
+	# 2 + 28/3, and the integral lands one unit in the last place away.
+	PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 PYTHONNOUSERSITE=1 MPLBACKEND=Agg \
+		"$srcdir/stack/bin/python" -P -m pytest -q -p no:cacheprovider tests \
+		--deselect tests/test_time/test_pulse.py::test_pulse_base_sum
+	"$srcdir/stack/bin/python" -m pip check
+}
+
+package() {
+	install -d "$pkgdir$_prefix"
+	cp -a "$srcdir/stack/." "$pkgdir$_prefix/"
+	# Entry-point shebangs and activate scripts carry the build path.
+	grep -rlI --null "$srcdir/stack" "$pkgdir$_prefix/bin" "$pkgdir$_prefix/pyvenv.cfg" |
+		xargs -0 -r sed -i "s|$srcdir/stack|$_prefix|g"
+	find "$pkgdir$_prefix" -name __pycache__ -prune -exec rm -r {} +
+	"$pkgdir$_prefix/bin/python" -m compileall -q -j0 -d "$_prefix/lib" "$pkgdir$_prefix/lib" >/dev/null
+	install -Dm644 requirements.in requirements.lock -t "$pkgdir/usr/share/$pkgname/"
+	install -Dm644 ZPGenerator/LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+	install -Dm755 zpgenerator-python "$pkgdir/usr/bin/zpgenerator-python"
+}

@@ -1,0 +1,19 @@
+pkgbase = python-pyadic
+	pkgdesc = p-adic numbers, finite fields and rational reconstruction in pure Python
+	pkgver = 0.3.0
+	pkgrel = 1
+	url = https://github.com/GDeLaurentis/pyadic
+	arch = any
+	license = GPL-3.0-only
+	makedepends = python-build
+	makedepends = python-installer
+	makedepends = python-setuptools
+	makedepends = python-wheel
+	depends = python
+	depends = python-numpy
+	depends = python-sympy
+	depends = python-mpmath
+	source = https://files.pythonhosted.org/packages/source/p/pyadic/pyadic-0.3.0.tar.gz
+	sha256sums = 0fbc7310a885f6cc4ebfdacdf16898b38474ed33f5dfb3929159b9dbc5697571
+
+pkgname = python-pyadic

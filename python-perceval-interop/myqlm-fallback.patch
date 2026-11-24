@@ -1,0 +1,8 @@
+--- a/perceval_interop/myqlm/__init__.py
++++ b/perceval_interop/myqlm/__init__.py
+@@ -34,5 +34,6 @@
+         QuandelaQPUHandler = MissingDependency("QuandelaQPUHandler", extra_name)
+         MyQLMSession = MissingDependency("MyQLMSession", extra_name)
++        MyQLMCommunicationLayer = MissingDependency("MyQLMCommunicationLayer", extra_name)
+     else:
+         raise e

@@ -1,0 +1,14 @@
+pkgbase = python-publication
+	pkgdesc = Publication metadata helper for jsii Python bindings
+	pkgver = 0.0.3
+	pkgrel = 1
+	url = https://github.com/glyph/publication
+	arch = any
+	license = MIT
+	makedepends = python-installer
+	depends = python
+	noextract = publication-0.0.3-py2.py3-none-any.whl
+	source = publication-0.0.3-py2.py3-none-any.whl::https://files.pythonhosted.org/packages/f8/d3/6308debad7afcdb3ea5f50b4b3d852f41eb566a311fbcb4da23755a28155/publication-0.0.3-py2.py3-none-any.whl
+	sha256sums = 0248885351febc11d8a1098d5c8e3ab2dabcf3e8c0c96db1e17ecd12b53afbe6
+
+pkgname = python-publication

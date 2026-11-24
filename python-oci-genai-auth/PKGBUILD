@@ -1,0 +1,26 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+
+pkgname=python-oci-genai-auth
+_pkg=oci-genai-auth
+pkgver=1.1.1
+pkgrel=1
+_srcdir=oci_genai_auth-$pkgver
+pkgdesc="OCI request signing for Generative AI SDKs"
+arch=('any')
+url="https://github.com/oracle-samples/oci-genai-auth"
+license=('UPL-1.0')
+depends=('python' 'python-httpx' 'python-oci' 'python-requests' 'python-typing_extensions')
+makedepends=('python-build' 'python-installer' 'python-hatchling')
+source=("https://files.pythonhosted.org/packages/5a/5e/f9caadca8533d27c2b4c3655d923471ade59c43f5c94e5cbbd2f308368ae/oci_genai_auth-1.1.1.tar.gz")
+sha256sums=('e550d0d76090dc5268b2d246b0e3a5e9b4b2f7dcfeaa2d158b0f9e93426b0dc0')
+
+build() {
+	cd "$_srcdir"
+	python -m build --wheel --no-isolation
+}
+
+package() {
+	cd "$_srcdir"
+	python -m installer --destdir="$pkgdir" dist/*.whl
+	find . -maxdepth 1 -iname 'LICENSE*' -exec install -Dm644 {} "$pkgdir/usr/share/licenses/$pkgname/" \;
+}

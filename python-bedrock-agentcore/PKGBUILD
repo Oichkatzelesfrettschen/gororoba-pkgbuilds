@@ -1,0 +1,28 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+# shellcheck shell=bash disable=SC2034,SC2154
+
+# Upstream requires boto3>=1.44.5 and botocore>=1.44.5.
+# Installed python-boto3 and python-botocore are 1.43.108.
+# This recipe does not upgrade that stack.
+# Installed pydantic 2.14.1 satisfies pydantic<2.41.3,>=2.0.0.
+# extra/uvicorn 0.54.0-1 is already installed and satisfies uvicorn>=0.34.2.
+# It owns /usr/bin/uvicorn and provides no python-uvicorn name.
+# A second recipe would file-conflict with it.
+
+pkgname=python-bedrock-agentcore
+pkgver=1.27.0
+pkgrel=1
+pkgdesc='Amazon Bedrock AgentCore SDK'
+arch=('any')
+url='https://github.com/aws/bedrock-agentcore-sdk-python'
+license=('Apache-2.0')
+depends=('python' 'python-boto3' 'python-botocore' 'python-pydantic' 'python-starlette' 'python-typing_extensions' 'python-urllib3' 'uvicorn' 'python-websockets')
+makedepends=('python-installer')
+_wheel='bedrock_agentcore-1.27.0-py3-none-any.whl'
+source=("$_wheel::https://files.pythonhosted.org/packages/5e/24/48ee46f596c8d2dfe52799254fb561b227fcdb9988e126b8295f6d8f75b3/bedrock_agentcore-1.27.0-py3-none-any.whl")
+noextract=("$_wheel")
+sha256sums=('fef5dfea7028ac66b94124e727d04bbeff789157834ed718ee7634770bf8fa09')
+
+package() {
+	python -m installer --destdir="$pkgdir" "$_wheel"
+}

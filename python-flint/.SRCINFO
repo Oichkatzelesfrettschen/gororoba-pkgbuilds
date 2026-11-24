@@ -1,0 +1,26 @@
+pkgbase = python-flint
+	pkgdesc = Python bindings for FLINT: exact integers, rationals, polynomials, matrices, finite fields and balls
+	pkgver = 0.9.0
+	pkgrel = 1
+	url = https://github.com/flintlib/python-flint
+	arch = x86_64
+	license = MIT
+	license = LGPL-3.0-or-later
+	makedepends = python-build
+	makedepends = python-installer
+	makedepends = meson-python
+	makedepends = meson
+	makedepends = ninja
+	makedepends = pkgconf
+	depends = python
+	depends = flint
+	depends = gmp
+	depends = mpfr
+	depends = glibc
+	noextract = cython-3.2.9-py3-none-any.whl
+	source = https://files.pythonhosted.org/packages/source/p/python-flint/python_flint-0.9.0.tar.gz
+	source = https://files.pythonhosted.org/packages/00/ec/e61deec9bcfbb0e1b36f8b5ba75cb44644419b4bfd0fdd666bffd21d9579/cython-3.2.9-py3-none-any.whl
+	sha256sums = 686b2907eedaf0c0842caefab29a5775d2e633fd5815b81e13b81ca2c6ad0a36
+	sha256sums = a2b0e87f6b80790c929308ca0831d686f7a180feab684fe8cd4a4380bd96aaca
+
+pkgname = python-flint

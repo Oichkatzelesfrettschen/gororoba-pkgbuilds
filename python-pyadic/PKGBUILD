@@ -1,0 +1,25 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+
+pkgname=python-pyadic
+_pkg=pyadic
+pkgver=0.3.0
+pkgrel=1
+pkgdesc="p-adic numbers, finite fields and rational reconstruction in pure Python"
+arch=('any')
+url="https://github.com/GDeLaurentis/pyadic"
+license=('GPL-3.0-only')
+depends=('python' 'python-numpy' 'python-sympy' 'python-mpmath')
+makedepends=('python-build' 'python-installer' 'python-setuptools' 'python-wheel')
+source=("https://files.pythonhosted.org/packages/source/p/$_pkg/$_pkg-$pkgver.tar.gz")
+sha256sums=('0fbc7310a885f6cc4ebfdacdf16898b38474ed33f5dfb3929159b9dbc5697571')
+
+build() {
+	cd "$_pkg-$pkgver"
+	python -m build --wheel --no-isolation
+}
+
+package() {
+	cd "$_pkg-$pkgver"
+	python -m installer --destdir="$pkgdir" dist/*.whl
+	install -Dm644 LICENSE.txt "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}

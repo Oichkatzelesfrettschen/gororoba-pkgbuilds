@@ -1,0 +1,3 @@
+#!/bin/sh
+# Python 3.14 interpreter of the kaggle-benchmarks-stack environment.
+exec /opt/kaggle-benchmarks-stack/bin/python "$@"

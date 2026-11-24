@@ -1,0 +1,28 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+# shellcheck shell=bash disable=SC2034,SC2154
+
+# AUR python-pyathena is 3.17.1 and flagged out of date. This recipe is PyPI 4.3.0.
+# Do not install the AUR package over this one.
+
+pkgname=python-pyathena
+pkgver=4.3.0
+pkgrel=1
+pkgdesc='Python DB API 2.0 client for Amazon Athena'
+arch=('any')
+url='https://github.com/laughingman7743/PyAthena'
+license=('MIT')
+depends=('python' 'python-boto3' 'python-botocore' 'python-fsspec' 'python-tenacity' 'python-tzdata')
+# The pandas extra requires pandas>=3.0.0. extra/python-pandas is 2.3.3, so it is not listed.
+optdepends=(
+	'python-sqlalchemy: SQLAlchemy dialect'
+	'python-pyarrow: Arrow cursor'
+)
+makedepends=('python-installer')
+_wheel='pyathena-4.3.0-py3-none-any.whl'
+source=("$_wheel::https://files.pythonhosted.org/packages/fd/e8/52ec9ecf8dc64cca2a4d831011da3786917f08f921e07a2f7512eec948d9/pyathena-4.3.0-py3-none-any.whl")
+noextract=("$_wheel")
+sha256sums=('c81d8c101bfa80d356bc4559558c4535b89c6e5e4b507d4eeb470aba4a06081d')
+
+package() {
+	python -m installer --destdir="$pkgdir" "$_wheel"
+}

@@ -1,0 +1,23 @@
+pkgbase = python-qiskit-noise-learning
+	pkgdesc = Randomization-based quantum noise characterization for Qiskit
+	pkgver = 0.2.0
+	pkgrel = 1
+	url = https://github.com/Qiskit/qiskit-noise-learning
+	arch = any
+	license = Apache-2.0
+	makedepends = python-build
+	makedepends = python-installer
+	makedepends = python-setuptools
+	makedepends = python-setuptools-scm
+	makedepends = python-wheel
+	depends = python
+	depends = python-numpy
+	depends = python-qiskit
+	depends = python-rustworkx
+	depends = python-samplomatic
+	depends = python-scipy
+	depends = python-xarray
+	source = https://files.pythonhosted.org/packages/source/q/qiskit_noise_learning/qiskit_noise_learning-0.2.0.tar.gz
+	b2sums = 69c1ec8f9582d60eb742902cfbe96a1df3fe2eae08d488644d3846abe30a2dff828f831b9530fb5a5d7a8446114089de930ce8fa3d55a8ba608d454075d51094
+
+pkgname = python-qiskit-noise-learning

@@ -1,0 +1,25 @@
+pkgbase = lean4-cuda-nightly-bin
+	pkgdesc = Experimental Lean 4 toolchain with a CUDA device-code compiler backend (Ranvier Labs nightly)
+	pkgver = 4.33.0.cuda.nightly.20261121
+	pkgrel = 2
+	url = https://ranvier-labs.github.io/lean4-cuda-nightly/
+	arch = x86_64
+	arch = aarch64
+	license = Apache-2.0
+	depends = cuda>=13
+	depends = gcc-libs
+	depends = glibc
+	depends = gmp
+	depends = libuv
+	depends = openssl
+	optdepends = elan-lean: select the toolchain by name after elan toolchain link
+	options = !strip
+	options = !debug
+	options = staticlibs
+	options = libtool
+	source_x86_64 = https://github.com/ranvier-labs/lean4-cuda-nightly/releases/download/nightly-2026-11-21/lean-4.33.0-cuda-nightly.20261121.ge8f10c9ff5fe-linux.tar.zst
+	sha256sums_x86_64 = 990269ab74d9620c5809b8c22146d2264778bbb18b0c18713bebaa80458dfb82
+	source_aarch64 = https://github.com/ranvier-labs/lean4-cuda-nightly/releases/download/nightly-2026-11-21/lean-4.33.0-cuda-nightly.20261121.ge8f10c9ff5fe-linux_aarch64.tar.zst
+	sha256sums_aarch64 = f34185b97a6a2133b114c7ea9adc8e62446274c453bd1e515f5f071be646eb73
+
+pkgname = lean4-cuda-nightly-bin

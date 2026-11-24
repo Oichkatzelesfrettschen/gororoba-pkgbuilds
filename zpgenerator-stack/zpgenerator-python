@@ -1,0 +1,2 @@
+#!/bin/sh
+exec /opt/zpgenerator-stack/bin/python "$@"

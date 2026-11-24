@@ -1,0 +1,25 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+
+pkgname=python-mthree
+_pkg=mthree
+pkgver=3.0.0
+pkgrel=1
+pkgdesc="Matrix-free measurement (readout) error mitigation for Qiskit"
+arch=('x86_64')
+url="https://github.com/Qiskit/qiskit-addon-mthree"
+license=('Apache-2.0')
+depends=('python' 'python-numpy' 'python-scipy' 'python-qiskit' 'python-psutil' 'python-orjson' 'python-runningman' 'glibc')
+makedepends=('python-build' 'python-installer' 'python-setuptools' 'python-wheel' 'cython')
+source=("https://files.pythonhosted.org/packages/source/m/$_pkg/$_pkg-$pkgver.tar.gz")
+sha256sums=('20f2362aec16f06786e659c85136130197965c109179b47ce3416347a65811c5')
+
+build() {
+	cd "$_pkg-$pkgver"
+	python -m build --wheel --no-isolation --skip-dependency-check
+}
+
+package() {
+	cd "$_pkg-$pkgver"
+	python -m installer --destdir="$pkgdir" dist/*.whl
+	install -Dm644 LICENSE.txt "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}

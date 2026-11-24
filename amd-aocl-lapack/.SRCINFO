@@ -1,0 +1,15 @@
+pkgbase = amd-aocl-lapack
+	pkgdesc = Thin LAPACK and LAPACKE provider links for AMD AOCL libFLAME
+	pkgver = 5.3
+	pkgrel = 1
+	url = https://github.com/amd/libflame
+	arch = x86_64
+	license = BSD-3-Clause
+	depends = amd-aocl-libflame=5.3
+	provides = lapack=3.12.1
+	provides = lapacke=3.12.1
+	conflicts = lapack
+	conflicts = lapacke
+	options = !emptydirs
+
+pkgname = amd-aocl-lapack

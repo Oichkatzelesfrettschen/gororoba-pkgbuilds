@@ -1,0 +1,48 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+# Contributor: Jamison Lahman <jamison+aur@lahman.dev>
+# Contributor: Eirikr
+
+pkgname=annas-mcp
+pkgver=0.1
+pkgrel=5
+pkgdesc="MCP server and CLI tool for searching and downloading documents from Anna's Archive"
+arch=('x86_64' 'aarch64')
+url="https://github.com/iosifache/annas-mcp"
+license=('unknown')
+depends=('glibc')
+makedepends=('go' 'git')
+_commit='c095963ad5d10d33da3c614495246b6ec7f680d4'
+source=("git+https://github.com/iosifache/annas-mcp.git#commit=$_commit"
+        "0001-fix-error-handling-and-slum-resolver.patch")
+sha256sums=('15b2df2f5e6bba6eae548f1238c6f0329fbbc72b970b5a2c0f21ca286f326b00'
+            '1b4c7b0c1648412c0e5def22818e770471c9d63b58e0b1d711a7b94987933290')
+
+prepare() {
+  cd "$pkgname" || exit
+  patch -Np1 -i "$srcdir/0001-fix-error-handling-and-slum-resolver.patch"
+  go mod download -modcacherw
+}
+
+build() {
+  export CGO_CPPFLAGS="${CPPFLAGS}"
+  export CGO_CFLAGS="${CFLAGS}"
+  export CGO_CXXFLAGS="${CXXFLAGS}"
+  export CGO_LDFLAGS="${LDFLAGS}"
+  export GOFLAGS="-buildmode=pie -trimpath -mod=readonly -modcacherw"
+  cd "$pkgname" || exit
+  go build \
+    -ldflags="-s -w" \
+    -o "$pkgname" \
+    ./cmd/annas-mcp
+}
+
+check() {
+  cd "$pkgname" || exit
+  go test -v ./...
+}
+
+package() {
+  cd "$pkgname" || exit
+  install -Dm 755 "$pkgname" -t "$pkgdir/usr/bin"
+  install -Dm 644 README.md -t "$pkgdir/usr/share/doc/$pkgname"
+}

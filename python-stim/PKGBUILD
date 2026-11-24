@@ -1,0 +1,38 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+
+pkgname=python-stim
+_pkg=stim
+pkgver=1.16.0
+pkgrel=1
+_pybind11=2.11.1
+pkgdesc="Fast stabilizer circuit simulator and sampler"
+arch=('x86_64')
+url="https://github.com/quantumlib/Stim"
+license=('Apache-2.0')
+depends=('python' 'python-numpy' 'gcc-libs' 'glibc')
+makedepends=('python-build' 'python-installer' 'python-setuptools' 'python-wheel')
+# The sources pin pybind11~=2.11.1: pybind11 3 deduces conflicting lambda
+# return types in tableau_simulator.pybind.cc. The pinned pybind11 wheel
+# carries the headers and get_include() the build imports.
+source=("https://files.pythonhosted.org/packages/source/s/$_pkg/$_pkg-$pkgver.tar.gz"
+        "https://files.pythonhosted.org/packages/06/55/9f73c32dda93fa4f539fafa268f9504e83c489f460c380371d94296126cd/pybind11-$_pybind11-py3-none-any.whl")
+noextract=("pybind11-$_pybind11-py3-none-any.whl")
+sha256sums=('9092a996429dcf616d8d4ca01fec886b7b310caf9425a39fcfe499005636bd52'
+            '33cdd02a6453380dd71cc70357ce388ad1ee8d32bd0e38fc22b273d050aa29b3')
+
+prepare() {
+	rm -rf pybind11-pinned
+	mkdir pybind11-pinned
+	bsdtar -xf "pybind11-$_pybind11-py3-none-any.whl" -C pybind11-pinned
+}
+
+build() {
+	cd "$_pkg-$pkgver"
+	PYTHONPATH="$srcdir/pybind11-pinned" python -m build --wheel --no-isolation --skip-dependency-check
+}
+
+package() {
+	cd "$_pkg-$pkgver"
+	python -m installer --destdir="$pkgdir" dist/*.whl
+	install -Dm644 LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}

@@ -1,0 +1,25 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+
+pkgname=python-galgebra
+_pkg=galgebra
+pkgver=0.6.0
+pkgrel=1
+pkgdesc="Symbolic geometric algebra and calculus on SymPy"
+arch=('any')
+url="https://github.com/pygae/galgebra"
+license=('BSD-3-Clause')
+depends=('python' 'python-sympy')
+makedepends=('python-build' 'python-installer' 'python-setuptools' 'python-wheel')
+source=("https://files.pythonhosted.org/packages/source/g/$_pkg/$_pkg-$pkgver.tar.gz")
+sha256sums=('2e8db0172286bcb7ff6d37c4d7e99476ffe178570dea78a2345d34cc78da10f1')
+
+build() {
+	cd "$_pkg-$pkgver"
+	python -m build --wheel --no-isolation
+}
+
+package() {
+	cd "$_pkg-$pkgver"
+	python -m installer --destdir="$pkgdir" dist/*.whl
+	install -Dm644 LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}

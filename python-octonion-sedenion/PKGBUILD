@@ -1,0 +1,21 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+
+pkgname=python-octonion-sedenion
+_pkg=octonion_sedenion
+pkgver=1.0.0
+pkgrel=1
+pkgdesc="Octonion and sedenion classes built on numpy-quaternion (module Octonion_Sedenion)"
+arch=('any')
+url="https://pypi.org/project/Octonion-Sedenion/"
+# The wheel carries no license file or license metadata.
+license=('LicenseRef-unspecified')
+depends=('python' 'python-numpy' 'python-numpy-quaternion')
+makedepends=('python-installer')
+# PyPI publishes only this wheel; no sdist exists.
+source=("https://files.pythonhosted.org/packages/b2/57/92944779eda89a8adf6ba3284df0e15793a7494a14e83a5b5532c3d2dea0/$_pkg-$pkgver-py3-none-any.whl")
+noextract=("$_pkg-$pkgver-py3-none-any.whl")
+sha256sums=('365374433649809b50c542b28cc60ec8433cfdd61d19b90c233ec631bb5cf00e')
+
+package() {
+	python -m installer --destdir="$pkgdir" "$_pkg-$pkgver-py3-none-any.whl"
+}

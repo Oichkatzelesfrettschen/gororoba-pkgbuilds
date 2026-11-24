@@ -1,0 +1,26 @@
+pkgbase = python-awswrangler
+	pkgdesc = Pandas interfaces for AWS data services
+	pkgver = 3.18.0
+	pkgrel = 1
+	url = https://github.com/aws/aws-sdk-pandas
+	arch = any
+	license = Apache-2.0
+	makedepends = python-installer
+	depends = python
+	depends = python-boto3
+	depends = python-botocore
+	depends = python-numpy
+	depends = python-packaging
+	depends = python-pandas
+	depends = python-pyarrow
+	depends = python-setuptools
+	depends = python-typing_extensions
+	optdepends = python-opensearch: OpenSearch queries
+	optdepends = python-requests-aws4auth: signed OpenSearch requests
+	optdepends = python-jsonpath-ng: OpenSearch response paths (jsonpath-ng>=1.5.3,<2)
+	optdepends = python-redshift-connector: Redshift unload and copy
+	noextract = awswrangler-3.18.0-py3-none-any.whl
+	source = awswrangler-3.18.0-py3-none-any.whl::https://files.pythonhosted.org/packages/6b/59/fd437d30b8c51aefc1f9f8db09fea28ad22d503fc748edf1c4b803a96199/awswrangler-3.18.0-py3-none-any.whl
+	sha256sums = 0c40bd6ab2681fdd51fdc96e6c66a221e8ea96ea2bddafcf96ab6fe6d59c6be5
+
+pkgname = python-awswrangler

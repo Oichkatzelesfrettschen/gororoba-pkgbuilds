@@ -1,0 +1,26 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+
+pkgname=python-pyoctonion
+_pkg=pyoctonion
+pkgver=3.12
+pkgrel=1
+pkgdesc="Octonion number class on numpy, sympy and pyquaternion"
+arch=('any')
+url="https://pypi.org/project/pyoctonion/"
+# The sdist carries no license file or license metadata.
+license=('LicenseRef-unspecified')
+# Pyoctonion.py imports pyquaternion, which the package metadata omits.
+depends=('python' 'python-numpy' 'python-sympy' 'python-pyquaternion')
+makedepends=('python-build' 'python-installer' 'python-setuptools' 'python-wheel')
+source=("https://files.pythonhosted.org/packages/source/p/$_pkg/$_pkg-$pkgver.tar.gz")
+sha256sums=('a0ed5c58dc0f19368cc794eb076403b48a7cc6e35cf0a8bfe1e45f7d6b906d0c')
+
+build() {
+	cd "$_pkg-$pkgver"
+	python -m build --wheel --no-isolation
+}
+
+package() {
+	cd "$_pkg-$pkgver"
+	python -m installer --destdir="$pkgdir" dist/*.whl
+}

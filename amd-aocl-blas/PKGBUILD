@@ -1,0 +1,34 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+
+pkgname=amd-aocl-blas
+pkgver=5.3
+pkgrel=1
+pkgdesc='Thin BLAS and CBLAS provider links for AMD AOCL BLIS'
+arch=('x86_64')
+url='https://github.com/amd/blis'
+license=('BSD-3-Clause')
+depends=("amd-aocl-blis=${pkgver}")
+provides=('blas=3.12.1' 'cblas=3.12.1')
+conflicts=('blas' 'cblas')
+options=('!emptydirs')
+
+package() {
+    install -d \
+        "${pkgdir}/usr/lib" \
+        "${pkgdir}/usr/lib/pkgconfig" \
+        "${pkgdir}/usr/share/licenses/${pkgname}"
+
+    # Generic BLAS ownership is separated from amd-aocl-blis so users can
+    # install the implementation without replacing the system provider.
+    ln -s libblis-mt.so "${pkgdir}/usr/lib/libblas.so"
+    ln -s libblis-mt.so "${pkgdir}/usr/lib/libblas.so.3"
+    ln -s libblis-mt.so "${pkgdir}/usr/lib/libcblas.so"
+    ln -s libblis-mt.so "${pkgdir}/usr/lib/libcblas.so.3"
+    ln -s blis-mt.pc "${pkgdir}/usr/lib/pkgconfig/blas.pc"
+    ln -s blis-mt.pc "${pkgdir}/usr/lib/pkgconfig/cblas.pc"
+
+    printf '%s\n' \
+        "This package installs provider links for amd-aocl-blis." \
+        "The implementation license is installed by amd-aocl-blis." \
+        > "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
+}

@@ -1,0 +1,32 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+# shellcheck shell=bash disable=SC2034,SC2154
+
+# aws-cdk-lib ships a different aws_cdk/cloud_assembly_schema/__init__.py.
+# pip installs this package first and the library overwrites that one file.
+# The rest of this wheel, including _jsii, does not overlap.
+
+pkgname=python-aws-cdk-cloud-assembly-schema
+pkgver=55.7.0
+pkgrel=1
+pkgdesc='Cloud assembly schema for the AWS CDK'
+arch=('any')
+url='https://github.com/aws/aws-cdk'
+license=('Apache-2.0')
+depends=('python' 'python-jsii>=1.142' 'python-jsii<2' 'python-publication')
+makedepends=('python-installer')
+_wheel='aws_cdk_cloud_assembly_schema-55.7.0-py3-none-any.whl'
+source=("$_wheel::https://files.pythonhosted.org/packages/22/4b/f22cf83c52c701a4c4b5c210b86e2778ea2f53673594441d0961dddd1dfb/aws_cdk_cloud_assembly_schema-55.7.0-py3-none-any.whl")
+noextract=("$_wheel")
+sha256sums=('f068b382f7d5ce1b0258a03874e79e4f5a38482955cdf0773be110dbdb73bd9c')
+
+package() {
+	local _sp _record
+	python -m installer --destdir="$pkgdir" "$_wheel"
+	_sp="$pkgdir$(python -c 'import sysconfig; print(sysconfig.get_path("purelib"))')"
+	rm -f "${_sp}/aws_cdk/cloud_assembly_schema/__init__.py"
+	rm -rf "${_sp}/aws_cdk/cloud_assembly_schema/__pycache__"
+	for _record in "${_sp}"/aws_cdk_cloud_assembly_schema-*.dist-info/RECORD; do
+		grep -v '^aws_cdk/cloud_assembly_schema/__init__.py,' "${_record}" > "${_record}.filtered"
+		mv "${_record}.filtered" "${_record}"
+	done
+}

@@ -1,0 +1,25 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+
+pkgname=python-qcog
+_name=qcog
+pkgver=0.1.0
+pkgrel=1
+pkgdesc="Simulation, explanation and visualization of small Qiskit circuits"
+arch=('any')
+url="https://github.com/WileQ/QCog"
+license=('MIT')
+depends=('python' 'python-numpy' 'python-scipy' 'python-pandas' 'python-matplotlib' 'python-qiskit' 'python-qiskit-aer')
+makedepends=('python-build' 'python-installer' 'python-setuptools' 'python-wheel')
+source=("https://files.pythonhosted.org/packages/source/${_name::1}/$_name/$_name-$pkgver.tar.gz")
+b2sums=('8f94481264e23d09ad434fa05cb7ec9e62deb600e17425b80e1497d5a282509043e15a4e68d9057825e5c229ea233f2a1213bf2f36040939195b408625e7e53e')
+
+build() {
+	cd "$_name-$pkgver"
+	python -m build --wheel --no-isolation
+}
+
+package() {
+	cd "$_name-$pkgver"
+	python -m installer --destdir="$pkgdir" dist/*.whl
+	install -Dm644 LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}

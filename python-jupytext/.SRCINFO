@@ -1,0 +1,19 @@
+pkgbase = python-jupytext
+	pkgdesc = Jupyter notebooks as Markdown documents, Julia, Python or R scripts
+	pkgver = 1.19.7
+	pkgrel = 1
+	url = https://github.com/mwouts/jupytext
+	arch = any
+	license = MIT
+	makedepends = python-installer
+	depends = python
+	depends = jupyter-nbformat
+	depends = python-markdown-it-py
+	depends = python-mdit_py_plugins
+	depends = python-packaging
+	depends = python-yaml
+	noextract = jupytext-1.19.7-py3-none-any.whl
+	source = https://files.pythonhosted.org/packages/bd/39/91092aadbcf43fb137492134f2509279355f826954304f9e8ef15c41e78c/jupytext-1.19.7-py3-none-any.whl
+	sha256sums = bbd4724f403841b4f3c439b64fcfb0a674b874e0e0ae02f2a23b7ba77382ada2
+
+pkgname = python-jupytext

@@ -1,0 +1,106 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+_pkgname=qiskit
+pkgname=python-${_pkgname}
+pkgver=2.6.2
+pkgrel=2
+epoch=1
+pkgdesc="An open-source SDK for working with (IBM) quantum computers"
+arch=(x86_64)
+url=https://github.com/Qiskit/qiskit
+license=(Apache-2.0)
+conflicts=(python-qiskit-terra)
+depends=(
+    python-dill
+    python-numpy
+    python-rustworkx
+    python-scipy
+    python-stevedore
+    python-typing_extensions
+)
+optdepends=(
+    'ipython: interactivity'
+    'python-constraint: support for handling CSPs (Constraint Solving Problems)'
+    'python-cvxpy: convex optimization problems'
+    'python-matplotlib: plotting support'
+    'python-pillow: image support'
+    "python-pydot: Graphviz's Dot support"
+    'python-pylatexenc: LaTeX support emoji selector'
+    'python-qiskit-aer: high performance simulator for quantum circuits'
+    'python-qiskit-experiments: tools for building, running, and analysis of experiments on noisy quantum computers'
+    'python-qiskit-finance: stock/securities problems, portfolio optimizations and finance experiments'
+    'python-qiskit-machine-learning: sample datasets and quantum classification algorithms'
+    'python-qiskit-nature: ground state energy computations, excited states and dipole moments of molecules'
+    'python-qiskit-optimization: quantum optimization algorithms'
+    'python-qiskit-qasm3-import: import OpenQASM 3 files'
+    'python-scikit-learn: machine learning and data mining'
+    'python-seaborn: statistical data visualization'
+    'python-z3-solver: theorem prover'
+)
+makedepends=(
+    cargo
+    cbindgen
+    cmake
+    git
+    python-build
+    python-installer
+    python-setuptools
+    python-setuptools-rust
+    python-wheel
+)
+checkdepends=(
+    ipython
+    python-ddt
+    python-stestr
+)
+provides=(libqiskit.so)
+source=($_pkgname::git+https://github.com/Qiskit/$_pkgname#tag=$pkgver)
+b2sums=('216367d161083b5910fc98ed5d81b3522a5940b0d55bc294809f013c7f248e151bbe422fdba9ee7269a40cb818bec20fea158c8786eeeaf5a1820f55d1bcc495')
+
+build() {
+    cd $_pkgname
+    # Python wheel package
+    export CARGO_TARGET_DIR=target
+    python -m build --wheel --no-isolation
+    # C shared library
+    make c
+}
+
+check() {
+    cd $_pkgname
+    # Python unit tests
+    local python_version=$(python -c 'import sys; print(".".join(map(str, sys.version_info[:2])))')
+    python -m installer --destdir=../test_dir dist/*.whl
+    rm -rf qiskit
+    # unittest's assertWarns looks up __warningregistry__ on every loaded module, and mpmath 1.4's deprecated
+    # shim modules (mpmath.rational, mpmath.math2) answer that lookup through a __getattr__ that emits a
+    # DeprecationWarning, which qiskit's test base turns into an error in whichever test runs the lookup.
+    # A real __warningregistry__ attribute on the two shims ends the lookup before their __getattr__, for
+    # the test run only; without it 24 of 65,043 tests fail on that lookup alone.
+    mkdir -p ../test_site
+    cat > ../test_site/sitecustomize.py <<'SITE'
+import importlib
+for name in ("mpmath.rational", "mpmath.math2"):
+    try:
+        importlib.import_module(name).__dict__.setdefault("__warningregistry__", {})
+    except ImportError:
+        pass
+SITE
+    PYTHONPATH="$PWD/../test_site:$PWD/../test_dir/usr/lib/python$python_version/site-packages" \
+    stestr run -d test/python -E "test_equivalence_draw"
+    # Test C library
+    make ctest
+}
+
+package() {
+    cd $_pkgname
+    python -m installer --destdir="$pkgdir" dist/*.whl
+    install -Dm755 dist/c/lib/libqiskit.so "$pkgdir"/usr/lib/libqiskit.so
+    install -Dm644 dist/c/include/qiskit.h "$pkgdir"/usr/include/qiskit.h
+    install -Dm644 dist/c/include/qiskit/attributes.h "$pkgdir"/usr/include/qiskit/attributes.h
+    install -Dm644 dist/c/include/qiskit/complex.h "$pkgdir"/usr/include/qiskit/complex.h
+    install -Dm644 dist/c/include/qiskit/funcs.h "$pkgdir"/usr/include/qiskit/funcs.h
+    install -Dm644 dist/c/include/qiskit/funcs_py.h "$pkgdir"/usr/include/qiskit/funcs_py.h
+    install -Dm644 dist/c/include/qiskit/types.h "$pkgdir"/usr/include/qiskit/types.h
+    install -Dm644 dist/c/include/qiskit/version.h "$pkgdir"/usr/include/qiskit/version.h
+    install -Dm644 LICENSE.txt "$pkgdir"/usr/share/licenses/$pkgname/LICENSE
+}

@@ -1,0 +1,54 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+
+# Origin Quantum pyqpanda3 SDK as one self-contained Python 3.13 environment.
+# pyqpanda3 0.5.1 is a compiled cp313 manylinux wheel that declares mypy,
+# Cython and setuptools as runtime dependencies; the stack keeps them and the
+# wheel bundled libraries out of the system site-packages under /opt.
+# The SDK default QCloudService URL is cleartext
+# http://pyqanda-admin.qpanda.cn; callers pass https://pyqanda-admin.qpanda.cn.
+pkgname=originquantum-stack
+pkgver=0.5.1
+pkgrel=1
+pkgdesc="Origin Quantum pyqpanda3 0.5.1 as a hash-locked Python 3.13 environment"
+arch=('x86_64')
+url="https://pypi.org/project/pyqpanda3/"
+license=('Apache-2.0')
+depends=(python313 gcc-libs glibc)
+_prefix=/opt/$pkgname
+source=(
+	requirements.in
+	requirements.lock
+	test_originquantum_stack.py
+	originquantum-python
+)
+b2sums=('75c4d50d10b788bc74754a2860620f1863a04940435aef4cef9c38431a6c6f7afd51a61dc7f4fec1b338d19f0cf50363fefdc521d641e0d1cbaefd2bb420a083'
+        '369635a9a78e4cbf8b32f9b3e814a1d1c67e4ddc28d87d2315057c18064271c388a712cd96fe82b9ea31149e7f6f6ee42564cd5290fcddf28ec95bf04dd24438'
+        '3776c90dfcefa6299ddbe1ed3786d99e6c05546b605574247a36a9e94fa954e95444ff1bb22cbe5ba0b3ccfe8a461845e90e449a62dd29d1698e3bbf0979b154'
+        '7bfef11b9a15d714664a7803e28140bd70ecab753d38c612efff4a548ffd1bdec6afa90aa1676a13af6bdf0c24fe7ae168cdc02f846664f50ebbaca6014faa56')
+
+build() {
+	/usr/bin/python3.13 -m venv --clear "$srcdir/stack"
+	"$srcdir/stack/bin/python" -m pip install -q --no-cache-dir --upgrade pip==25.3
+	# --require-hashes binds every distribution to the lock, --only-binary
+	# keeps the install to published wheels, and --no-deps keeps the
+	# resolved set equal to the lock.
+	"$srcdir/stack/bin/python" -m pip install -q --no-cache-dir --require-hashes --no-deps --only-binary :all: \
+		-r "$srcdir/requirements.lock"
+}
+
+check() {
+	cd "$srcdir"
+	"$srcdir/stack/bin/python" -P -m pytest -q -p no:cacheprovider test_originquantum_stack.py
+}
+
+package() {
+	install -d "$pkgdir$_prefix"
+	cp -a "$srcdir/stack/." "$pkgdir$_prefix/"
+	# Entry-point shebangs and activate scripts carry the build path.
+	grep -rlI --null "$srcdir/stack" "$pkgdir$_prefix/bin" "$pkgdir$_prefix/pyvenv.cfg" |
+		xargs -0 -r sed -i "s|$srcdir/stack|$_prefix|g"
+	find "$pkgdir$_prefix" -name __pycache__ -prune -exec rm -r {} +
+	"$pkgdir$_prefix/bin/python" -m compileall -q -j0 -d "$_prefix/lib" "$pkgdir$_prefix/lib" >/dev/null
+	install -Dm644 requirements.in requirements.lock test_originquantum_stack.py -t "$pkgdir/usr/share/$pkgname/"
+	install -Dm755 originquantum-python "$pkgdir/usr/bin/originquantum-python"
+}

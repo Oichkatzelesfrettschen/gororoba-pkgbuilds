@@ -1,0 +1,16 @@
+pkgbase = python-pytest-responses
+	pkgdesc = pytest plugin that activates the responses HTTP mock for every test (perceval-quandela test requirement)
+	pkgver = 0.6.0
+	pkgrel = 1
+	url = https://github.com/getsentry/pytest-responses
+	arch = any
+	license = Apache-2.0
+	makedepends = python-installer
+	depends = python
+	depends = python-pytest
+	depends = python-responses
+	noextract = pytest_responses-0.6.0-py3-none-any.whl
+	source = https://files.pythonhosted.org/packages/ba/e7/b4712a52ac5a4a87186a57bc974b3eadd5b7253a413edd41ff3f966dc2ce/pytest_responses-0.6.0-py3-none-any.whl
+	sha256sums = e94717b5235a2e1f66b27bcfc895dfa6705e79678e5c05eae9bb06fcf95a0182
+
+pkgname = python-pytest-responses

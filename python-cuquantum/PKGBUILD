@@ -1,0 +1,74 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+# cuQuantum Python bindings built from the upstream source tag against the
+# system cuquantum and cuda packages. setup.py declares the pip library wheels
+# (custatevec-cu13 and siblings); those libraries come from the cuquantum
+# package here, so prepare() drops them from install_requires, names the
+# system cupy distribution, and the bindings
+# resolve libcustatevec.so.1 and its siblings from /usr/lib through
+# cuda-pathfinder's system search.
+_pkgname=cuQuantum
+pkgname=python-cuquantum
+pkgver=26.11.0
+pkgrel=1
+pkgdesc="NVIDIA cuQuantum Python bindings (cuStateVec, cuTensorNet, cuDensityMat, cuPauliProp, cuStabilizer) for CUDA 13"
+arch=(x86_64)
+url="https://github.com/NVIDIA/cuQuantum"
+license=(BSD-3-Clause)
+depends=(
+    python
+    python-numpy
+    'cuda>=13'
+    'cuda<14'
+    'cuquantum>=26.09'
+    python-cupy
+    python-cuda-bindings
+    python-cuda-pathfinder
+    python-nvmath
+)
+makedepends=(
+    cython
+    python-build
+    python-installer
+    python-setuptools
+    python-wheel
+    python-packaging
+)
+optdepends=(
+    'python-opt-einsum: einsum path finding for cuquantum.tensornet'
+    'python-qiskit: circuit conversion in cuquantum.tensornet.CircuitToEinsum'
+    'python-cirq: circuit conversion in cuquantum.tensornet.CircuitToEinsum'
+)
+source=("$_pkgname-$pkgver.tar.gz::$url/archive/refs/tags/v$pkgver.tar.gz")
+sha256sums=('a062ba0d3e101de5b8e352bcd46096b22d1eb0d0c2c4abcd777405416a8c0179')
+
+prepare() {
+    cd "$_pkgname-$pkgver/python"
+    sed -i "/f'cu\(statevec\|tensornet\|densitymat\|pauliprop\|stabilizer\)-cu{utils.cuda_major_ver}/d" setup.py
+    # python-cupy installs the distribution "cupy"; cupy-cuda13x names the pip wheel.
+    sed -i "s/'cupy-cuda13x>=13.6.0'/'cupy>=13.6.0'/" setup.py
+}
+
+build() {
+    cd "$_pkgname-$pkgver/python"
+    export CUDA_PATH=/opt/cuda
+    python -m build --wheel --no-isolation
+}
+
+check() {
+    cd "$srcdir"
+    python -m installer --destdir=test_dir "$_pkgname-$pkgver"/python/dist/*.whl
+    local site
+    site=$(python -c 'import sysconfig; print(sysconfig.get_path("purelib"))')
+    PYTHONPATH="$srcdir/test_dir$site" python -P -c '
+import cuquantum
+from cuquantum.bindings import custatevec as cusv, cutensornet as cutn
+h = cusv.create(); print("custatevec", cusv.get_version()); cusv.destroy(h)
+print("cutensornet", cutn.get_version())
+print("cuquantum", cuquantum.__version__)'
+}
+
+package() {
+    cd "$_pkgname-$pkgver/python"
+    python -m installer --destdir="$pkgdir" dist/*.whl
+    install -Dm644 LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}

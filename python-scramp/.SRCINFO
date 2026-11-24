@@ -1,0 +1,15 @@
+pkgbase = python-scramp
+	pkgdesc = SASL SCRAM authentication protocol
+	pkgver = 1.4.9
+	pkgrel = 1
+	url = https://codeberg.org/tlocke/scramp
+	arch = any
+	license = MIT-0
+	makedepends = python-installer
+	depends = python
+	depends = python-asn1crypto
+	noextract = scramp-1.4.9-py3-none-any.whl
+	source = scramp-1.4.9-py3-none-any.whl::https://files.pythonhosted.org/packages/70/25/d563dc2822039e9283a106a3cc948149c46d14d85d96f434722000951267/scramp-1.4.9-py3-none-any.whl
+	sha256sums = e8640d915ab4109085b20c464bd7fa664a777fd7f361f90cd2af36e978839614
+
+pkgname = python-scramp

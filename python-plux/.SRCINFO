@@ -1,0 +1,14 @@
+pkgbase = python-plux
+	pkgdesc = Dynamic plugin loader used by LocalStack
+	pkgver = 1.16.0
+	pkgrel = 1
+	url = https://github.com/localstack/plux
+	arch = any
+	license = Apache-2.0
+	makedepends = python-installer
+	depends = python
+	noextract = plux-1.16.0-py3-none-any.whl
+	source = plux-1.16.0-py3-none-any.whl::https://files.pythonhosted.org/packages/ea/40/06cf1264bec1938cc94013dde7c120c0bcf6ffbaed9b4899f8db6202c8ff/plux-1.16.0-py3-none-any.whl
+	sha256sums = d31a46809f6160278d8726a9e2e2b0eda5fa959fe489ec0d65951c123ed37534
+
+pkgname = python-plux

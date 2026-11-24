@@ -1,0 +1,15 @@
+pkgbase = python-amazon-braket-schemas
+	pkgdesc = JSON schemas for the Amazon Braket SDK
+	pkgver = 1.33.0.post0
+	pkgrel = 1
+	url = https://github.com/amazon-braket/amazon-braket-schemas-python
+	arch = any
+	license = Apache-2.0
+	makedepends = python-installer
+	depends = python
+	depends = python-pydantic
+	noextract = amazon_braket_schemas-1.33.0.post0-py3-none-any.whl
+	source = amazon_braket_schemas-1.33.0.post0-py3-none-any.whl::https://files.pythonhosted.org/packages/b6/c8/4e7c603a6a7883e53e1099eab329ee8c837c545264b6913cbb637706374e/amazon_braket_schemas-1.33.0.post0-py3-none-any.whl
+	sha256sums = 026fa1670cd46cf5b6ea9369464c1a8a2f6315e8fca25c3b85bf292a3597cc7d
+
+pkgname = python-amazon-braket-schemas

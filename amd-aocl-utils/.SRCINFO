@@ -1,0 +1,22 @@
+pkgbase = amd-aocl-utils
+	pkgdesc = AMD AOCL CPU feature and dispatch utility library
+	pkgver = 5.3
+	pkgrel = 1
+	url = https://github.com/amd/aocl-utils
+	arch = x86_64
+	license = BSD-3-Clause
+	makedepends = cmake
+	makedepends = ninja
+	depends = gcc-libs
+	depends = glibc
+	provides = aocl-utils=5.3
+	provides = aocl-utils
+	conflicts = aocl-utils
+	conflicts = aocl-utils-aocc
+	options = staticlibs
+	options = !emptydirs
+	options = !lto
+	source = amd-aocl-utils-5.3.tar.gz::https://github.com/amd/aocl-utils/archive/refs/tags/5.3.tar.gz
+	sha256sums = 0e29afbbda3b81528380d2dbf7dae1ed6825d8c69e0abfcce53cc6cf90430e69
+
+pkgname = amd-aocl-utils

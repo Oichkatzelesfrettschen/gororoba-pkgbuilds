@@ -1,0 +1,21 @@
+pkgbase = zpgenerator-stack
+	pkgdesc = Quandela's ZPGenerator photonic source simulator on its pinned qutip 4.7.3 as a hash-locked Python 3.11 environment
+	pkgver = 0.2.0
+	pkgrel = 1
+	url = https://github.com/Quandela/ZPGenerator
+	arch = x86_64
+	license = MIT
+	makedepends = git
+	depends = python311
+	depends = gcc-libs
+	depends = glibc
+	source = ZPGenerator::git+https://github.com/Quandela/ZPGenerator.git#commit=0b1f5502ff2b2607d6481492994ccd481597daba
+	source = requirements.in
+	source = requirements.lock
+	source = zpgenerator-python
+	b2sums = 76a49a9a9b233d4d40d303791b89a7498581b3b661aaee640d7e0da9b92c170c8d9a7d691b3b3c19bbec854eaa272f327188d6576e35a8b3dc4cdb72569585b4
+	b2sums = 6e3a70a2a1ca67bb788a8ee6a0c7c5ecb44a2f111645c1380f736c962d015f605a6d03149217347c79ca21cb25014ff4f2d0f0193bdfee28d2a96c33685aaf9a
+	b2sums = e006a0b9d250e658a195513a6c089853a06937c5f2891f064883161ded724b35fce19e2b05a9fc56cbefd5a98013fecf9ff4058caec7638584422daaa0f5dcc6
+	b2sums = e9aa9cf8c451a33dd00aabb4d7314f3aadb6daf5645b5033d6140ab5fdce60390d29c7aadfc8f6f25cd960369822ebf6eb7bc0a51596330ec5c5e2083461f54d
+
+pkgname = zpgenerator-stack

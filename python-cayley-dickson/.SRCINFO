@@ -1,0 +1,18 @@
+pkgbase = python-cayley-dickson
+	pkgdesc = Cayley-Dickson algebra process in Python
+	pkgver = 0.r26.abf96e7
+	pkgrel = 2
+	url = https://github.com/thoppe/Cayley-Dickson
+	arch = any
+	license = LicenseRef-All-Rights-Reserved
+	makedepends = python-build
+	makedepends = python-installer
+	makedepends = python-setuptools
+	makedepends = python-wheel
+	depends = python
+	depends = python-numpy
+	depends = python-pandas
+	source = python-cayley-dickson-0.r26.abf96e7.tar.gz::https://github.com/thoppe/Cayley-Dickson/archive/abf96e707e2af10c0f66480ebb00205d3d159e54.tar.gz
+	sha256sums = 446b43f2c955c563f79660045a728b1c96d7c3ee4f7fbc0ae1ae109e90465164
+
+pkgname = python-cayley-dickson

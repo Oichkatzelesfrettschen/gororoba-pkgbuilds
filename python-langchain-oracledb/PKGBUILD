@@ -1,0 +1,26 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+
+pkgname=python-langchain-oracledb
+_pkg=langchain-oracledb
+pkgver=1.6.0
+pkgrel=1
+_srcdir=langchain_oracledb-$pkgver
+pkgdesc="LangChain integration for Oracle Database vector search"
+arch=('any')
+url="https://github.com/oracle/langchain-oracle"
+license=('UPL-1.0')
+depends=('python' 'python-langchain-core' 'python-langchain-text-splitters' 'python-numpy' 'python-oracledb' 'python-pydantic')
+makedepends=('python-build' 'python-installer' 'python-poetry-core')
+source=("https://files.pythonhosted.org/packages/55/f9/2c5f10b7cacab51f93fd6505bc8b6c66a72d7e89d3a7737fb532d8f962e9/langchain_oracledb-1.6.0.tar.gz")
+sha256sums=('55d1cd81121bfaefb35baae4f81c8029b13acf81ccfd42ca5e56ef34db2f83c2')
+
+build() {
+	cd "$_srcdir"
+	python -m build --wheel --no-isolation
+}
+
+package() {
+	cd "$_srcdir"
+	python -m installer --destdir="$pkgdir" dist/*.whl
+	find . -maxdepth 1 -iname 'LICENSE*' -exec install -Dm644 {} "$pkgdir/usr/share/licenses/$pkgname/" \;
+}

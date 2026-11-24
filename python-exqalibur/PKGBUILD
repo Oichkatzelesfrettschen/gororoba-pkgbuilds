@@ -1,0 +1,25 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+
+pkgname=python-exqalibur
+_pkg=exqalibur
+pkgver=1.4.2
+pkgrel=1
+pkgdesc="Quandela's compiled photonic simulation backend for Perceval"
+arch=('x86_64')
+url="https://pypi.org/project/exqalibur/"
+# CC BY-NC-ND 4.0: the wheel installs unmodified, with no derived build.
+license=('LicenseRef-CC-BY-NC-ND-4.0')
+# The wheel metadata pins protobuf==7.34.1; generated protobuf code runs on a
+# newer runtime of the same major version, which python-protobuf supplies.
+depends=('python' 'python-protobuf')
+makedepends=('python-installer')
+# PyPI publishes binary wheels only; no sdist or public source exists.
+_whl="$_pkg-$pkgver-cp314-cp314-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl"
+source=("https://files.pythonhosted.org/packages/c5/d0/f88fef26a99ffdfa0140b742b7ffeb38c2c21711fdc6bc40f64b5aa8b3d4/$_whl")
+noextract=("$_whl")
+sha256sums=('d1cec30be1aa59a17722299c3e065912f00b5bac036e3bdce18012dee4d5a4f7')
+options=('!strip' '!debug')
+
+package() {
+	python -m installer --destdir="$pkgdir" "$_whl"
+}

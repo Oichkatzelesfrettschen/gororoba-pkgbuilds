@@ -1,0 +1,26 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+
+pkgname=python-quantum-al
+_name=quantum_al
+pkgver=0.2.0
+pkgrel=1
+pkgdesc="Correlation-aware active learning for materials discovery with optional quantum kernels"
+arch=('any')
+url="https://github.com/arnavk23/quantum_al"
+license=('MIT')
+depends=('python' 'python-numpy' 'python-scipy' 'python-scikit-learn')
+optdepends=('python-qiskit: quantum kernels' 'python-qiskit-aer: Aer estimator')
+makedepends=('python-build' 'python-installer' 'python-setuptools' 'python-wheel')
+source=("https://files.pythonhosted.org/packages/source/${_name::1}/$_name/$_name-$pkgver.tar.gz")
+b2sums=('b2c70481cba24c12c7602598f827ea227e039970831ff35e81047304a6f1e5a0e5d4525a98656d5149a977efaec84a7bf358a92db3d63052049495c0f9a70bcd')
+
+build() {
+	cd "$_name-$pkgver"
+	python -m build --wheel --no-isolation
+}
+
+package() {
+	cd "$_name-$pkgver"
+	python -m installer --destdir="$pkgdir" dist/*.whl
+	install -Dm644 LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}

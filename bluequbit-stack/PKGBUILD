@@ -1,0 +1,53 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+
+# BlueQubit SDK as one self-contained Python 3.13 environment.
+# Every PyPI release of bluequbit is a pre-release (0.19.0b1 is the newest),
+# so the pin is explicit. The stack keeps the beta with its requests~=2.28
+# and python-dateutil~=2.8 caps and the numpy it resolves out of the system
+# site-packages; it lives under /opt with a hash lock.
+pkgname=bluequbit-stack
+pkgver=0.19.0b1
+pkgrel=1
+pkgdesc="BlueQubit Python SDK 0.19.0b1 as a hash-locked Python 3.13 environment"
+arch=('x86_64')
+url="https://app.bluequbit.io/docs"
+license=('Apache-2.0')
+depends=(python313 gcc-libs glibc)
+_prefix=/opt/$pkgname
+source=(
+	requirements.in
+	requirements.lock
+	test_bluequbit_stack.py
+	bluequbit-python
+)
+b2sums=('7278a9472eeea3b47238e72dde369c12a335ad991c5778245139c121fe0448c10fe039712ecdb0963e4bda52495dfb864d40423b94349f9955fc1c8015659059'
+        '07282d416a42cc5e7ef7162741099adff072fca98f199a516b41344c4193e20fe96e936e9a43797a51b0a6082da2de24c4da3e3b029a3d3c8c50f3400de3b677'
+        '6d5d770dd7b4a3d122f95d696634d6873d7a8f71444522963c47fa96d2d0f55bc4931fa17d443a9e0c33a5d23ad1c639cf5c4530d1cd452720feb0d28430e2c3'
+        'cfd52e25c93a633a03644cc7261c9eeb0ff80131f4dfca08330d14151731f0b313db30b325dd26b42482cc2ae19c30668cf5011b9313d4da2f7fd8499ebe1f08')
+
+build() {
+	/usr/bin/python3.13 -m venv --clear "$srcdir/stack"
+	"$srcdir/stack/bin/python" -m pip install -q --no-cache-dir --upgrade pip==25.3
+	# --require-hashes binds every distribution to the lock, --only-binary
+	# keeps the install to published wheels, and --no-deps keeps the
+	# resolved set equal to the lock.
+	"$srcdir/stack/bin/python" -m pip install -q --no-cache-dir --require-hashes --no-deps --only-binary :all: \
+		-r "$srcdir/requirements.lock"
+}
+
+check() {
+	cd "$srcdir"
+	"$srcdir/stack/bin/python" -P -m pytest -q -p no:cacheprovider test_bluequbit_stack.py
+}
+
+package() {
+	install -d "$pkgdir$_prefix"
+	cp -a "$srcdir/stack/." "$pkgdir$_prefix/"
+	# Entry-point shebangs and activate scripts carry the build path.
+	grep -rlI --null "$srcdir/stack" "$pkgdir$_prefix/bin" "$pkgdir$_prefix/pyvenv.cfg" |
+		xargs -0 -r sed -i "s|$srcdir/stack|$_prefix|g"
+	find "$pkgdir$_prefix" -name __pycache__ -prune -exec rm -r {} +
+	"$pkgdir$_prefix/bin/python" -m compileall -q -j0 -d "$_prefix/lib" "$pkgdir$_prefix/lib" >/dev/null
+	install -Dm644 requirements.in requirements.lock test_bluequbit_stack.py -t "$pkgdir/usr/share/$pkgname/"
+	install -Dm755 bluequbit-python "$pkgdir/usr/bin/bluequbit-python"
+}

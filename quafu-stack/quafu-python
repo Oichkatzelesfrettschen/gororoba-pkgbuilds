@@ -1,0 +1,3 @@
+#!/bin/sh
+# Python 3.11 interpreter of the quafu-stack environment.
+exec /opt/quafu-stack/bin/python "$@"

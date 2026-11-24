@@ -1,0 +1,45 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+pkgname=open-webui-stack
+pkgver=0.13.4
+pkgrel=1
+pkgdesc='Open WebUI and compiled frontend in a hash-locked Python 3.11 environment'
+arch=('x86_64')
+url='https://github.com/open-webui/open-webui'
+license=('LicenseRef-Open-WebUI' 'MIT' 'BSD-3-Clause' 'Apache-2.0')
+depends=('python311' 'glibc' 'gcc-libs' 'zlib')
+makedepends=('uv')
+options=('!strip' '!debug')
+_prefix=/opt/$pkgname
+source=('requirements.in' 'requirements.lock' 'open-webui' 'README.md' 'tag-primary-key.patch' 'test_open_webui_stack.py' 'embedding-model.json')
+sha256sums=('53548c5abf84fcdabaed84f60d3521fec1584a74325d7ba84f37241c0d94a96f'
+            '1f34b7a641db96c138f57f090cafbb732cd3295df59e02f237635436c866a736'
+            'b16e8a225811868385d77157beb7018807143a9f41fc859e65cd3263d978b448'
+            '01c94b5751062a20215f87242a492092a70d27b739a40f04c41d31683944126c'
+            '752d590de6b2098c37a1021a20da8ef01e74cde899efb380251a63b160d00c9b'
+            'dea511431e0b581c2ff83fb2405912eb458aa5b879482fef7dd572375a3e2722'
+            '3b1a9339fdda3d89421fd5656c2be76eb2a431598947a5b025652a311a9ad377')
+build() {
+  export PYTHON=/usr/bin/python3.11
+  "$PYTHON" -m venv --clear --without-pip "$srcdir/runtime"
+  uv pip sync --python "$srcdir/runtime/bin/python" --require-hashes --only-binary :all: --link-mode=copy "$srcdir/requirements.lock"
+  patch -Np1 -d "$srcdir/runtime/lib/python3.11/site-packages" -i "$srcdir/tag-primary-key.patch"
+}
+check() {
+  uv pip check --python "$srcdir/runtime/bin/python"
+  export PYTHON="$srcdir/runtime/bin/python"
+  "$PYTHON" -I -W error "$srcdir/test_open_webui_stack.py"
+}
+package() {
+  install -d "$pkgdir$_prefix"
+  cp -a "$srcdir/runtime/." "$pkgdir$_prefix/"
+  find "$pkgdir$_prefix" -type f -name '*.pyc' -delete
+  grep -rlI --null "$srcdir/runtime" "$pkgdir$_prefix/bin" "$pkgdir$_prefix/pyvenv.cfg" |
+    xargs -0 -r sed -i "s|$srcdir/runtime|$_prefix|g"
+  local license_file relative_license
+  while IFS= read -r -d '' license_file; do
+    relative_license="${license_file#"$pkgdir$_prefix/lib/python3.11/site-packages/"}"
+    install -Dm644 "$license_file" "$pkgdir/usr/share/licenses/$pkgname/$relative_license"
+  done < <(find "$pkgdir$_prefix/lib/python3.11/site-packages" -type f \( -iname '*license*' -o -iname 'copying*' \) -print0)
+  install -Dm755 "$srcdir/open-webui" "$pkgdir/usr/bin/open-webui"
+  install -Dm644 "$srcdir/requirements.in" "$srcdir/requirements.lock" "$srcdir/README.md" "$srcdir/embedding-model.json" "$srcdir/test_open_webui_stack.py" -t "$pkgdir/usr/share/$pkgname/"
+}

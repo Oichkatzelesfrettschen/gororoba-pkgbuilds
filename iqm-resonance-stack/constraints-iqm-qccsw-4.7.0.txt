@@ -1,0 +1,10 @@
+iqm-client==36.0.0
+iqm-data-definitions==3.1.0
+iqm-exa-common==29.0.0
+iqm-station-control-client==14.0.0
+iqm-pulse==15.0.0
+iqm-pulla==15.0.0
+iqm-qaoa==3.0.0
+iqm-qubit-selector==1.2.0
+iqm-benchmarks==3.0.0
+iqm-error-reduction-tools==0.3.0

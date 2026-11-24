@@ -1,0 +1,17 @@
+pkgbase = python-aws-cdk-asset-awscli-v1
+	pkgdesc = jsii asset that carries an AWS CLI v1 Lambda layer for the CDK
+	pkgver = 2.2.297
+	pkgrel = 1
+	url = https://github.com/cdklabs/awscdk-asset-awscli
+	arch = any
+	license = Apache-2.0
+	makedepends = python-installer
+	depends = python
+	depends = python-jsii>=1.142
+	depends = python-jsii<2
+	depends = python-publication
+	noextract = aws_cdk_asset_awscli_v1-2.2.297-py3-none-any.whl
+	source = aws_cdk_asset_awscli_v1-2.2.297-py3-none-any.whl::https://files.pythonhosted.org/packages/e2/be/7a8ff0e83b46273172e8e3d01f0bf71fb015960da40d7542460ff7cc54c6/aws_cdk_asset_awscli_v1-2.2.297-py3-none-any.whl
+	sha256sums = 3766e7d9280693db5bf759a0e46033ad9d996c0ccb8e832cee22a6e366e1c85e
+
+pkgname = python-aws-cdk-asset-awscli-v1

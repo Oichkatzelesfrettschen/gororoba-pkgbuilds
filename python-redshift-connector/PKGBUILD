@@ -1,0 +1,23 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+# shellcheck shell=bash disable=SC2034,SC2154
+
+# PyPI 2.2.0 publishes a wheel and no sdist.
+# AUR python-redshift-connector is 2.1.8 and flagged out of date. Do not install it over this recipe.
+
+pkgname=python-redshift-connector
+pkgver=2.2.0
+pkgrel=1
+pkgdesc='Python DB API 2.0 driver for Amazon Redshift'
+arch=('any')
+url='https://github.com/aws/amazon-redshift-python-driver'
+license=('Apache-2.0')
+depends=('python' 'python-scramp>=1.2.0' 'python-scramp<1.5.0' 'python-pytz' 'python-beautifulsoup4' 'python-boto3' 'python-requests' 'python-lxml' 'python-botocore' 'python-packaging' 'python-setuptools')
+makedepends=('python-installer')
+_wheel='redshift_connector-2.2.0-py3-none-any.whl'
+source=("$_wheel::https://files.pythonhosted.org/packages/a3/ed/c88bf5cfd8f752b12b2f64097523196a6f1e67df54b14315d9e381254be1/redshift_connector-2.2.0-py3-none-any.whl")
+noextract=("$_wheel")
+sha256sums=('1f53bf5ff738dba712571fc9a63ec65d27a93c85948f9d14242b31e5e1153883')
+
+package() {
+	python -m installer --destdir="$pkgdir" "$_wheel"
+}

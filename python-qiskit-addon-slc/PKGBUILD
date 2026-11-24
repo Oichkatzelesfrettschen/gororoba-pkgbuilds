@@ -1,0 +1,25 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+
+pkgname=python-qiskit-addon-slc
+_name=qiskit_addon_slc
+pkgver=0.2.0
+pkgrel=1
+pkgdesc="Shaded-lightcone reduction of PEC sampling overhead for Qiskit"
+arch=('x86_64')
+url="https://github.com/Qiskit/qiskit-addon-slc"
+license=('Apache-2.0')
+depends=('python' 'python-matplotlib' 'python-plotly' 'python-qiskit' 'python-pauli-prop' 'python-rustworkx' 'python-samplomatic' 'python-pydot' 'python-pillow' 'python-pylatexenc' 'python-seaborn' 'python-sympy')
+makedepends=('python-build' 'python-installer' 'python-maturin' 'rust')
+source=("https://files.pythonhosted.org/packages/source/${_name::1}/$_name/$_name-$pkgver.tar.gz")
+b2sums=('1620e5759ea2328a4cd9d7d3c3fb40c164f7b9cc0a0bec99027cc1939443c00de4ec658085fccc13bab4edf5a33fda1e203f1b02e3ebf175a04cd326763b3a24')
+
+build() {
+	cd "$_name-$pkgver"
+	python -m build --wheel --no-isolation
+}
+
+package() {
+	cd "$_name-$pkgver"
+	python -m installer --destdir="$pkgdir" dist/*.whl
+	install -Dm644 LICENSE.txt "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}

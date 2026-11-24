@@ -1,0 +1,2 @@
+#!/bin/sh
+exec /opt/qiskit-debugger-stack/bin/python "$@"

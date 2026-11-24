@@ -1,0 +1,25 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+
+pkgname=python-runningman
+_pkg=runningman
+pkgver=2.3.0
+pkgrel=1
+pkgdesc="Qiskit Runtime backend and job wrappers used by mthree"
+arch=('any')
+url="https://pypi.org/project/runningman/"
+license=('Apache-2.0')
+depends=('python' 'python-qiskit-ibm-runtime')
+makedepends=('python-build' 'python-installer' 'python-setuptools' 'python-wheel')
+source=("https://files.pythonhosted.org/packages/source/r/$_pkg/$_pkg-$pkgver.tar.gz")
+sha256sums=('99f98ca2c854363083c5a39d2382667f6eed36a8e1db312d4ff0918f417290d7')
+
+build() {
+	cd "$_pkg-$pkgver"
+	python -m build --wheel --no-isolation --skip-dependency-check
+}
+
+package() {
+	cd "$_pkg-$pkgver"
+	python -m installer --destdir="$pkgdir" dist/*.whl
+	install -Dm644 LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}

@@ -1,0 +1,49 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+
+pkgname=python-splitoct
+_commit=e29e72f805c2b2e15d904e2dc4d0955e02418390
+pkgver=0.16
+pkgrel=1
+pkgdesc="Split octonion algebra in Python with SymPy"
+arch=('any')
+url="https://github.com/EQUINOX24/SplitOct"
+license=('GPL-3.0-or-later')
+depends=('python' 'python-sympy')
+makedepends=('python-build' 'python-installer' 'python-setuptools' 'python-wheel')
+source=("$pkgname-$pkgver.tar.gz::https://github.com/EQUINOX24/SplitOct/archive/$_commit.tar.gz")
+sha256sums=('a192a1d5d9734b31670092be16c19a40b12a79db51ea2cfdfcb1e8a90a6505d6')
+
+prepare() {
+	cd "SplitOct-$_commit"
+	cat > pyproject.toml << 'EOF'
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "SplitOct"
+version = "0.16"
+description = "Split octonion algebra in python with SymPy"
+readme = "README.md"
+license = "GPL-3.0-or-later"
+license-files = ["LICENSE"]
+dependencies = [
+    "sympy",
+]
+
+[tool.setuptools]
+py-modules = ["SplitOct"]
+EOF
+	cp src/SplitOct.py .
+}
+
+build() {
+	cd "SplitOct-$_commit"
+	python -m build --wheel --no-isolation
+}
+
+package() {
+	cd "SplitOct-$_commit"
+	python -m installer --destdir="$pkgdir" dist/*.whl
+	install -Dm644 LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}

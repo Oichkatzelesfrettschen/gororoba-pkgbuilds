@@ -1,0 +1,28 @@
+pkgbase = kaggle-api
+	pkgdesc = Kaggle API command-line client
+	pkgver = 2.2.5
+	pkgrel = 1
+	url = https://github.com/Kaggle/kaggle-api
+	arch = any
+	license = Apache-2.0
+	makedepends = python-build
+	makedepends = python-installer
+	makedepends = python-wheel
+	makedepends = python-hatchling
+	depends = python
+	depends = python-bleach
+	depends = python-certifi>=2026.10.19
+	depends = python-jupytext
+	depends = python-kagglesdk>=0.1.38
+	depends = python-packaging
+	depends = python-protobuf
+	depends = python-dateutil
+	depends = python-dotenv
+	depends = python-slugify
+	depends = python-requests
+	depends = python-tqdm
+	depends = python-urllib3
+	source = https://files.pythonhosted.org/packages/source/k/kaggle/kaggle-2.2.5.tar.gz
+	sha256sums = edb4298fbfddbdfcf020072a8971bd335e247191ebb4ab70ee4c6d30f6ecb9fa
+
+pkgname = kaggle-api

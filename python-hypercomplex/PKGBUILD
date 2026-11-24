@@ -1,0 +1,25 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+
+pkgname=python-hypercomplex
+_pkg=hypercomplex
+pkgver=0.3.4
+pkgrel=1
+pkgdesc="Arbitrary-dimension hypercomplex numbers following the Cayley-Dickson construction"
+arch=('any')
+url="https://github.com/discretegames/hypercomplex"
+license=('MIT')
+depends=('python' 'python-mathdunders')
+makedepends=('python-build' 'python-installer' 'python-setuptools' 'python-wheel')
+source=("https://files.pythonhosted.org/packages/source/h/$_pkg/$_pkg-$pkgver.tar.gz")
+sha256sums=('04241e5d01b3f10e813c70882a2caa9b7dc168f8b921d47156c3d964363f9352')
+
+build() {
+	cd "$_pkg-$pkgver"
+	python -m build --wheel --no-isolation
+}
+
+package() {
+	cd "$_pkg-$pkgver"
+	python -m installer --destdir="$pkgdir" dist/*.whl
+	install -Dm644 LICENSE.txt "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}

@@ -1,0 +1,21 @@
+pkgbase = kaggle-benchmarks-stack
+	pkgdesc = Kaggle Benchmarks 0.6.3 as a hash-locked Python 3.14 environment
+	pkgver = 0.6.3
+	pkgrel = 1
+	url = https://github.com/Kaggle/kaggle-benchmarks
+	arch = x86_64
+	license = Apache-2.0
+	depends = python
+	depends = gcc-libs
+	depends = glibc
+	optdepends = docker: DockerEnvironment sandboxes
+	source = requirements.in
+	source = requirements.lock
+	source = test_kaggle_benchmarks_stack.py
+	source = kaggle-benchmarks-python
+	b2sums = 66600d21d2a02ebe5d1628fe311c7186826071f08574506440a9418ac6a90129b76db6c831f41229a7665513c1f2da0af70db1a5cfa881ddf757052997e2ff89
+	b2sums = 942f138af555fd8094dedd7bede645cbb4318e3a1a9bc457b11a645b0ad5bbba7a57f9e6a384e8995ae4b22dbd771a1edf230c73f33f37ef8e5203ae97c6816f
+	b2sums = fb164e8838a3d478550bd8f30fa99d4b25c59f30cf1976f06bf092a10fc42c2c6edd38831d58feaee8ebe0370213e6e781f6c4fc43e5decd0f7d6a27e480a1cc
+	b2sums = 7b34c99d68b4d6f68b3297a439b3e4dc67acdb8dc627ded5154b1b5620b90f92dcaa350fddb6603d32a68b5ff4a7359bbced7f7bf1f9786d1a7447c5f26ff290
+
+pkgname = kaggle-benchmarks-stack

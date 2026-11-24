@@ -1,0 +1,20 @@
+pkgbase = kaggle-environments-stack
+	pkgdesc = Kaggle Environments 1.33.3 as a hash-locked Python 3.13 environment
+	pkgver = 1.33.3
+	pkgrel = 1
+	url = https://github.com/Kaggle/kaggle-environments
+	arch = x86_64
+	license = Apache-2.0
+	depends = python313
+	depends = gcc-libs
+	depends = glibc
+	source = requirements.in
+	source = requirements.lock
+	source = test_kaggle_environments_stack.py
+	source = kaggle-environments-python
+	b2sums = 40c5dcfaa1fbaa8c0924e54efcc73c7e058c430d3b2b7a0e471cdf017d182c02a5e1e898a36f5a0d0c7e1742a5fc2aba530f69d0483df6a2a9aaa071911fe192
+	b2sums = 415e8ed44dd71c6faffb6bd7c8fa312402184b4c4014903030a0248353bf64145b6c1522980b3e429a8804bba7f9b9fe1c188fbc5b4a0f94de5102eb22c8606b
+	b2sums = b5c2c9e40f380afccbeba390d0ca9e07a9e8326374ec79e5b7931fa31f198c1a5479cdc8bac1ab382ea131889247274de4d16c3ed30fd27795fd7690aa0decf7
+	b2sums = 05059f2da54fedb5b8e96c10442e2259fe35f0131593a1e51edb5101378cc3dc08bf024724200b1399949b7bc6e875a81d3a60ad1373345b723cbbaa80535eca
+
+pkgname = kaggle-environments-stack

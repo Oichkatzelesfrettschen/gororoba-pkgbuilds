@@ -1,0 +1,25 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+
+pkgname=python-kingdon
+_pkg=kingdon
+pkgver=3.3.0
+pkgrel=1
+pkgdesc="Pythonic geometric algebra with symbolic and numerical backends"
+arch=('any')
+url="https://github.com/tBuLi/kingdon"
+license=('MIT')
+depends=('python' 'python-numpy' 'python-sympy' 'python-anywidget')
+makedepends=('python-build' 'python-installer' 'python-setuptools' 'python-wheel')
+source=("https://files.pythonhosted.org/packages/source/k/$_pkg/$_pkg-$pkgver.tar.gz")
+sha256sums=('6c1b5d13f9f440706054a8786ab787cbb4b0e9e465606440f36650339aaeddae')
+
+build() {
+	cd "$_pkg-$pkgver"
+	python -m build --wheel --no-isolation
+}
+
+package() {
+	cd "$_pkg-$pkgver"
+	python -m installer --destdir="$pkgdir" dist/*.whl
+	install -Dm644 LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}

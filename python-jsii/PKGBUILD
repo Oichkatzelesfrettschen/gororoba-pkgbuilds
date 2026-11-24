@@ -1,0 +1,23 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+# shellcheck shell=bash disable=SC2034,SC2154
+
+# Upstream pins typeguard==2.13.3. extra/python-typeguard is 4.6.0.
+# This recipe depends on the repository package and does not downgrade it.
+
+pkgname=python-jsii
+pkgver=1.143.0
+pkgrel=1
+pkgdesc='Python runtime for jsii-generated libraries'
+arch=('any')
+url='https://github.com/aws/jsii'
+license=('Apache-2.0')
+depends=('python' 'python-attrs' 'python-cattrs' 'python-publication' 'python-dateutil' 'python-typing_extensions' 'python-typeguard')
+makedepends=('python-installer')
+_wheel='jsii-1.143.0-py3-none-any.whl'
+source=("$_wheel::https://files.pythonhosted.org/packages/c8/2b/3d5562791e0531eb6e76da9038e2661258b48fdb9f730d6e5abe562f0d3a/jsii-1.143.0-py3-none-any.whl")
+noextract=("$_wheel")
+sha256sums=('9d006ebf44ef171595a339bb691e86b4008a45ed454b65b2826a8122d2087278')
+
+package() {
+	python -m installer --destdir="$pkgdir" "$_wheel"
+}

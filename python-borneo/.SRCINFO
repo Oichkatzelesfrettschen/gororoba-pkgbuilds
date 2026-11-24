@@ -1,0 +1,18 @@
+pkgbase = python-borneo
+	pkgdesc = Oracle NoSQL Database Python SDK
+	pkgver = 5.5.0
+	pkgrel = 1
+	url = https://nosql-python-sdk.readthedocs.io/en/stable/index.html
+	arch = any
+	license = UPL-1.0
+	makedepends = python-build
+	makedepends = python-installer
+	makedepends = python-setuptools
+	makedepends = python-wheel
+	depends = python
+	depends = python-dateutil
+	depends = python-requests
+	source = https://files.pythonhosted.org/packages/85/37/717c81f6a61aa2026688459ca5b6ab69fcff551e145cb0e95933d5f69bc8/borneo-5.5.0.tar.gz
+	sha256sums = 8b4b19c349e9fc4003471b6258b33e1d21ecfde743216734d770011eafd2f3d5
+
+pkgname = python-borneo

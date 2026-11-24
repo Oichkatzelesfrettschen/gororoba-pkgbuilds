@@ -1,0 +1,25 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+
+pkgname=python-pauli-prop
+_name=pauli_prop
+pkgver=0.2.1
+pkgrel=1
+pkgdesc="Pauli propagation of Qiskit circuits and observables"
+arch=('x86_64')
+url="https://github.com/Qiskit/pauli-prop"
+license=('Apache-2.0')
+depends=('python' 'python-numpy' 'python-qiskit' 'python-qiskit-aer')
+makedepends=('python-build' 'python-installer' 'python-maturin' 'rust')
+source=("https://files.pythonhosted.org/packages/source/${_name::1}/$_name/$_name-$pkgver.tar.gz")
+b2sums=('00603cbc763e16623ac6b4d72b190a86abd286e342325656f76bf93231586a0f946ce6e03e20acf54b00077ddd450b99aa1b224bc53b287813a364cd38fc85ab')
+
+build() {
+	cd "$_name-$pkgver"
+	python -m build --wheel --no-isolation
+}
+
+package() {
+	cd "$_name-$pkgver"
+	python -m installer --destdir="$pkgdir" dist/*.whl
+	install -Dm644 LICENSE.txt "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}

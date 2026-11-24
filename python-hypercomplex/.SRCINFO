@@ -1,0 +1,17 @@
+pkgbase = python-hypercomplex
+	pkgdesc = Arbitrary-dimension hypercomplex numbers following the Cayley-Dickson construction
+	pkgver = 0.3.4
+	pkgrel = 1
+	url = https://github.com/discretegames/hypercomplex
+	arch = any
+	license = MIT
+	makedepends = python-build
+	makedepends = python-installer
+	makedepends = python-setuptools
+	makedepends = python-wheel
+	depends = python
+	depends = python-mathdunders
+	source = https://files.pythonhosted.org/packages/source/h/hypercomplex/hypercomplex-0.3.4.tar.gz
+	sha256sums = 04241e5d01b3f10e813c70882a2caa9b7dc168f8b921d47156c3d964363f9352
+
+pkgname = python-hypercomplex

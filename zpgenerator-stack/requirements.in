@@ -1,0 +1,8 @@
+qutip==4.7.3
+scipy==1.11.4
+numpy==1.26.4
+matplotlib==3.7.0
+frozendict
+pytest
+setuptools
+wheel

@@ -1,0 +1,27 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+
+pkgname=python-cytoolz
+_pkg=cytoolz
+pkgver=1.2.0
+# pkgrel 3 replaces the distribution build 1.1.0-2.1, whose dist-info reads
+# version 0.0.1 and fails quimb's requirement in `pip check`.
+pkgrel=1
+pkgdesc="Cython implementation of the toolz functional utilities"
+arch=('x86_64')
+url="https://github.com/pytoolz/cytoolz"
+license=('BSD-3-Clause')
+depends=('python' 'python-toolz' 'glibc')
+makedepends=('python-build' 'python-installer' 'python-setuptools' 'python-setuptools-git-versioning' 'python-wheel' 'cython')
+source=("https://files.pythonhosted.org/packages/source/c/$_pkg/$_pkg-$pkgver.tar.gz")
+sha256sums=('fdd8ded8a93e1be009577fccddaacf78aa21cbe7dc6ec53c229def0198a1ffa5')
+
+build() {
+	cd "$_pkg-$pkgver"
+	python -m build --wheel --no-isolation
+}
+
+package() {
+	cd "$_pkg-$pkgver"
+	python -m installer --destdir="$pkgdir" dist/*.whl
+	install -Dm644 LICENSE.txt "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}

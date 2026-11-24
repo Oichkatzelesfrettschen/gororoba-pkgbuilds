@@ -1,0 +1,3 @@
+#!/bin/sh
+# Python 3.13 interpreter of the bluequbit-stack environment.
+exec /opt/bluequbit-stack/bin/python "$@"

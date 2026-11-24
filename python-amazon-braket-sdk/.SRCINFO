@@ -1,0 +1,28 @@
+pkgbase = python-amazon-braket-sdk
+	pkgdesc = Amazon Braket Python SDK and local simulator entry points
+	pkgver = 1.128.2
+	pkgrel = 1
+	url = https://github.com/amazon-braket/amazon-braket-sdk-python
+	arch = any
+	license = Apache-2.0
+	makedepends = python-installer
+	depends = python
+	depends = python-amazon-braket-schemas
+	depends = python-amazon-braket-default-simulator
+	depends = python-oqpy>=0.3.7
+	depends = python-oqpy<0.4.0
+	depends = python-backoff
+	depends = python-boltons
+	depends = python-boto3
+	depends = python-cloudpickle
+	depends = python-nest-asyncio
+	depends = python-networkx
+	depends = python-numpy
+	depends = python-openpulse
+	depends = python-openqasm3
+	depends = python-sympy
+	noextract = amazon_braket_sdk-1.128.2-py3-none-any.whl
+	source = amazon_braket_sdk-1.128.2-py3-none-any.whl::https://files.pythonhosted.org/packages/a0/a0/cf8ef880b6f12ab0d01f03da521b7d942b43cd5f036ef5c46063828da84d/amazon_braket_sdk-1.128.2-py3-none-any.whl
+	sha256sums = 9cc36f5578989b6ad3283f45fe61502302f22873b5330b1d160478ee2a73c342
+
+pkgname = python-amazon-braket-sdk

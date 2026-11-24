@@ -1,0 +1,27 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+# shellcheck shell=bash disable=SC2034,SC2154
+
+# Upstream pins cloudpickle==2.2.1. Installed python-cloudpickle is 3.1.2.
+# This recipe depends on the system package and does not downgrade it.
+# python-boltons is the recipe in this tree at 26.2.0.
+# paru --aur -Sp python-boltons still prints blackarch 25.0.0-2, so do not paru it.
+# Upstream oqpy~=0.3.7 is encoded as >=0.3.7 and <0.4.0.
+# Braket service APIs are denied for this project. The library and its local simulator are still installed.
+
+pkgname=python-amazon-braket-sdk
+pkgver=1.128.2
+pkgrel=1
+pkgdesc='Amazon Braket Python SDK and local simulator entry points'
+arch=('any')
+url='https://github.com/amazon-braket/amazon-braket-sdk-python'
+license=('Apache-2.0')
+depends=('python' 'python-amazon-braket-schemas' 'python-amazon-braket-default-simulator' 'python-oqpy>=0.3.7' 'python-oqpy<0.4.0' 'python-backoff' 'python-boltons' 'python-boto3' 'python-cloudpickle' 'python-nest-asyncio' 'python-networkx' 'python-numpy' 'python-openpulse' 'python-openqasm3' 'python-sympy')
+makedepends=('python-installer')
+_wheel='amazon_braket_sdk-1.128.2-py3-none-any.whl'
+source=("$_wheel::https://files.pythonhosted.org/packages/a0/a0/cf8ef880b6f12ab0d01f03da521b7d942b43cd5f036ef5c46063828da84d/amazon_braket_sdk-1.128.2-py3-none-any.whl")
+noextract=("$_wheel")
+sha256sums=('9cc36f5578989b6ad3283f45fe61502302f22873b5330b1d160478ee2a73c342')
+
+package() {
+	python -m installer --destdir="$pkgdir" "$_wheel"
+}

@@ -1,0 +1,47 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+
+# quantum-pipeline caps qiskit-aer below 0.18 and depends on the archived
+# qiskit-nature; the stack keeps its resolved Qiskit 2.6.1 / Aer 0.17.2
+# closure under /opt, apart from the system Aer 0.18 build.
+pkgname=quantum-pipeline-stack
+pkgver=2.5.1
+pkgrel=2
+pkgdesc="quantum-pipeline 2.5.1 (VQE runner on qiskit-nature and Aer 0.17) as a hash-locked Python 3.13 environment"
+arch=('x86_64')
+url="https://github.com/straightchlorine/quantum-pipeline"
+license=('MIT')
+depends=(python313 gcc-libs glibc)
+_prefix=/opt/$pkgname
+source=(requirements.in requirements.lock test_quantum_pipeline_stack.py quantum-pipeline-python)
+b2sums=('7c12e24bfc884aab1d05060bcaea20f570e1f941558fdf20cb0be722d832c77e26cb796e26703aa0f3b5bd2d4efc9d1345fb7de5596b6707a908900d07bfbe23'
+        'c9bac19ccd5d833313d43a1bf02e887bd590aa4291159923c0665fd07799e67cf2de81a52bc34fa95386f8ddb50f785b1c7787c5477b094da4bcd63d7e215d85'
+        'de3d6a9c35debefd5792c9944c51fa452b49aede2a18961794b42f895f99610065dac6b7fc7bb70fce4dba636e0f524512a79f3a79cea74bd3baf19ce6866a33'
+        '6728dbd1f0b23e6ad42eca988664fd01fb6b5f24753233e96d80cee5e7f439dde0de9331b0812c0765c31a4a273b8424d6250bbca2cc6df4ba5047aed1a26cbc')
+
+build() {
+	/usr/bin/python3.13 -m venv --clear "$srcdir/stack"
+	"$srcdir/stack/bin/python" -m pip install -q --no-cache-dir --upgrade pip==25.3
+	# --require-hashes binds every distribution to the lock and --no-deps keeps
+	# the installed set equal to it.
+	"$srcdir/stack/bin/python" -m pip install -q --no-cache-dir --require-hashes --no-deps --only-binary :all:  \
+		-r "$srcdir/requirements.lock"
+}
+
+check() {
+	cd "$srcdir"
+	"$srcdir/stack/bin/python" -P -m unittest discover -v -s "$srcdir" -p test_quantum_pipeline_stack.py
+	"$srcdir/stack/bin/python" -m pip check
+}
+
+package() {
+	install -d "$pkgdir$_prefix"
+	cp -a "$srcdir/stack/." "$pkgdir$_prefix/"
+	# Entry-point shebangs and activate scripts carry the build path.
+	grep -rlI --null "$srcdir/stack" "$pkgdir$_prefix/bin" "$pkgdir$_prefix/pyvenv.cfg" |
+		xargs -0 -r sed -i "s|$srcdir/stack|$_prefix|g"
+	find "$pkgdir$_prefix" -name __pycache__ -prune -exec rm -r {} +
+	"$pkgdir$_prefix/bin/python" -m compileall -q -j0 -d "$_prefix/lib" "$pkgdir$_prefix/lib" >/dev/null
+	install -Dm644 requirements.in requirements.lock test_quantum_pipeline_stack.py -t "$pkgdir/usr/share/$pkgname/"
+	install -Dm755 quantum-pipeline-python "$pkgdir/usr/bin/quantum-pipeline-python"
+	ln -s "$_prefix/bin/quantum-pipeline" "$pkgdir/usr/bin/quantum-pipeline"
+}

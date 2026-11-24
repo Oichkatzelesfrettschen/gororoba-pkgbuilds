@@ -1,0 +1,27 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+
+pkgname=python-qiskit-addon-utils
+_name=qiskit-addon-utils
+pkgver=0.4.0
+pkgrel=1
+pkgdesc="Utilities to support workflows leveraging Qiskit addons"
+arch=('any')
+url="https://github.com/Qiskit/qiskit-addon-utils"
+license=('Apache-2.0')
+# The AUR recipe depends on blas-openblas; numpy's BLAS comes from the
+# installed AOCL blas/lapack providers, as for python-qiskit-aer.
+depends=('python' 'python-numpy' 'python-qiskit' 'python-rustworkx')
+makedepends=('python-build' 'python-installer' 'python-hatchling')
+source=("$_name-$pkgver.tar.gz::https://github.com/Qiskit/$_name/archive/refs/tags/$pkgver.tar.gz")
+b2sums=('dd4f214419e5001ab3cd424c6bbd51ee802577ed629720559c20f530170d0cb47d138d12812ec17b6ed6721066d7d6a96bd03ebff31d1631790e109b91eaeea9')
+
+build() {
+	cd "$_name-$pkgver"
+	python -m build --wheel --no-isolation
+}
+
+package() {
+	cd "$_name-$pkgver"
+	python -m installer --destdir="$pkgdir" dist/*.whl
+	install -Dm644 LICENSE.txt "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}

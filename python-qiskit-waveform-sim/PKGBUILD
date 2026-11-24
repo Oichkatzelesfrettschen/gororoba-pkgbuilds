@@ -1,0 +1,25 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+
+pkgname=python-qiskit-waveform-sim
+_name=qiskit_waveform_sim
+pkgver=0.3.0
+pkgrel=1
+pkgdesc="Control-waveform synthesizer and schedule viewer driven by a Qiskit 2.x Target"
+arch=('any')
+url="https://github.com/PratulDeshpande/qiskit-waveform-sim"
+license=('Apache-2.0')
+depends=('python' 'python-qiskit' 'python-numpy' 'python-matplotlib' 'python-plotly')
+makedepends=('python-build' 'python-installer' 'python-setuptools' 'python-wheel')
+source=("https://files.pythonhosted.org/packages/source/${_name::1}/$_name/$_name-$pkgver.tar.gz")
+b2sums=('a1dfc3f509da2d787da99c7fe366a92f9977c1f7e88e091f700c40a367dec76e54f9d018294e63b8080d6f17aeff85dccd0abe4ca8517f1017a9170719357b5e')
+
+build() {
+	cd "$_name-$pkgver"
+	python -m build --wheel --no-isolation
+}
+
+package() {
+	cd "$_name-$pkgver"
+	python -m installer --destdir="$pkgdir" dist/*.whl
+	install -Dm644 LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}

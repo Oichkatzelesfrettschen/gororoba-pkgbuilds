@@ -1,0 +1,20 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+
+pkgname=python-scmver
+_pkg=scmver
+pkgver=1.10
+pkgrel=1
+pkgdesc="Version string from a source control checkout (build requirement of perceval-quandela)"
+arch=('any')
+url="https://github.com/hattya/scmver"
+license=('MIT')
+depends=('python' 'python-setuptools')
+makedepends=('python-installer')
+optdepends=('python-click: scmver command line')
+source=("https://files.pythonhosted.org/packages/py3/${_pkg::1}/$_pkg/$_pkg-$pkgver-py3-none-any.whl")
+noextract=("$_pkg-$pkgver-py3-none-any.whl")
+sha256sums=('786b4e6baee35c7439f97de7ab92385d6290273ba47ec41b1a09d91ce910a539')
+
+package() {
+	python -m installer --destdir="$pkgdir" "$_pkg-$pkgver-py3-none-any.whl"
+}

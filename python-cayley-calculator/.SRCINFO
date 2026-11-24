@@ -1,0 +1,19 @@
+pkgbase = python-cayley-calculator
+	pkgdesc = Fast table calculator for Cayley-Dickson numbers (quaternions, octonions, sedenions)
+	pkgver = 1.3.1
+	pkgrel = 1
+	url = https://github.com/Kadelka/Cayley_Calculator
+	arch = any
+	license = MIT
+	makedepends = python-build
+	makedepends = python-installer
+	makedepends = python-hatchling
+	makedepends = python-wheel
+	depends = python
+	depends = python-numpy
+	depends = python-scipy
+	depends = python-numpy-quaternion
+	source = https://files.pythonhosted.org/packages/source/c/cayley_calculator/cayley_calculator-1.3.1.tar.gz
+	sha256sums = 65922fc90cc0d8159830e5d90424cb7cda6c6306824bea628542c647f364d55b
+
+pkgname = python-cayley-calculator

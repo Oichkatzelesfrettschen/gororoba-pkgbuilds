@@ -1,0 +1,34 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+# shellcheck shell=bash disable=SC2034,SC2154
+
+# The wheel ships a top-level tests package. python-qiskit-serverless owns
+# site-packages/tests, so package() removes that tree and its RECORD rows.
+
+pkgname=python-smdebug-rulesconfig
+pkgver=1.0.1
+pkgrel=3
+pkgdesc='Rule configuration for SageMaker Debugger'
+arch=('any')
+url='https://github.com/awslabs/sagemaker-debugger-rulesconfig'
+license=('Apache-2.0')
+depends=('python')
+makedepends=('python-installer')
+_wheel='smdebug_rulesconfig-1.0.1-py2.py3-none-any.whl'
+source=("$_wheel::https://files.pythonhosted.org/packages/26/a1/45a13a05198bbe9527bab2c5e5daa8bd02678aa825eec14783e767bfa7d1/smdebug_rulesconfig-1.0.1-py2.py3-none-any.whl")
+noextract=("$_wheel")
+sha256sums=('104da3e6931ecf879dfc687ca4bbb3bee5ea2bc27f4478e9dbb3ee3655f1ae61')
+
+package() {
+	local _sp _record
+	python -m installer --destdir="$pkgdir" "$_wheel"
+	_sp="$pkgdir$(python -c 'import sysconfig; print(sysconfig.get_path("purelib"))')"
+	rm -rf "${_sp}/tests"
+	for _record in "${_sp}"/smdebug_rulesconfig-*.dist-info/RECORD; do
+		grep -v '^tests/' "${_record}" > "${_record}.filtered"
+		mv "${_record}.filtered" "${_record}"
+	done
+	for _top in "${_sp}"/smdebug_rulesconfig-*.dist-info/top_level.txt; do
+		grep -vx 'tests' "${_top}" > "${_top}.filtered"
+		mv "${_top}.filtered" "${_top}"
+	done
+}

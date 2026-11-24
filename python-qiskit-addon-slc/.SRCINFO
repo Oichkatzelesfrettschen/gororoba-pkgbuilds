@@ -1,0 +1,27 @@
+pkgbase = python-qiskit-addon-slc
+	pkgdesc = Shaded-lightcone reduction of PEC sampling overhead for Qiskit
+	pkgver = 0.2.0
+	pkgrel = 1
+	url = https://github.com/Qiskit/qiskit-addon-slc
+	arch = x86_64
+	license = Apache-2.0
+	makedepends = python-build
+	makedepends = python-installer
+	makedepends = python-maturin
+	makedepends = rust
+	depends = python
+	depends = python-matplotlib
+	depends = python-plotly
+	depends = python-qiskit
+	depends = python-pauli-prop
+	depends = python-rustworkx
+	depends = python-samplomatic
+	depends = python-pydot
+	depends = python-pillow
+	depends = python-pylatexenc
+	depends = python-seaborn
+	depends = python-sympy
+	source = https://files.pythonhosted.org/packages/source/q/qiskit_addon_slc/qiskit_addon_slc-0.2.0.tar.gz
+	b2sums = 1620e5759ea2328a4cd9d7d3c3fb40c164f7b9cc0a0bec99027cc1939443c00de4ec658085fccc13bab4edf5a33fda1e203f1b02e3ebf175a04cd326763b3a24
+
+pkgname = python-qiskit-addon-slc

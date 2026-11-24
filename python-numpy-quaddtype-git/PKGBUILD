@@ -1,0 +1,68 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+
+pkgname=python-numpy-quaddtype-git
+_pkg=numpy-quaddtype
+pkgver=1.0.0.r111.g888042c
+pkgrel=1
+_commit=888042cc451e8a6d8ee0fa059d9055a6a5d468d3
+_sleef=3.9.0
+_qblas=8deb36b67ae4d2c81dfca2ceac8957deb8f23c9b
+_capi=d3ebabff3a4b43e40f7b3db5f55b8a54f84b0091
+pkgdesc="IEEE binary128 quad-precision NumPy dtype, upstream main at a pinned commit (F-contiguous matmul layouts)"
+arch=('x86_64')
+url="https://github.com/numpy/numpy-quaddtype"
+license=('BSD-3-Clause' 'BSL-1.0')
+depends=('python' 'python-numpy' 'glibc' 'gcc-libs')
+makedepends=('python-build' 'python-installer' 'meson-python' 'meson' 'ninja' 'cmake' 'git' 'patch')
+checkdepends=('python-pytest' 'python-mpmath' 'python-pandas')
+provides=("python-numpy-quaddtype=${pkgver%%.r*}")
+conflicts=('python-numpy-quaddtype')
+# The wraps of the pinned commit resolve SLEEF, QBLAS and pythoncapi-compat as
+# meson wrap-git subprojects; the pinned checkouts below replace those network
+# fetches. QBLAS is a meson project at its pinned revision, so only SLEEF takes
+# packagefiles, applied exactly as its wrap's patch_directory and diff_files say.
+# pythoncapi-compat tracks `main` in the wrap and is pinned here.
+source=("$_pkg::git+https://github.com/numpy/numpy-quaddtype.git#commit=$_commit"
+        "sleef::git+https://github.com/shibatch/sleef.git#tag=$_sleef"
+        "qblas::git+https://github.com/SwayamInSync/QBLAS.git#commit=$_qblas"
+        "pythoncapi-compat::git+https://github.com/python/pythoncapi-compat.git#commit=$_capi")
+sha256sums=('SKIP'
+            'SKIP'
+            'SKIP'
+            'SKIP')
+
+pkgver() {
+	cd "$_pkg"
+	git describe --long --tags --match 'v*' | sed 's/^v//;s/\([^-]*-g\)/r\1/;s/-/./g'
+}
+
+prepare() {
+	cd "$_pkg/subprojects"
+	for name in sleef qblas pythoncapi-compat; do
+		rm -rf "$name"
+		cp -a "$srcdir/$name" "$name"
+	done
+	cp -a packagefiles/sleef/meson.build packagefiles/sleef/meson.options sleef/
+	patch -d sleef -p1 < packagefiles/sleef/fix-purecfma-scalar-x86.patch
+}
+
+build() {
+	cd "$_pkg"
+	python -m build --wheel --no-isolation --skip-dependency-check \
+		-Csetup-args=--wrap-mode=nodownload
+}
+
+check() {
+	cd "$_pkg"
+	rm -rf test-env
+	python -m installer --destdir=test-env dist/*.whl
+	local site
+	site=$(python -c 'import sysconfig; print(sysconfig.get_path("platlib"))')
+	PYTHONPATH="$PWD/test-env$site" python -m pytest -q -p no:cacheprovider tests
+}
+
+package() {
+	cd "$_pkg"
+	python -m installer --destdir="$pkgdir" dist/*.whl
+	install -Dm644 LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}

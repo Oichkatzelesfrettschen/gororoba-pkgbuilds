@@ -1,0 +1,25 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+
+pkgname=python-clifford
+_pkg=clifford
+pkgver=1.5.1
+pkgrel=1
+pkgdesc="Numerical geometric (Clifford) algebra with Numba acceleration"
+arch=('any')
+url="https://github.com/pygae/clifford"
+license=('BSD-3-Clause')
+depends=('python' 'python-numpy' 'python-scipy' 'python-numba' 'python-h5py' 'python-sparse')
+makedepends=('python-build' 'python-installer' 'python-setuptools' 'python-wheel')
+source=("https://files.pythonhosted.org/packages/source/c/$_pkg/$_pkg-$pkgver.tar.gz")
+sha256sums=('3484b312cff0e2d5e14fb99409b8242193c358dfaa6af7bc6ea230c4606e66f3')
+
+build() {
+	cd "$_pkg-$pkgver"
+	python -m build --wheel --no-isolation
+}
+
+package() {
+	cd "$_pkg-$pkgver"
+	python -m installer --destdir="$pkgdir" dist/*.whl
+	install -Dm644 LICENSE.txt "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}

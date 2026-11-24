@@ -1,0 +1,35 @@
+pkgbase = python-numpy-quaddtype-git
+	pkgdesc = IEEE binary128 quad-precision NumPy dtype, upstream main at a pinned commit (F-contiguous matmul layouts)
+	pkgver = 1.0.0.r111.g888042c
+	pkgrel = 1
+	url = https://github.com/numpy/numpy-quaddtype
+	arch = x86_64
+	license = BSD-3-Clause
+	license = BSL-1.0
+	checkdepends = python-pytest
+	checkdepends = python-mpmath
+	checkdepends = python-pandas
+	makedepends = python-build
+	makedepends = python-installer
+	makedepends = meson-python
+	makedepends = meson
+	makedepends = ninja
+	makedepends = cmake
+	makedepends = git
+	makedepends = patch
+	depends = python
+	depends = python-numpy
+	depends = glibc
+	depends = gcc-libs
+	provides = python-numpy-quaddtype=1.0.0
+	conflicts = python-numpy-quaddtype
+	source = numpy-quaddtype::git+https://github.com/numpy/numpy-quaddtype.git#commit=888042cc451e8a6d8ee0fa059d9055a6a5d468d3
+	source = sleef::git+https://github.com/shibatch/sleef.git#tag=3.9.0
+	source = qblas::git+https://github.com/SwayamInSync/QBLAS.git#commit=8deb36b67ae4d2c81dfca2ceac8957deb8f23c9b
+	source = pythoncapi-compat::git+https://github.com/python/pythoncapi-compat.git#commit=d3ebabff3a4b43e40f7b3db5f55b8a54f84b0091
+	sha256sums = SKIP
+	sha256sums = SKIP
+	sha256sums = SKIP
+	sha256sums = SKIP
+
+pkgname = python-numpy-quaddtype-git

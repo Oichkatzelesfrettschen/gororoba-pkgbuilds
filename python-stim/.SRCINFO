@@ -1,0 +1,22 @@
+pkgbase = python-stim
+	pkgdesc = Fast stabilizer circuit simulator and sampler
+	pkgver = 1.16.0
+	pkgrel = 1
+	url = https://github.com/quantumlib/Stim
+	arch = x86_64
+	license = Apache-2.0
+	makedepends = python-build
+	makedepends = python-installer
+	makedepends = python-setuptools
+	makedepends = python-wheel
+	depends = python
+	depends = python-numpy
+	depends = gcc-libs
+	depends = glibc
+	noextract = pybind11-2.11.1-py3-none-any.whl
+	source = https://files.pythonhosted.org/packages/source/s/stim/stim-1.16.0.tar.gz
+	source = https://files.pythonhosted.org/packages/06/55/9f73c32dda93fa4f539fafa268f9504e83c489f460c380371d94296126cd/pybind11-2.11.1-py3-none-any.whl
+	sha256sums = 9092a996429dcf616d8d4ca01fec886b7b310caf9425a39fcfe499005636bd52
+	sha256sums = 33cdd02a6453380dd71cc70357ce388ad1ee8d32bd0e38fc22b273d050aa29b3
+
+pkgname = python-stim

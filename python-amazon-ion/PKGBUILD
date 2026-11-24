@@ -1,0 +1,29 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+# shellcheck shell=bash disable=SC2034,SC2154
+
+# No CPython 3.14 wheel is published. Wheels stop at cp313.
+# Built from the sdist with py-build-cmake. AUR python-py-build-cmake 0.5.1 satisfies ~=0.5.0.
+# The sdist vendors ion-c, including a src/ion-c/.git gitlink. The build must not fetch it.
+
+pkgname=python-amazon-ion
+pkgver=0.16.0
+pkgrel=1
+pkgdesc='Amazon Ion data notation library'
+arch=('x86_64')
+url='https://github.com/amazon-ion/ion-python'
+license=('Apache-2.0')
+depends=('python' 'python-jsonconversion')
+makedepends=('python-build' 'python-installer' 'python-py-build-cmake>=0.5.0' 'python-py-build-cmake<0.6.0' 'cmake' 'ninja')
+source=('https://files.pythonhosted.org/packages/e9/8c/6905bf70564082cd51d272b36a35ae4e2fcdbfd4a44f2ded5101450f6532/amazon_ion-0.16.0.tar.gz')
+sha256sums=('0d96b99f0bcce0822571612c783d7d1049775c55bc0828bf6dfee30c119041ed')
+
+build() {
+	cd 'amazon_ion-0.16.0' || exit
+	python -m build --wheel --no-isolation
+}
+
+package() {
+	cd 'amazon_ion-0.16.0' || exit
+	python -m installer --destdir="$pkgdir" dist/*.whl
+	install -Dm644 LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}

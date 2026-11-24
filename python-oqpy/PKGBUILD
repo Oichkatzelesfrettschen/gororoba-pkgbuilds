@@ -1,0 +1,22 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+# shellcheck shell=bash disable=SC2034,SC2154
+
+# amazon-braket-sdk requires oqpy~=0.3.7, which admits 0.3.11.
+
+pkgname=python-oqpy
+pkgver=0.3.11
+pkgrel=1
+pkgdesc='OpenQASM 3 and OpenPulse builder'
+arch=('any')
+url='https://github.com/openqasm/oqpy'
+license=('Apache-2.0')
+depends=('python' 'python-mypy_extensions' 'python-numpy' 'python-openpulse')
+makedepends=('python-installer')
+_wheel='oqpy-0.3.11-py3-none-any.whl'
+source=("$_wheel::https://files.pythonhosted.org/packages/69/7d/f3baa346cff88e4f33a09451f1acf821aa430200dde0d8f745cf69213acb/oqpy-0.3.11-py3-none-any.whl")
+noextract=("$_wheel")
+sha256sums=('d9557bd5916f64e42fbefd84bcf5c93b8bd8fe76f747be8a915d7ec32b02e83b')
+
+package() {
+	python -m installer --destdir="$pkgdir" "$_wheel"
+}

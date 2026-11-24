@@ -1,0 +1,17 @@
+pkgbase = python-galgebra
+	pkgdesc = Symbolic geometric algebra and calculus on SymPy
+	pkgver = 0.6.0
+	pkgrel = 1
+	url = https://github.com/pygae/galgebra
+	arch = any
+	license = BSD-3-Clause
+	makedepends = python-build
+	makedepends = python-installer
+	makedepends = python-setuptools
+	makedepends = python-wheel
+	depends = python
+	depends = python-sympy
+	source = https://files.pythonhosted.org/packages/source/g/galgebra/galgebra-0.6.0.tar.gz
+	sha256sums = 2e8db0172286bcb7ff6d37c4d7e99476ffe178570dea78a2345d34cc78da10f1
+
+pkgname = python-galgebra

@@ -1,0 +1,26 @@
+{
+  "version": "0.10.0",
+  "wheel": "qxelarator-0.10.0-cp313-cp313-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl",
+  "url": "https://files.pythonhosted.org/packages/b5/7b/1d8742689faa85b61c298ad1aa866fd6fa13a294bcc6330ecf93f70ec850/qxelarator-0.10.0-cp313-cp313-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl",
+  "sha256": "112e50a4f42267424a3540b19007eb3216528eeedc426d0e9adae069989acbd2",
+  "upload_time": "2025-08-28T13:38:05.295809Z",
+  "github_tag": "0.10.0",
+  "github_release": "https://github.com/QuTech-Delft/qx-simulator/releases/tag/0.10.0",
+  "github_published_at": "2025-08-28T13:21:48Z",
+  "package": "qxelarator-python313",
+  "package_release": 2,
+  "python": "3.13.15",
+  "upstream_python_tests": 5,
+  "installed_tests_passed": 5,
+  "installed_native_sha256": "86ca5fd0de98d372dfe611fdbead65e6b7daef60e4f81c6d8f6fa3bd27a50f51",
+  "native_modification": "patchelf --remove-rpath; distribution RECORD native digest regenerated",
+  "shared_qi_runtime": "separate existing CPython3.13 environment; eight original non-RECORD wheel members match upstream",
+  "package_integrity": "qxelarator-python313: 43 total files, 0 altered files",
+  "build_runtime": "CPython python313 package; official binary wheel, offline installation, no C++ source rebuild",
+  "limitations": [
+    "upstream ELF lacks full RELRO",
+    "upstream ELF remains unstripped",
+    "namcap does not model /opt Python313 venv dependency layout",
+    "upstream reset and measurement-register behavior unchanged"
+  ]
+}

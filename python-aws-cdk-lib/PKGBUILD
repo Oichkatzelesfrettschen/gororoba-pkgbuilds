@@ -1,0 +1,22 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+# shellcheck shell=bash disable=SC2034,SC2154
+
+# Installed from the PyPI wheel. The library is generated jsii output, not a project to rebuild.
+
+pkgname=python-aws-cdk-lib
+pkgver=2.278.0
+pkgrel=1
+pkgdesc='AWS Cloud Development Kit construct library for Python'
+arch=('any')
+url='https://github.com/aws/aws-cdk'
+license=('Apache-2.0')
+depends=('python' 'python-aws-cdk-asset-awscli-v1>=2.2.297' 'python-aws-cdk-asset-awscli-v1<2.2.298' 'python-aws-cdk-asset-node-proxy-agent-v6>=2.1.3' 'python-aws-cdk-asset-node-proxy-agent-v6<3' 'python-aws-cdk-cloud-assembly-schema>=55.6' 'python-aws-cdk-cloud-assembly-schema<56' 'python-constructs>=10.5' 'python-constructs<11' 'python-jsii>=1.143' 'python-jsii<2' 'python-publication>=0.0.3')
+makedepends=('python-installer')
+_wheel='aws_cdk_lib-2.278.0-py3-none-any.whl'
+source=("$_wheel::https://files.pythonhosted.org/packages/d9/23/980487d45bb037c9c6af4515b4807dc12dd5bc2fc36d750714d9ddab2ab4/aws_cdk_lib-2.278.0-py3-none-any.whl")
+noextract=("$_wheel")
+sha256sums=('2b2c7c8043cab9ddb7b25733eaefd7fd755247a084a96dc86fb875534b9fd3d0')
+
+package() {
+	python -m installer --destdir="$pkgdir" "$_wheel"
+}

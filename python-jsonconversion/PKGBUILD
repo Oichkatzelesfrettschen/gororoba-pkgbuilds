@@ -1,0 +1,20 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+# shellcheck shell=bash disable=SC2034,SC2154
+
+pkgname=python-jsonconversion
+pkgver=2.0.0
+pkgrel=1
+pkgdesc='JSON conversion of Python objects, including NumPy values'
+arch=('any')
+url='https://github.com/DLR-RM/python-jsonconversion'
+license=('BSD-2-Clause')
+depends=('python' 'python-numpy')
+makedepends=('python-installer')
+_wheel='jsonconversion-2.0.0-py3-none-any.whl'
+source=("$_wheel::https://files.pythonhosted.org/packages/09/72/58f30a9f93c8e1225b45899c984f2035ef6c7b7128b31ced83e05c62f555/jsonconversion-2.0.0-py3-none-any.whl")
+noextract=("$_wheel")
+sha256sums=('adfd131ff48b9e61d6a115b650306735cc71d55a210fe961e5daea9f9043f4b5')
+
+package() {
+	python -m installer --destdir="$pkgdir" "$_wheel"
+}

@@ -1,0 +1,25 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+
+pkgname=python-ibm-quantum-schemas
+_name=ibm_quantum_schemas
+pkgver=0.13.20261016
+pkgrel=1
+pkgdesc="Pydantic models of the IBM Quantum Platform API payloads"
+arch=('any')
+url="https://github.com/Qiskit/ibm-quantum-schemas"
+license=('Apache-2.0')
+depends=('python' 'python-pydantic' 'python-qiskit' 'python-qiskit-qasm3-import' 'python-samplomatic' 'python-numpy' 'python-pybase64')
+makedepends=('python-build' 'python-installer' 'python-setuptools' 'python-setuptools-scm' 'python-wheel')
+source=("https://files.pythonhosted.org/packages/source/${_name::1}/$_name/$_name-$pkgver.tar.gz")
+b2sums=('59ee6bf6c530c4275b2fa55808697c63248909b0221f97d2e427cf3e2c0ec01bd6e57dd3ac586f2fe7fece93306ee47d2699bfa067890acc26fec5e7da44a1de')
+
+build() {
+	cd "$_name-$pkgver"
+	python -m build --wheel --no-isolation
+}
+
+package() {
+	cd "$_name-$pkgver"
+	python -m installer --destdir="$pkgdir" dist/*.whl
+	install -Dm644 LICENSE.txt "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}

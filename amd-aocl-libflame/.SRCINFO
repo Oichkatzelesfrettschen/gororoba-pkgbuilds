@@ -1,0 +1,26 @@
+pkgbase = amd-aocl-libflame
+	pkgdesc = AMD AOCL libFLAME LAPACK and LAPACKE implementation
+	pkgver = 5.3
+	pkgrel = 1
+	url = https://github.com/amd/libflame
+	arch = x86_64
+	license = BSD-3-Clause
+	makedepends = cmake
+	makedepends = gcc-fortran
+	makedepends = ninja
+	makedepends = python
+	depends = amd-aocl-blis
+	depends = amd-aocl-utils
+	depends = gcc-libs
+	depends = glibc
+	provides = aocl-libflame=5.3
+	provides = aocl-libflame
+	conflicts = aocl-libflame
+	conflicts = aocl-libflame-aocc
+	options = staticlibs
+	options = !emptydirs
+	options = !lto
+	source = amd-aocl-libflame-5.3.tar.gz::https://github.com/amd/libflame/archive/refs/tags/5.3.tar.gz
+	sha256sums = ecb74c879b4d6bb33e159300304a9b48206d2c2b546dceb7d097b339eb127b9c
+
+pkgname = amd-aocl-libflame

@@ -1,0 +1,16 @@
+pkgbase = python-cm-time
+	pkgdesc = Context manager that measures the elapsed time of its block
+	pkgver = 1.0.2
+	pkgrel = 1
+	url = https://github.com/34j/cm-time
+	arch = any
+	license = CC0-1.0
+	checkdepends = python-pytest
+	makedepends = python-build
+	makedepends = python-installer
+	makedepends = python-setuptools
+	depends = python
+	source = https://files.pythonhosted.org/packages/source/c/cm-time/cm_time-1.0.2.tar.gz
+	sha256sums = 5ec14adf5e9a7bc1edb1991792c60fea828bbe8760fff5b62cedd59ab5a07939
+
+pkgname = python-cm-time

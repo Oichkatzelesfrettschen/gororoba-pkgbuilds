@@ -1,0 +1,15 @@
+pkgbase = amd-aocl-blas
+	pkgdesc = Thin BLAS and CBLAS provider links for AMD AOCL BLIS
+	pkgver = 5.3
+	pkgrel = 1
+	url = https://github.com/amd/blis
+	arch = x86_64
+	license = BSD-3-Clause
+	depends = amd-aocl-blis=5.3
+	provides = blas=3.12.1
+	provides = cblas=3.12.1
+	conflicts = blas
+	conflicts = cblas
+	options = !emptydirs
+
+pkgname = amd-aocl-blas

@@ -1,0 +1,31 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+
+pkgname=python-numpy-flint-arb
+_pkg=numpy_flint_arb
+pkgver=1.5.4
+pkgrel=1
+pkgdesc="NumPy arrays of FLINT arb and acb balls: rigorous arbitrary-precision interval linear algebra"
+arch=('any')
+url="https://github.com/34j/numpy-flint-arb"
+license=('MIT')
+depends=('python' 'python-numpy' 'python-flint' 'python-cm-time' 'python-types-array-api')
+makedepends=('python-build' 'python-installer' 'python-setuptools')
+checkdepends=('python-pytest')
+source=("https://files.pythonhosted.org/packages/source/n/numpy-flint-arb/$_pkg-$pkgver.tar.gz")
+sha256sums=('9b3bdab79180713cda427b7525af4a2a68b9e8f7aee6932b00f8e323c3665908')
+
+build() {
+	cd "$_pkg-$pkgver"
+	python -m build --wheel --no-isolation
+}
+
+check() {
+	cd "$_pkg-$pkgver"
+	PYTHONPATH="$PWD/src" python -m pytest -q -p no:cacheprovider tests/test_main.py
+}
+
+package() {
+	cd "$_pkg-$pkgver"
+	python -m installer --destdir="$pkgdir" dist/*.whl
+	install -Dm644 LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}

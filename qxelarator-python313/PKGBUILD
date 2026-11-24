@@ -1,0 +1,77 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+
+# Upstream supplies a CPython 3.13 wheel; the host's Python 3.14 ABI differs.
+# An isolated interpreter keeps the native extension on its supported ABI.
+pkgname=qxelarator-python313
+pkgver=0.11.0
+pkgrel=1
+pkgdesc='QX cQASM emulator in an isolated CPython 3.13 runtime'
+arch=('x86_64')
+url='https://github.com/QuTech-Delft/qx-simulator'
+license=('Apache-2.0')
+options=('!strip')
+depends=('python313' 'libgcc' 'libstdc++' 'glibc' 'bash')
+makedepends=('uv' 'patchelf')
+_wheel="qxelarator-$pkgver-cp313-cp313-manylinux_2_27_${CARCH}.manylinux_2_28_${CARCH}.whl"
+_prefix=/opt/qxelarator-python313
+source=(
+  "https://files.pythonhosted.org/packages/39/4e/bec242e9f7b3cad2377006101d7d04785d2f6d8f47bb220f4dbdf701a884/$_wheel"
+  'qxelarator-python'
+  'test_qxelarator.py'
+  'bell_pair.cq'
+)
+sha256sums=('bdf4192dad30dabc2c39b11b7e06f63c156dbe487ee63fb1a314ee20344bcef9'
+            'bf079c5065eb22b127a729a099d76e278a648544241076591b6f12f8e88a2ce4'
+            '380163c0d6d30cabceca43dbbd05eb93554c509f29f31f8d56da4f040f59e968'
+            '50be05e59ce6bff730d8209a8cf1dc6f34af5876f33ebd74e59a80c47a4b325e')
+
+build() {
+  export PYTHON=/usr/bin/python3.13
+  "$PYTHON" -m venv --without-pip "$srcdir/runtime"
+  uv pip install --offline --link-mode=copy --no-cache --no-index --no-deps --find-links "$srcdir" \
+    --python "$srcdir/runtime/bin/python" "qxelarator==$pkgver"
+  # The published wheel retains upstream Conan build-directory search paths.
+  patchelf --remove-rpath "$srcdir/runtime/lib/python3.13/site-packages/qxelarator/_qxelarator.cpython-313-${CARCH}-linux-gnu.so"
+  chmod 644 "$srcdir/runtime/.lock"
+  rmdir "$srcdir/runtime/include/python3.13" "$srcdir/runtime/include"
+  "$srcdir/runtime/bin/python" -I - <<'PYTHON'
+import base64
+import csv
+import hashlib
+from pathlib import Path
+import sys
+
+site_packages = Path(sys.prefix) / "lib/python3.13/site-packages"
+record_path = site_packages / "qxelarator-0.11.0.dist-info/RECORD"
+with record_path.open(newline="") as record:
+    rows = list(csv.reader(record))
+for row in rows:
+    target = site_packages / row[0]
+    if target.suffix == ".so":
+        data = target.read_bytes()
+        row[1] = "sha256=" + base64.urlsafe_b64encode(hashlib.sha256(data).digest()).decode().rstrip("=")
+        row[2] = str(len(data))
+with record_path.open("w", newline="") as record:
+    csv.writer(record).writerows(rows)
+PYTHON
+}
+
+check() {
+  export PYTHON="$srcdir/runtime/bin/python"
+  cd "$srcdir"
+  "$PYTHON" -I -m unittest discover -v -s "$srcdir" -p test_qxelarator.py
+}
+
+package() {
+  install -d "$pkgdir$_prefix"
+  cp -a "$srcdir/runtime/." "$pkgdir$_prefix/"
+  # Virtual-environment activation scripts embed their build directory.
+  sed -i "s|$srcdir/runtime|$_prefix|g" "$pkgdir$_prefix/bin/activate" \
+    "$pkgdir$_prefix/bin/activate.csh" "$pkgdir$_prefix/bin/activate.fish" \
+    "$pkgdir$_prefix/pyvenv.cfg"
+  install -Dm755 "$srcdir/qxelarator-python" "$pkgdir/usr/bin/qxelarator-python"
+  install -Dm644 "$srcdir/test_qxelarator.py" "$srcdir/bell_pair.cq" \
+    -t "$pkgdir/usr/share/$pkgname/tests/"
+  install -Dm644 "$pkgdir$_prefix/lib/python3.13/site-packages/qxelarator-$pkgver.dist-info/licenses/LICENSE.md" \
+    "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}

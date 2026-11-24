@@ -1,0 +1,42 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+# shellcheck shell=bash disable=SC2034,SC2154
+
+pkgname=lean4-cuda-nightly-bin
+_tag=nightly-2026-11-21
+_version=4.33.0-cuda-nightly.20261121.ge8f10c9ff5fe
+pkgver=4.33.0.cuda.nightly.20261121
+pkgrel=2
+pkgdesc='Experimental Lean 4 toolchain with a CUDA device-code compiler backend (Ranvier Labs nightly)'
+arch=('x86_64' 'aarch64')
+url='https://ranvier-labs.github.io/lean4-cuda-nightly/'
+license=('Apache-2.0')
+depends=('cuda>=13' 'gcc-libs' 'glibc' 'gmp' 'libuv' 'openssl')
+optdepends=('elan-lean: select the toolchain by name after elan toolchain link')
+# The archive is a complete installed Lean tree. leanc links programs against
+# its static runtime archives under lib/lean, and stripping would change the
+# shipped objects away from the bytes the published digest covers.
+options=('!strip' '!debug' 'staticlibs' 'libtool')
+_base="https://github.com/ranvier-labs/lean4-cuda-nightly/releases/download/${_tag}"
+source_x86_64=("${_base}/lean-${_version}-linux.tar.zst")
+source_aarch64=("${_base}/lean-${_version}-linux_aarch64.tar.zst")
+sha256sums_x86_64=('990269ab74d9620c5809b8c22146d2264778bbb18b0c18713bebaa80458dfb82')
+sha256sums_aarch64=('f34185b97a6a2133b114c7ea9adc8e62446274c453bd1e515f5f071be646eb73')
+
+package() {
+    local tree
+    tree=$(find "${srcdir}" -mindepth 1 -maxdepth 1 -type d -name 'lean-*')
+    [[ -x "${tree}/bin/lean" ]] || { echo "unexpected archive layout" >&2; return 1; }
+
+    install -d "${pkgdir}/opt" "${pkgdir}/usr/share/licenses/${pkgname}"
+    cp -a "${tree}" "${pkgdir}/opt/lean4-cuda-nightly"
+    # leanc and Lake pass the linker these three libraries by the absolute
+    # Debian multiarch path the toolchain was built against; Arch keeps the
+    # same libraries in /usr/lib.
+    install -d "${pkgdir}/usr/lib/${CARCH}-linux-gnu"
+    local lib
+    for lib in libgmp.so libssl.so libcrypto.so; do
+        ln -s "../${lib}" "${pkgdir}/usr/lib/${CARCH}-linux-gnu/${lib}"
+    done
+
+    cp -a "${tree}/LICENSE" "${tree}/LICENSES" "${pkgdir}/usr/share/licenses/${pkgname}/"
+}

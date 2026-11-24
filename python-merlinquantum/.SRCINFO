@@ -1,0 +1,26 @@
+pkgbase = python-merlinquantum
+	pkgdesc = Quandela's photonic quantum machine-learning layers for PyTorch (MerLin)
+	pkgver = 0.4.2
+	pkgrel = 2
+	url = https://github.com/merlinquantum/merlin
+	arch = any
+	license = MIT
+	checkdepends = python-pytest
+	checkdepends = python-pytest-benchmark
+	makedepends = git
+	makedepends = python-build
+	makedepends = python-installer
+	makedepends = python-scmver
+	makedepends = python-setuptools
+	makedepends = python-setuptools-scm
+	makedepends = python-wheel
+	depends = python
+	depends = python-numpy
+	depends = python-pandas
+	depends = python-perceval-quandela
+	depends = python-pytorch
+	depends = python-scikit-learn
+	source = merlin::git+https://github.com/merlinquantum/merlin.git#tag=0.4.2
+	b2sums = 8cd9e6976b23c3bb52fe05327d70d73f7890c038777f1df889d61a2cbce467c95927e9a35680e3866a46c97be007a48f07728ce39dbe9c4393c5008815c779ac
+
+pkgname = python-merlinquantum

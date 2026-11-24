@@ -1,0 +1,21 @@
+pkgbase = python-quantum-al
+	pkgdesc = Correlation-aware active learning for materials discovery with optional quantum kernels
+	pkgver = 0.2.0
+	pkgrel = 1
+	url = https://github.com/arnavk23/quantum_al
+	arch = any
+	license = MIT
+	makedepends = python-build
+	makedepends = python-installer
+	makedepends = python-setuptools
+	makedepends = python-wheel
+	depends = python
+	depends = python-numpy
+	depends = python-scipy
+	depends = python-scikit-learn
+	optdepends = python-qiskit: quantum kernels
+	optdepends = python-qiskit-aer: Aer estimator
+	source = https://files.pythonhosted.org/packages/source/q/quantum_al/quantum_al-0.2.0.tar.gz
+	b2sums = b2c70481cba24c12c7602598f827ea227e039970831ff35e81047304a6f1e5a0e5d4525a98656d5149a977efaec84a7bf358a92db3d63052049495c0f9a70bcd
+
+pkgname = python-quantum-al

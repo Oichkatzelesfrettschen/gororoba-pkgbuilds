@@ -1,0 +1,36 @@
+pkgbase = python-perceval-quandela
+	pkgdesc = Quandela's framework for programming photonic quantum computers and Quandela Cloud
+	pkgver = 1.3.1
+	pkgrel = 1
+	url = https://github.com/Quandela/Perceval
+	arch = any
+	license = MIT
+	checkdepends = python-flaky
+	checkdepends = python-pytest
+	checkdepends = python-pytest-benchmark
+	checkdepends = python-pytest-responses
+	checkdepends = python-responses
+	makedepends = git
+	makedepends = python-build
+	makedepends = python-installer
+	makedepends = python-scmver
+	makedepends = python-setuptools
+	makedepends = python-wheel
+	depends = python
+	depends = python-drawsvg
+	depends = python-exqalibur
+	depends = python-latexcodec
+	depends = python-matplotlib
+	depends = python-multipledispatch
+	depends = python-networkx
+	depends = python-numpy
+	depends = python-platformdirs
+	depends = python-requests
+	depends = python-scipy
+	depends = python-sympy
+	depends = python-tabulate
+	depends = python-tqdm
+	source = Perceval::git+https://github.com/Quandela/Perceval.git#tag=v1.3.1
+	b2sums = f58489e4022e21babc41a43639fe9f6df9930fbb080a288ed1f34c6264c7cffeb8046112a92ec2e8e8a318721b106c64fb2b624ab863eb113dd7336932561206
+
+pkgname = python-perceval-quandela

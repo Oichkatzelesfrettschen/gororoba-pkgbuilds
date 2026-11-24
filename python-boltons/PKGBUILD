@@ -1,0 +1,25 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+# shellcheck shell=bash disable=SC2034,SC2154
+
+# PyPI 26.2.0. AUR python-boltons is also 26.2.0-1, but paru -S, paru -Sp,
+# and paru --aur -Sp all select blackarch/python-boltons 25.0.0-2.
+# This recipe is the package python-amazon-braket-sdk depends on.
+# The wheel license is the 3-clause BSD text.
+
+pkgname=python-boltons
+pkgver=26.2.0
+pkgrel=1
+pkgdesc='Functionality that should be in the standard library'
+arch=('any')
+url='https://github.com/mahmoud/boltons'
+license=('BSD-3-Clause')
+depends=('python')
+makedepends=('python-installer')
+_wheel='boltons-26.2.0-py3-none-any.whl'
+source=("$_wheel::https://files.pythonhosted.org/packages/d2/ac/1f8e4f4855e382a67392ca3bba329cb93aba1e3039289c52a86bf337f7a2/boltons-26.2.0-py3-none-any.whl")
+noextract=("$_wheel")
+sha256sums=('41942cbce440211bbcf2487ccdc356964ad674f95a01068b8a0dd7a1d1fed036')
+
+package() {
+	python -m installer --destdir="$pkgdir" "$_wheel"
+}

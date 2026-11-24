@@ -1,0 +1,16 @@
+pkgbase = python-scmver
+	pkgdesc = Version string from a source control checkout (build requirement of perceval-quandela)
+	pkgver = 1.10
+	pkgrel = 1
+	url = https://github.com/hattya/scmver
+	arch = any
+	license = MIT
+	makedepends = python-installer
+	depends = python
+	depends = python-setuptools
+	optdepends = python-click: scmver command line
+	noextract = scmver-1.10-py3-none-any.whl
+	source = https://files.pythonhosted.org/packages/py3/s/scmver/scmver-1.10-py3-none-any.whl
+	sha256sums = 786b4e6baee35c7439f97de7ab92385d6290273ba47ec41b1a09d91ce910a539
+
+pkgname = python-scmver

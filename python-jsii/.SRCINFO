@@ -1,0 +1,20 @@
+pkgbase = python-jsii
+	pkgdesc = Python runtime for jsii-generated libraries
+	pkgver = 1.143.0
+	pkgrel = 1
+	url = https://github.com/aws/jsii
+	arch = any
+	license = Apache-2.0
+	makedepends = python-installer
+	depends = python
+	depends = python-attrs
+	depends = python-cattrs
+	depends = python-publication
+	depends = python-dateutil
+	depends = python-typing_extensions
+	depends = python-typeguard
+	noextract = jsii-1.143.0-py3-none-any.whl
+	source = jsii-1.143.0-py3-none-any.whl::https://files.pythonhosted.org/packages/c8/2b/3d5562791e0531eb6e76da9038e2661258b48fdb9f730d6e5abe562f0d3a/jsii-1.143.0-py3-none-any.whl
+	sha256sums = 9d006ebf44ef171595a339bb691e86b4008a45ed454b65b2826a8122d2087278
+
+pkgname = python-jsii
