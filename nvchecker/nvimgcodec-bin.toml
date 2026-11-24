@@ -1,0 +1,4 @@
+# artifact host developer.download.nvidia.com (no nvchecker source)
+[nvimgcodec-bin]
+source = "manual"
+manual = "0.9.0.20"

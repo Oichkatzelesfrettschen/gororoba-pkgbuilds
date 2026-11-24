@@ -1,0 +1,6 @@
+[aide]
+source = "github"
+github = "aide/aide"
+use_latest_release = true
+prefix = "v"
+exclude_regex = "(alpha|beta|rc|dev)"
