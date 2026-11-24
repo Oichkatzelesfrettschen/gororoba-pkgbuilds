@@ -1,0 +1,22 @@
+pkgbase = python-qcog
+	pkgdesc = Simulation, explanation and visualization of small Qiskit circuits
+	pkgver = 0.1.0
+	pkgrel = 1
+	url = https://github.com/WileQ/QCog
+	arch = any
+	license = MIT
+	makedepends = python-build
+	makedepends = python-installer
+	makedepends = python-setuptools
+	makedepends = python-wheel
+	depends = python
+	depends = python-numpy
+	depends = python-scipy
+	depends = python-pandas
+	depends = python-matplotlib
+	depends = python-qiskit
+	depends = python-qiskit-aer
+	source = https://files.pythonhosted.org/packages/source/q/qcog/qcog-0.1.0.tar.gz
+	b2sums = 8f94481264e23d09ad434fa05cb7ec9e62deb600e17425b80e1497d5a282509043e15a4e68d9057825e5c229ea233f2a1213bf2f36040939195b408625e7e53e
+
+pkgname = python-qcog

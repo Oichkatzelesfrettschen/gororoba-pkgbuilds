@@ -1,0 +1,27 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+
+# Reading a checkpoint database unpickles every segment tagged __p__, so a
+# database from another source runs code; allow_pickle gates writes only.
+pkgname=python-qiskit-resume
+_name=qiskit_resume
+pkgver=0.2.1
+pkgrel=1
+pkgdesc="Record and replay layer that resumes interrupted Qiskit primitive workflows"
+arch=('any')
+url="https://github.com/set3523/Qiskit-resume"
+license=('MIT')
+depends=('python' 'python-qiskit' 'python-numpy')
+makedepends=('python-build' 'python-installer' 'python-setuptools' 'python-wheel')
+source=("https://files.pythonhosted.org/packages/source/${_name::1}/$_name/$_name-$pkgver.tar.gz")
+b2sums=('a98915bc8e4f8ca8e333ecbd7ea59a85ca603d3e113b99c3faa6d31180c57950a149ed265a5585ebb0a41d7ef13f19106cb6db4eb1295131e3306f07590c587e')
+
+build() {
+	cd "$_name-$pkgver"
+	python -m build --wheel --no-isolation
+}
+
+package() {
+	cd "$_name-$pkgver"
+	python -m installer --destdir="$pkgdir" dist/*.whl
+	install -Dm644 LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}

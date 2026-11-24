@@ -1,0 +1,22 @@
+pkgbase = python-qiskit-connector
+	pkgdesc = Least-busy IBM Quantum backend selection for Qiskit Runtime
+	pkgver = 2.4.6
+	pkgrel = 1
+	url = https://github.com/schijioke-uche/qiskit-connector
+	arch = any
+	license = Apache-2.0
+	makedepends = python-build
+	makedepends = python-installer
+	makedepends = python-setuptools
+	makedepends = python-wheel
+	depends = python
+	depends = python-requests
+	depends = python-dotenv
+	depends = python-qiskit
+	depends = python-qiskit-ibm-runtime
+	depends = python-pillow
+	depends = ipython
+	source = https://files.pythonhosted.org/packages/source/q/qiskit_connector/qiskit_connector-2.4.6.tar.gz
+	b2sums = 3fde2cfd1fe7dbba7d4813cb1ea8c2a03559a0510350face1db79d8f0a8edf26602c5c64413073ce22e39282574cecce99e758aab47282e8469b2c694aa5815e
+
+pkgname = python-qiskit-connector

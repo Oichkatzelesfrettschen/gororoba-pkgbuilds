@@ -1,0 +1,33 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+
+pkgname=python-qiskit-serverless
+_name=qiskit_serverless
+pkgver=0.38.0
+pkgrel=1
+pkgdesc="Client SDK for Qiskit Serverless workloads (IBM Qiskit Functions)"
+arch=('any')
+url="https://github.com/Qiskit/qiskit-serverless"
+license=('Apache-2.0')
+depends=('python' 'python-requests' 'python-importlib-metadata' 'python-qiskit' 'python-qiskit-ibm-runtime' 'python-cloudpickle' 'python-tqdm' 'python-opentelemetry-api' 'python-opentelemetry-sdk' 'python-opentelemetry-exporter-otlp-proto-http' 'python-opentelemetry-instrumentation-requests' 'ipython' 'python-numpy' 'python-aiohttp' 'python-zipp' 'python-certifi')
+makedepends=('python-build' 'python-installer' 'python-setuptools' 'python-setuptools-scm' 'python-wheel')
+source=("https://files.pythonhosted.org/packages/source/${_name::1}/$_name/$_name-$pkgver.tar.gz")
+b2sums=('ecb96eaf9bcbaf81bbc4e4f7866fba739ce9119a25146e1382982c8a46751cc1730c8481bd719e811f376a7de83c3cd713ccf94b265022d336e0158809adc6f5')
+prepare() {
+	cd "$_name-$pkgver"
+	# Upstream caps qiskit-ibm-runtime below 0.51 and pins cloudpickle, zipp,
+	# certifi and ipython to its Ray image; the system carries runtime 0.51,
+	# ipython 9 and the distribution zipp and certifi.
+	sed -i -e "s/qiskit-ibm-runtime>=0.50.0, <0.51.0/qiskit-ibm-runtime>=0.50.0/" \
+		-e "s/^cloudpickle==.*/cloudpickle>=3.1/" -e "s/^zipp==.*/zipp/" -e "s/^certifi==.*/certifi/" \
+		-e "s/^ipython>=8.39.0, <9/ipython>=8.39.0/" -e "s/opentelemetry-\\([a-z-]*\\)>=1.45.0, <1.46/opentelemetry-\\1>=1.45.0/" requirements.txt
+}
+
+build() {
+	cd "$_name-$pkgver"
+	python -m build --wheel --no-isolation
+}
+
+package() {
+	cd "$_name-$pkgver"
+	python -m installer --destdir="$pkgdir" dist/*.whl
+}

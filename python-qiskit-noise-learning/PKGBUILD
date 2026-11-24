@@ -1,0 +1,25 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+
+pkgname=python-qiskit-noise-learning
+_name=qiskit_noise_learning
+pkgver=0.2.0
+pkgrel=1
+pkgdesc="Randomization-based quantum noise characterization for Qiskit"
+arch=('any')
+url="https://github.com/Qiskit/qiskit-noise-learning"
+license=('Apache-2.0')
+depends=('python' 'python-numpy' 'python-qiskit' 'python-rustworkx' 'python-samplomatic' 'python-scipy' 'python-xarray')
+makedepends=('python-build' 'python-installer' 'python-setuptools' 'python-setuptools-scm' 'python-wheel')
+source=("https://files.pythonhosted.org/packages/source/${_name::1}/$_name/$_name-$pkgver.tar.gz")
+b2sums=('69c1ec8f9582d60eb742902cfbe96a1df3fe2eae08d488644d3846abe30a2dff828f831b9530fb5a5d7a8446114089de930ce8fa3d55a8ba608d454075d51094')
+
+build() {
+	cd "$_name-$pkgver"
+	python -m build --wheel --no-isolation
+}
+
+package() {
+	cd "$_name-$pkgver"
+	python -m installer --destdir="$pkgdir" dist/*.whl
+	install -Dm644 LICENSE.txt "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}

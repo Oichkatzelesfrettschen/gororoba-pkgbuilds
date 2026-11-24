@@ -1,0 +1,28 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+
+# Importing qiskit_connector loads ./.env, else ~/.env, with override=True,
+# and save_account() writes the IQP_API_TOKEN account into
+# ~/.qiskit/qiskit-ibm.json as the default, replacing the existing default.
+pkgname=python-qiskit-connector
+_name=qiskit_connector
+pkgver=2.4.6
+pkgrel=1
+pkgdesc="Least-busy IBM Quantum backend selection for Qiskit Runtime"
+arch=('any')
+url="https://github.com/schijioke-uche/qiskit-connector"
+license=('Apache-2.0')
+depends=('python' 'python-requests' 'python-dotenv' 'python-qiskit' 'python-qiskit-ibm-runtime' 'python-pillow' 'ipython')
+makedepends=('python-build' 'python-installer' 'python-setuptools' 'python-wheel')
+source=("https://files.pythonhosted.org/packages/source/${_name::1}/$_name/$_name-$pkgver.tar.gz")
+b2sums=('3fde2cfd1fe7dbba7d4813cb1ea8c2a03559a0510350face1db79d8f0a8edf26602c5c64413073ce22e39282574cecce99e758aab47282e8469b2c694aa5815e')
+
+build() {
+	cd "$_name-$pkgver"
+	python -m build --wheel --no-isolation
+}
+
+package() {
+	cd "$_name-$pkgver"
+	python -m installer --destdir="$pkgdir" dist/*.whl
+	install -Dm644 LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}

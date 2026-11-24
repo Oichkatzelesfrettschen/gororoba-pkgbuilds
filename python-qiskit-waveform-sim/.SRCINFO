@@ -1,0 +1,20 @@
+pkgbase = python-qiskit-waveform-sim
+	pkgdesc = Control-waveform synthesizer and schedule viewer driven by a Qiskit 2.x Target
+	pkgver = 0.3.0
+	pkgrel = 1
+	url = https://github.com/PratulDeshpande/qiskit-waveform-sim
+	arch = any
+	license = Apache-2.0
+	makedepends = python-build
+	makedepends = python-installer
+	makedepends = python-setuptools
+	makedepends = python-wheel
+	depends = python
+	depends = python-qiskit
+	depends = python-numpy
+	depends = python-matplotlib
+	depends = python-plotly
+	source = https://files.pythonhosted.org/packages/source/q/qiskit_waveform_sim/qiskit_waveform_sim-0.3.0.tar.gz
+	b2sums = a1dfc3f509da2d787da99c7fe366a92f9977c1f7e88e091f700c40a367dec76e54f9d018294e63b8080d6f17aeff85dccd0abe4ca8517f1017a9170719357b5e
+
+pkgname = python-qiskit-waveform-sim

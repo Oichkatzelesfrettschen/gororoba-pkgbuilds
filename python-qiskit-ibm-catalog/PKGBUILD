@@ -1,0 +1,25 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+
+pkgname=python-qiskit-ibm-catalog
+_name=qiskit_ibm_catalog
+pkgver=0.22.0
+pkgrel=1
+pkgdesc="Client for the IBM Quantum Platform Qiskit Functions catalog"
+arch=('any')
+url="https://github.com/Qiskit/qiskit-ibm-catalog"
+license=('Apache-2.0')
+depends=('python' 'python-importlib-metadata' 'python-qiskit-serverless')
+makedepends=('python-build' 'python-installer' 'python-setuptools' 'python-setuptools-scm' 'python-wheel')
+source=("https://files.pythonhosted.org/packages/source/${_name::1}/$_name/$_name-$pkgver.tar.gz")
+b2sums=('d0aa04767d055007a070971a18a9b65e0c0178e6b1e39369ec840416201537cdb3efae903de39ac0875dd7296eb35fb6cd9c0863f3f6ca6ca99ccc9a87932464')
+
+build() {
+	cd "$_name-$pkgver"
+	python -m build --wheel --no-isolation
+}
+
+package() {
+	cd "$_name-$pkgver"
+	python -m installer --destdir="$pkgdir" dist/*.whl
+	install -Dm644 LICENSE.txt "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}

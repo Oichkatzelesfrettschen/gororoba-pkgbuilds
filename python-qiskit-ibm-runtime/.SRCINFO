@@ -1,0 +1,39 @@
+pkgbase = python-qiskit-ibm-runtime
+	pkgdesc = IBM Client for Qiskit Runtime
+	pkgver = 0.52.1
+	pkgrel = 1
+	url = https://github.com/Qiskit/qiskit-ibm-runtime
+	arch = any
+	license = Apache-2.0
+	checkdepends = python-ddt
+	checkdepends = python-plotly
+	checkdepends = python-pytest
+	checkdepends = python-responses
+	makedepends = git
+	makedepends = python-build
+	makedepends = python-installer
+	makedepends = python-setuptools
+	makedepends = python-setuptools-scm
+	depends = blas
+	depends = lapack
+	depends = python-dateutil
+	depends = python-ibm-platform-services
+	depends = python-ibm-quantum-schemas
+	depends = python-numpy
+	depends = python-pybase64
+	depends = python-pydantic
+	depends = python-qiskit
+	depends = python-qiskit-aer
+	depends = python-qiskit-mitigation
+	depends = python-requests
+	depends = python-requests-ntlm
+	depends = python-samplomatic
+	depends = python-scipy
+	depends = python-urllib3
+	optdepends = python-plotly: interactive plots
+	optdepends = python-qiskit-aer: support for simulator and noise models
+	optdepends = python-qiskit-noise-learning>=0.2.0: NoiseLearnerV3 (the noise-learning extra)
+	source = qiskit-ibm-runtime::git+https://github.com/Qiskit/qiskit-ibm-runtime.git#tag=0.52.1
+	b2sums = 601faacd129b4213ad121cfb6db381bdcaf23e5e1f60041f396c36ab0de550ffed20af8179798068c294e9367af767746fcc0f299633ac63ea73b9d3206bbd53
+
+pkgname = python-qiskit-ibm-runtime

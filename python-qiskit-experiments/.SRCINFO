@@ -1,0 +1,27 @@
+pkgbase = python-qiskit-experiments
+	pkgdesc = Qiskit Experiments: characterization, calibration and verification experiments
+	pkgver = 0.14.2
+	pkgrel = 2
+	url = https://github.com/qiskit-community/qiskit-experiments
+	arch = any
+	license = Apache-2.0
+	makedepends = python-build
+	makedepends = python-installer
+	makedepends = python-setuptools
+	makedepends = python-setuptools-scm
+	makedepends = python-wheel
+	depends = python
+	depends = python-lmfit
+	depends = python-matplotlib
+	depends = python-numpy
+	depends = python-packaging
+	depends = python-pandas
+	depends = python-qiskit
+	depends = python-qiskit-ibm-runtime
+	depends = python-rustworkx
+	depends = python-scipy
+	depends = python-uncertainties
+	source = https://files.pythonhosted.org/packages/source/q/qiskit_experiments/qiskit_experiments-0.14.2.tar.gz
+	sha256sums = b06b46311d022ed4a15dc3e0ec89d3a7965caec1e58a758f23727085fb404ce4
+
+pkgname = python-qiskit-experiments

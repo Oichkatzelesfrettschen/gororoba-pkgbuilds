@@ -1,0 +1,19 @@
+pkgbase = python-qiskit-ibm-catalog
+	pkgdesc = Client for the IBM Quantum Platform Qiskit Functions catalog
+	pkgver = 0.22.0
+	pkgrel = 1
+	url = https://github.com/Qiskit/qiskit-ibm-catalog
+	arch = any
+	license = Apache-2.0
+	makedepends = python-build
+	makedepends = python-installer
+	makedepends = python-setuptools
+	makedepends = python-setuptools-scm
+	makedepends = python-wheel
+	depends = python
+	depends = python-importlib-metadata
+	depends = python-qiskit-serverless
+	source = https://files.pythonhosted.org/packages/source/q/qiskit_ibm_catalog/qiskit_ibm_catalog-0.22.0.tar.gz
+	b2sums = d0aa04767d055007a070971a18a9b65e0c0178e6b1e39369ec840416201537cdb3efae903de39ac0875dd7296eb35fb6cd9c0863f3f6ca6ca99ccc9a87932464
+
+pkgname = python-qiskit-ibm-catalog
