@@ -1,0 +1,7 @@
+iqm-client[qiskit,cirq,qrisp]==36.0.0
+iqm-pulla==15.0.0
+iqm-qaoa==3.0.0
+iqm-qubit-selector==1.2.0
+iqm-benchmarks==3.0.0
+iqm-error-reduction-tools==0.3.0
+pytest

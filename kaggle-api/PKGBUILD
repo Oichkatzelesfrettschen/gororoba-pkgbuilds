@@ -1,0 +1,27 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+
+pkgname=kaggle-api
+_name=kaggle
+pkgver=2.2.5
+# Over the AUR recipe this adds python-jupytext and python-dotenv, which kaggle requires (requires_dist) and the AUR
+# depends array omits; 2.2.5 adds the certifi and kagglesdk floors of its requires_dist.
+pkgrel=1
+pkgdesc="Kaggle API command-line client"
+arch=('any')
+url="https://github.com/Kaggle/kaggle-api"
+license=('Apache-2.0')
+depends=('python' 'python-bleach' 'python-certifi>=2026.10.19' 'python-jupytext' 'python-kagglesdk>=0.1.38' 'python-packaging' 'python-protobuf'
+         'python-dateutil' 'python-dotenv' 'python-slugify' 'python-requests' 'python-tqdm' 'python-urllib3')
+makedepends=('python-build' 'python-installer' 'python-wheel' 'python-hatchling')
+source=("https://files.pythonhosted.org/packages/source/${_name::1}/${_name}/${_name}-${pkgver}.tar.gz")
+sha256sums=('edb4298fbfddbdfcf020072a8971bd335e247191ebb4ab70ee4c6d30f6ecb9fa')
+
+build() {
+	cd "${_name}-${pkgver}"
+	python -m build --wheel --no-isolation
+}
+
+package() {
+	cd "${_name}-${pkgver}"
+	python -m installer --destdir="$pkgdir" dist/*.whl
+}

@@ -1,0 +1,28 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+pkgname=build-host-tab-scope-oom
+pkgver=1
+pkgrel=3
+pkgdesc='systemd-oomd budget for terminal tab and tmux scopes: 2 GiB swap, 16 GiB memory, avoid preference, OOMPolicy=continue'
+arch=('any')
+url='https://github.com/Oichkatzelesfrettschen/gororoba-infrastructure'
+license=('MIT')
+depends=('systemd')
+install=build-host-tab-scope-oom.install
+source=('10-tab-scope-oom.conf' 'README.md')
+sha256sums=('8539b2c6ac6cf8198dee7b95d2b0162ce8fdefeeb0171a2beebe95018b961970'
+            '6776e872a556fda9ed739e340e7f07f2472a848d170097b929d3042902ee727e')
+
+check() {
+  grep -qx 'MemorySwapMax=2G' "$srcdir/10-tab-scope-oom.conf"
+  grep -qx 'OOMPolicy=continue' "$srcdir/10-tab-scope-oom.conf"
+}
+
+package() {
+  # A prefix drop-in directory (NAME-.scope.d) applies to every unit whose name starts with NAME-,
+  # transient scopes included (systemd.unit(5), "Drop-in directories"); the user manager reads
+  # /usr/lib/systemd/user, so removing the package restores the stock scope settings.
+  for prefix in ptyxis-spawn- tmux-spawn-; do
+    install -Dm644 "$srcdir/10-tab-scope-oom.conf" "$pkgdir/usr/lib/systemd/user/$prefix.scope.d/10-tab-scope-oom.conf"
+  done
+  install -Dm644 "$srcdir/README.md" "$pkgdir/usr/share/doc/$pkgname/README.md"
+}

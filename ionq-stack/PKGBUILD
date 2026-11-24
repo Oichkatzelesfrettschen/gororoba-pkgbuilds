@@ -1,0 +1,53 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+
+# IonQ Qiskit provider as one self-contained Python 3.13 environment.
+# qiskit-ionq 1.1.1 requires qiskit>=2.0.0 and the lock resolves qiskit
+# 2.6.1, newer than the system python-qiskit that python-qiskit-aer and
+# python-qiskit-ibm-runtime are built against; the stack lives under /opt
+# so the provider and its Qiskit move without touching those packages.
+pkgname=ionq-stack
+pkgver=1.1.1
+pkgrel=2
+pkgdesc="IonQ Qiskit provider (qiskit-ionq 1.1.1 on Qiskit 2.x) as a hash-locked Python 3.13 environment"
+arch=('x86_64')
+url="https://github.com/qiskit-community/qiskit-ionq"
+license=('Apache-2.0')
+depends=(python313 gcc-libs glibc)
+_prefix=/opt/$pkgname
+source=(
+	requirements.in
+	requirements.lock
+	test_ionq_stack.py
+	ionq-python
+)
+b2sums=('2cb202a4f7cf39146f55282bd183a6781c585da243edddc8973283bd62d45819a82dc1f1ce66e31c1a2af07cbdbfc046119f7fde29cef35e98f420667bf5b2e6'
+        'c8a277f0b80e1f16d5916bee0b7357e7ba1bd80066b602f33b076cdf2d47b414fcff1a381ff301c37e4c70e1513bd11351b11adeff7a25ef4c31578c7ee7717c'
+        '215d8f4fbb8f4aa07d5b629ea29cf31dde9d4c783eccf7fd385112c07eba9cbf654cece7fa6768762ed0442afe940890266644248bbf07f8c703956fe2c11758'
+        '84ae251a8bc787aa34fbe02d22096de99b5ac6b6df36558e407765d308deab46b583e36bd4b7ea56a5f22d7095650aab7da10edb1dc5272f134f4dbd089f1fb2')
+
+build() {
+	/usr/bin/python3.13 -m venv --clear "$srcdir/stack"
+	"$srcdir/stack/bin/python" -m pip install -q --no-cache-dir --upgrade pip==25.3
+	# --require-hashes binds every distribution to the lock, --only-binary
+	# keeps the install to published wheels, and --no-deps keeps the
+	# resolved set equal to the lock.
+	"$srcdir/stack/bin/python" -m pip install -q --no-cache-dir --require-hashes --no-deps --only-binary :all: \
+		-r "$srcdir/requirements.lock"
+}
+
+check() {
+	cd "$srcdir"
+	"$srcdir/stack/bin/python" -P -m pytest -q -p no:cacheprovider test_ionq_stack.py
+}
+
+package() {
+	install -d "$pkgdir$_prefix"
+	cp -a "$srcdir/stack/." "$pkgdir$_prefix/"
+	# Entry-point shebangs and activate scripts carry the build path.
+	grep -rlI --null "$srcdir/stack" "$pkgdir$_prefix/bin" "$pkgdir$_prefix/pyvenv.cfg" |
+		xargs -0 -r sed -i "s|$srcdir/stack|$_prefix|g"
+	find "$pkgdir$_prefix" -name __pycache__ -prune -exec rm -r {} +
+	"$pkgdir$_prefix/bin/python" -m compileall -q -j0 -d "$_prefix/lib" "$pkgdir$_prefix/lib" >/dev/null
+	install -Dm644 requirements.in requirements.lock test_ionq_stack.py -t "$pkgdir/usr/share/$pkgname/"
+	install -Dm755 ionq-python "$pkgdir/usr/bin/ionq-python"
+}

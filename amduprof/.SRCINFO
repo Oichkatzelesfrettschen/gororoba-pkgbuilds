@@ -1,0 +1,23 @@
+pkgbase = amduprof
+	pkgdesc = AMD uProf performance analysis tool for CPU and GPU profiling
+	pkgver = 5.2.606
+	pkgrel = 2
+	url = https://www.amd.com/en/developer/uprof.html
+	arch = x86_64
+	license = custom:AMD
+	depends = glib2
+	depends = freetype2
+	depends = fontconfig
+	depends = numactl
+	depends = dbus
+	depends = libglvnd
+	depends = libxkbcommon
+	depends = libarchive
+	depends = elfutils
+	optdepends = dkms: kernel module support
+	options = staticlibs
+	options = !strip
+	source = AMDuProf_Linux_x64_5.2.606.tar.bz2
+	sha256sums = SKIP
+
+pkgname = amduprof

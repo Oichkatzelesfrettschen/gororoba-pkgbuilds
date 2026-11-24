@@ -1,0 +1,20 @@
+pkgbase = chatgpt-webview
+	pkgdesc = Minimal multi-tab WebKitGTK browser for ChatGPT with persistent sessions
+	pkgver = 0.1.0
+	pkgrel = 6
+	url = https://github.com/Oichkatzelesfrettschen/gororoba-infrastructure
+	arch = x86_64
+	license = MIT
+	depends = webkit2gtk-4.1
+	depends = gtk3
+	depends = glib2
+	depends = glibc
+	depends = gnutls
+	source = chatgpt-webview.c
+	source = chatgpt-webview.desktop
+	source = gnutls-priority.conf
+	sha256sums = 8e5e8922f91eedfd217e1728e3761eb05b0ae1bc23c576ab0653162647291998
+	sha256sums = 2f3ac5bad441dfc1ef71b04573e083a66e0277f25d19009b8c9ce8ce359cbe13
+	sha256sums = cb8594dec9af026d1a232cc86cea86c600258af77684f892ff40795382c2b435
+
+pkgname = chatgpt-webview

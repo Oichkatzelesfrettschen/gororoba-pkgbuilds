@@ -1,0 +1,59 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+
+# IQM OS 4.7 client stack as one self-contained Python 3.13 environment.
+# iqm-client 36.0.0 caps qiskit<2.2, pydantic<2.13 and packaging<25, below
+# the system's python-qiskit, python-pydantic and python-packaging, so the
+# stack lives under /opt with IQM's qccsw 4.7.0 constraints and a hash lock.
+pkgname=iqm-resonance-stack
+pkgver=4.7.0
+pkgrel=3
+pkgdesc="IQM Resonance client stack (iqm-client 36, Qiskit/Cirq/Qrisp, pulse, benchmarks) pinned to IQM OS 4.7"
+arch=('x86_64')
+url="https://docs.iqm.tech/4.7/iqm-client/"
+license=('Apache-2.0')
+depends=(python313 gcc-libs glibc)
+makedepends=(gcc)
+_prefix=/opt/$pkgname
+source=(
+	constraints-iqm-qccsw-4.7.0.txt
+	requirements.in
+	requirements.lock
+	test_iqm_stack.py
+	iqm-python
+	pip-bootstrap.lock
+)
+b2sums=('f9e079b0a0417235da97193352a076a653b0e5e9689153dfd0bd727d4238a572903799869076dd958544a2c8fab0ef61c47cf12ed7885d0517664ac6b65dfc93'
+        '7cd32b86089079d8002dacd9cecdd46a2d14ff86862cc65c0ea83d659277c4f061b546a5c1a3d572ec10215fccb0284cfdcd128373ca5646f08c7c5c4223e266'
+        '7332c04d99bf44b25bf952b42d8b908c64614d7fa71fa6262147849b846069ab0f6edee40340f876d0f7bf5743c381aa3aed06b26535980f12dedbd665763aff'
+        '703f0c65ffc364445efb2f6d79bfbcd6658b5d1f6bc8645e0744666810a123deb34af2849eea3a359c360d27349a0938a1116754aba9af73a806b743494d8140'
+        '81015dc0b6153bde48059674a45eb635e4105ea0799dff74487c7ca678d3e8ed331b6c47d391b89e45470adf2fadc45eafe73a3e5622586a47ec25058c8623a5'
+        '54c7d92483eea4e25ac5c7b90f115f10447d5d30499eb3640d5d9d43ce745ad97e65a3886def67fa1b4a7d03b6bd392685d2c1069389bd8749e1336cc75a47c0')
+
+build() {
+	/usr/bin/python3.13 -m venv --clear "$srcdir/stack"
+	# The pip that installs the lock is itself bound to its published wheel hash.
+	"$srcdir/stack/bin/python" -m pip install -q --no-cache-dir --require-hashes --no-deps --only-binary :all: \
+		-r "$srcdir/pip-bootstrap.lock"
+	# --require-hashes binds every distribution, mthree's sdist included, to
+	# the lock; --no-deps keeps the resolved set equal to it.
+	"$srcdir/stack/bin/python" -m pip install -q --no-cache-dir --require-hashes --no-deps \
+		-r "$srcdir/requirements.lock"
+}
+
+check() {
+	cd "$srcdir"
+	MPLBACKEND=Agg "$srcdir/stack/bin/python" -P -m pytest -q -p no:cacheprovider test_iqm_stack.py
+}
+
+package() {
+	install -d "$pkgdir$_prefix"
+	cp -a "$srcdir/stack/." "$pkgdir$_prefix/"
+	# Entry-point shebangs and activate scripts carry the build path.
+	grep -rlI --null "$srcdir/stack" "$pkgdir$_prefix/bin" "$pkgdir$_prefix/pyvenv.cfg" |
+		xargs -0 -r sed -i "s|$srcdir/stack|$_prefix|g"
+	find "$pkgdir$_prefix" -name __pycache__ -prune -exec rm -r {} +
+	"$pkgdir$_prefix/bin/python" -m compileall -q -j0 -d "$_prefix/lib" "$pkgdir$_prefix/lib" >/dev/null
+	install -Dm644 constraints-iqm-qccsw-4.7.0.txt requirements.in requirements.lock test_iqm_stack.py pip-bootstrap.lock \
+		-t "$pkgdir/usr/share/$pkgname/"
+	install -Dm755 iqm-python "$pkgdir/usr/bin/iqm-python"
+}

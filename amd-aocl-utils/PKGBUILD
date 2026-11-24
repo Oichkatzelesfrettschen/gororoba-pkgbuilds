@@ -1,0 +1,57 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+
+pkgname=amd-aocl-utils
+pkgver=5.3
+pkgrel=1
+pkgdesc='AMD AOCL CPU feature and dispatch utility library'
+arch=('x86_64')
+url='https://github.com/amd/aocl-utils'
+license=('BSD-3-Clause')
+depends=('gcc-libs' 'glibc')
+makedepends=('cmake' 'ninja')
+provides=("aocl-utils=${pkgver}" 'aocl-utils')
+conflicts=('aocl-utils' 'aocl-utils-aocc')
+options=('staticlibs' '!emptydirs' '!lto')
+source=("${pkgname}-${pkgver}.tar.gz::${url}/archive/refs/tags/${pkgver}.tar.gz")
+sha256sums=('0e29afbbda3b81528380d2dbf7dae1ed6825d8c69e0abfcce53cc6cf90430e69')
+
+prepare() {
+    cd "aocl-utils-${pkgver}" || exit
+
+    # AOCL Utils auto-runs clang-tidy when the binary exists on the build host.
+    # Package builds should not change diagnostics based on optional host tools.
+    sed -i \
+        -e 's/if(NOT CMAKE_CXX_CLANG_TIDY)/if(FALSE)/' \
+        CMakeLists.txt
+
+    # CMake install runs inside DESTDIR; the package manager owns ldconfig.
+    sed -i \
+        '/if (UNIX)/,/endif()/d' \
+        CMake/au_install.cmake
+}
+
+build() {
+    cmake -S "aocl-utils-${pkgver}" -B build -G Ninja \
+        -DCMAKE_BUILD_TYPE=Release \
+        -DCMAKE_INSTALL_PREFIX=/usr \
+        -DBUILD_SHARED_LIBS=ON
+
+    cmake --build build
+}
+
+check() {
+    ctest --test-dir build --output-on-failure
+}
+
+package() {
+    DESTDIR="${pkgdir}" cmake --install build
+
+    install -Dm644 "${pkgdir}/usr/version.txt" \
+        "${pkgdir}/usr/share/doc/${pkgname}/version.txt"
+    rm -f "${pkgdir}/usr/version.txt"
+
+    install -Dm644 "aocl-utils-${pkgver}/LICENSE.txt" \
+        "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
+    install -Dm644 "aocl-utils-${pkgver}/NOTICE.txt" \
+        "${pkgdir}/usr/share/licenses/${pkgname}/NOTICE"
+}

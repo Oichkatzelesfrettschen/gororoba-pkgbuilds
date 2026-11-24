@@ -1,0 +1,121 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+pkgname=amd-aocl-blis
+pkgver=5.3
+pkgrel=1
+pkgdesc='AMD AOCL BLIS with OpenMP default and pthreads alternate library'
+arch=('x86_64')
+url='https://github.com/amd/blis'
+license=('BSD-3-Clause')
+depends=('gcc-libs' 'glibc')
+makedepends=('cmake' 'gcc-fortran' 'gcc14' 'ninja' 'python')
+provides=("blis=${pkgver}" 'blis' "aocl-blis=${pkgver}" 'aocl-blis')
+conflicts=('blis' 'aocl-blis' 'aocl-blis-aocc')
+options=('staticlibs' '!emptydirs' '!lto')
+source=("${pkgname}-${pkgver}.tar.gz::${url}/archive/refs/tags/${pkgver}.tar.gz")
+sha256sums=('0d456548174a5a71df1225b5648d802d53d0351187ae2f829ecf5122f3aeab9e')
+
+_soversion=5
+_realver=5.3.0
+_cc=${AOCL_BLIS_CC:-gcc-14}
+_cxx=${AOCL_BLIS_CXX:-g++-14}
+
+prepare() {
+    cd "blis-${pkgver}" || exit
+
+    # The amdzen family builds multiple Zen kernels and dispatches at runtime.
+    # Remove host-native defaults while preserving AOCL's per-kernel ISA flags.
+    sed -i \
+        -e 's/-O3 -march=native -fopenmp-simd/-O3 -fopenmp-simd/' \
+        -e 's/set(CLANGFLAGS "-D_FORTIFY_SOURCE=2" /set(CLANGFLAGS /' \
+        -e 's/set(CXXLANGFLAGS "-D_FORTIFY_SOURCE=2" /set(CXXLANGFLAGS /' \
+        CMakeLists.txt
+}
+
+_sanitize_march_flags() {
+    printf '%s' "$1" |
+        sed -E \
+            -e 's/(^|[[:space:]])-(march|mtune)=[^[:space:]]+//g' \
+            -e 's/(^|[[:space:]])-flto(=[^[:space:]]+)?//g' \
+            -e 's/^[[:space:]]+//' \
+            -e 's/[[:space:]]+$//' \
+            -e 's/[[:space:]]+/ /g'
+}
+
+_configure_variant() {
+    local threading="$1"
+
+    # Build both threading ABIs from the same amdzen source configuration.
+    # OpenMP remains the default libblis-mt provider; pthreads is installed
+    # under a distinct SONAME and pkg-config file for consumers that need it.
+    cmake -S "blis-${pkgver}" -B "build-${threading}" -G Ninja \
+        -DCMAKE_BUILD_TYPE=Release \
+        -DCMAKE_INSTALL_PREFIX=/usr \
+        -DBLIS_CONFIG_FAMILY=amdzen \
+        -DENABLE_THREADING="${threading}" \
+        -DENABLE_BLAS=ON \
+        -DENABLE_CBLAS=ON \
+        -DENABLE_ADDON=aocl_gemm \
+        -DENABLE_AOCL_DYNAMIC=ON \
+        -DENABLE_MEMKIND=no \
+        -DBUILD_SHARED_LIBS=ON \
+        -DBUILD_STATIC_LIBS=ON \
+        -DTHREAD_PART_JRIR=slab \
+        -DEXPORT_SHARED=public
+}
+
+build() {
+    CFLAGS="$(_sanitize_march_flags "${CFLAGS}")"
+    CXXFLAGS="$(_sanitize_march_flags "${CXXFLAGS}")"
+    LDFLAGS="$(_sanitize_march_flags "${LDFLAGS}")"
+    export CFLAGS CXXFLAGS LDFLAGS
+    export CC="${_cc}"
+    export CXX="${_cxx}"
+
+    _configure_variant openmp
+    _configure_variant pthreads
+
+    cmake --build "build-openmp"
+    cmake --build "build-pthreads"
+}
+
+check() {
+    BLIS_NUM_THREADS=1 cmake --build "build-openmp" --target checkblis-fast
+    BLIS_NUM_THREADS=1 cmake --build "build-pthreads" --target checkblis-fast
+}
+
+package() {
+    local openmp_stage="${srcdir}/stage-openmp"
+    local pthreads_stage="${srcdir}/stage-pthreads"
+
+    DESTDIR="${openmp_stage}" cmake --install "build-openmp"
+    DESTDIR="${pthreads_stage}" cmake --install "build-pthreads"
+
+    cp -a "${openmp_stage}/usr" "${pkgdir}/"
+
+    # Keep the alternate threading implementation linkable without making it
+    # the generic BLAS provider.  The thin amd-aocl-blas package owns those
+    # Arch virtual interfaces.
+    install -Dm755 \
+        "${pthreads_stage}/usr/lib/libblis-mt.so.${_realver}" \
+        "${pkgdir}/usr/lib/libblis-pthreads.so.${_realver}"
+    ln -s "libblis-pthreads.so.${_realver}" "${pkgdir}/usr/lib/libblis-pthreads.so.${_soversion}"
+    ln -s "libblis-pthreads.so.${_soversion}" "${pkgdir}/usr/lib/libblis-pthreads.so"
+    install -Dm644 \
+        "${pthreads_stage}/usr/lib/libblis-mt.a" \
+        "${pkgdir}/usr/lib/libblis-pthreads.a"
+
+    install -d "${pkgdir}/usr/include/aocl-blis-pthreads"
+    cp -a "${pthreads_stage}/usr/include/." "${pkgdir}/usr/include/aocl-blis-pthreads/"
+
+    install -d "${pkgdir}/usr/lib/pkgconfig"
+    cp "${pkgdir}/usr/lib/pkgconfig/blis-mt.pc" "${pkgdir}/usr/lib/pkgconfig/blis-openmp.pc"
+    # shellcheck disable=SC2016
+    sed \
+        -e 's/-lblis-mt/-lblis-pthreads/g' \
+        -e 's|Cflags: -I${includedir}|Cflags: -I${includedir}/aocl-blis-pthreads|' \
+        "${pthreads_stage}/usr/lib/pkgconfig/blis-mt.pc" \
+        > "${pkgdir}/usr/lib/pkgconfig/blis-pthreads.pc"
+    ln -s blis-mt.pc "${pkgdir}/usr/lib/pkgconfig/blis.pc"
+
+    install -Dm644 "blis-${pkgver}/LICENSE" "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
+}

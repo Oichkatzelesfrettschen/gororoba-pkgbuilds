@@ -1,0 +1,15 @@
+pkgbase = build-host-tab-scope-oom
+	pkgdesc = systemd-oomd budget for terminal tab and tmux scopes: 2 GiB swap, 16 GiB memory, avoid preference, OOMPolicy=continue
+	pkgver = 1
+	pkgrel = 3
+	url = https://github.com/Oichkatzelesfrettschen/gororoba-infrastructure
+	install = build-host-tab-scope-oom.install
+	arch = any
+	license = MIT
+	depends = systemd
+	source = 10-tab-scope-oom.conf
+	source = README.md
+	sha256sums = 8539b2c6ac6cf8198dee7b95d2b0162ce8fdefeeb0171a2beebe95018b961970
+	sha256sums = 6776e872a556fda9ed739e340e7f07f2472a848d170097b929d3042902ee727e
+
+pkgname = build-host-tab-scope-oom

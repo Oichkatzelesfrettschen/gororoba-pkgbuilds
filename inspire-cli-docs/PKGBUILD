@@ -1,0 +1,24 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+pkgname=inspire-cli-docs
+pkgver=2024.09.05
+pkgrel=1
+pkgdesc='Legacy Quantum Inspire examples from DeadmanXXXII/Inspire (documentation only)'
+arch=('any')
+url='https://github.com/DeadmanXXXII/Inspire'
+license=('MIT')
+_commit=40301831dac2d804bf692061c27c434be870332f
+source=("$pkgname-$_commit.tar.gz::https://github.com/DeadmanXXXII/Inspire/archive/$_commit.tar.gz" 'README.packaging.md')
+sha256sums=('dd26a3083ab513245d002c1764ee46668b7aae58c4b0d419055173bf77cb0bb3'
+            '31ecfb3c16fcbb21fc2090e6e89d85d7e9ddcc2a0b10ea027229c6f1c9d186cf')
+
+check() {
+  test -f "$srcdir/Inspire-$_commit/README.md"
+  test -f "$srcdir/Inspire-$_commit/LICENSE.md"
+  test "$(find "$srcdir/Inspire-$_commit" -type f | wc -l)" -eq 2
+}
+
+package() {
+  install -Dm644 "$srcdir/Inspire-$_commit/README.md" "$pkgdir/usr/share/doc/$pkgname/README.upstream.md"
+  install -Dm644 "$srcdir/README.packaging.md" "$pkgdir/usr/share/doc/$pkgname/README.md"
+  install -Dm644 "$srcdir/Inspire-$_commit/LICENSE.md" "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}

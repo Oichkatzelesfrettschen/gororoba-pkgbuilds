@@ -1,0 +1,20 @@
+pkgbase = ionq-stack
+	pkgdesc = IonQ Qiskit provider (qiskit-ionq 1.1.1 on Qiskit 2.x) as a hash-locked Python 3.13 environment
+	pkgver = 1.1.1
+	pkgrel = 2
+	url = https://github.com/qiskit-community/qiskit-ionq
+	arch = x86_64
+	license = Apache-2.0
+	depends = python313
+	depends = gcc-libs
+	depends = glibc
+	source = requirements.in
+	source = requirements.lock
+	source = test_ionq_stack.py
+	source = ionq-python
+	b2sums = 2cb202a4f7cf39146f55282bd183a6781c585da243edddc8973283bd62d45819a82dc1f1ce66e31c1a2af07cbdbfc046119f7fde29cef35e98f420667bf5b2e6
+	b2sums = c8a277f0b80e1f16d5916bee0b7357e7ba1bd80066b602f33b076cdf2d47b414fcff1a381ff301c37e4c70e1513bd11351b11adeff7a25ef4c31578c7ee7717c
+	b2sums = 215d8f4fbb8f4aa07d5b629ea29cf31dde9d4c783eccf7fd385112c07eba9cbf654cece7fa6768762ed0442afe940890266644248bbf07f8c703956fe2c11758
+	b2sums = 84ae251a8bc787aa34fbe02d22096de99b5ac6b6df36558e407765d308deab46b583e36bd4b7ea56a5f22d7095650aab7da10edb1dc5272f134f4dbd089f1fb2
+
+pkgname = ionq-stack

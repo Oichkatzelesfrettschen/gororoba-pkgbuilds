@@ -1,0 +1,13 @@
+pkgbase = inspire-cli-docs
+	pkgdesc = Legacy Quantum Inspire examples from DeadmanXXXII/Inspire (documentation only)
+	pkgver = 2024.09.05
+	pkgrel = 1
+	url = https://github.com/DeadmanXXXII/Inspire
+	arch = any
+	license = MIT
+	source = inspire-cli-docs-40301831dac2d804bf692061c27c434be870332f.tar.gz::https://github.com/DeadmanXXXII/Inspire/archive/40301831dac2d804bf692061c27c434be870332f.tar.gz
+	source = README.packaging.md
+	sha256sums = dd26a3083ab513245d002c1764ee46668b7aae58c4b0d419055173bf77cb0bb3
+	sha256sums = 31ecfb3c16fcbb21fc2090e6e89d85d7e9ddcc2a0b10ea027229c6f1c9d186cf
+
+pkgname = inspire-cli-docs

@@ -1,0 +1,3 @@
+#!/bin/sh
+# Python 3.13 interpreter of the ionq-stack environment.
+exec /opt/ionq-stack/bin/python "$@"

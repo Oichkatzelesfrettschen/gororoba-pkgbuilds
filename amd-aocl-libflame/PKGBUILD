@@ -1,0 +1,87 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+
+pkgname=amd-aocl-libflame
+pkgver=5.3
+pkgrel=1
+pkgdesc='AMD AOCL libFLAME LAPACK and LAPACKE implementation'
+arch=('x86_64')
+url='https://github.com/amd/libflame'
+license=('BSD-3-Clause')
+depends=('amd-aocl-blis' 'amd-aocl-utils' 'gcc-libs' 'glibc')
+makedepends=('cmake' 'gcc-fortran' 'ninja' 'python')
+provides=("aocl-libflame=${pkgver}" 'aocl-libflame')
+conflicts=('aocl-libflame' 'aocl-libflame-aocc')
+options=('staticlibs' '!emptydirs' '!lto')
+source=("${pkgname}-${pkgver}.tar.gz::${url}/archive/refs/tags/${pkgver}.tar.gz")
+sha256sums=('ecb74c879b4d6bb33e159300304a9b48206d2c2b546dceb7d097b339eb127b9c')
+
+_aocl_root=${AOCL_ROOT:-/usr}
+# libFLAME accepts none, avx, avx2, avx512, strict variants, and auto.
+# There is no SSE3 selector.  "none" keeps common objects at the compiler
+# baseline while the AVX2 and AVX512 kernel targets still build with their
+# required ISA flags and are selected at runtime through AOCL-Utils.
+#
+# To use upstream host probing instead, run:
+#   AOCL_LIBFLAME_ISA_CONFIG=auto makepkg
+# That mode makes the common-object baseline depend on the build host.  Keep
+# package-manager CFLAGS free of -march/-mtune overrides when using it.
+_isa_config=${AOCL_LIBFLAME_ISA_CONFIG:-none}
+
+_sanitize_march_flags() {
+    printf '%s' "$1" |
+        sed -E \
+            -e 's/(^|[[:space:]])-(march|mtune)=[^[:space:]]+//g' \
+            -e 's/(^|[[:space:]])-flto(=[^[:space:]]+)?//g' \
+            -e 's/^[[:space:]]+//' \
+            -e 's/[[:space:]]+$//' \
+            -e 's/[[:space:]]+/ /g'
+}
+
+prepare() {
+    cd "libflame-${pkgver}" || exit
+
+    # AOCL_ROOT chooses the staged BLIS and Utils dependency boundary.
+    # Package flags must not depend on the CPU that happens to run makepkg.
+    sed -i \
+        -e '/-D_FORTIFY_SOURCE/d' \
+        -e 's/-mtune=native //g' \
+        -e 's/-pie //g' \
+        CMakeLists.txt cmake/CompilerFlags.cmake
+
+    # OpenMP 5.1 deprecates master.  masked keeps the single-thread region
+    # warning-clean on current GCC and Clang without changing the AOCL kernel
+    # selection model.
+    sed -i \
+        -e 's/#pragma omp master/#pragma omp masked/g' \
+        src/map/lapack2flamec/f2c/c/chetrd_hb2st.c \
+        src/map/lapack2flamec/f2c/c/dsytrd_sb2st.c \
+        src/map/lapack2flamec/f2c/c/ssytrd_sb2st.c \
+        src/map/lapack2flamec/f2c/c/zhetrd_hb2st.c
+}
+
+build() {
+    CFLAGS="$(_sanitize_march_flags "${CFLAGS}")"
+    CXXFLAGS="$(_sanitize_march_flags "${CXXFLAGS}")"
+    LDFLAGS="$(_sanitize_march_flags "${LDFLAGS}")"
+    export CFLAGS CXXFLAGS LDFLAGS
+
+    cmake -S "libflame-${pkgver}" -B build -G Ninja \
+        -DCMAKE_BUILD_TYPE=Release \
+        -DCMAKE_INSTALL_PREFIX=/usr \
+        -DAOCL_ROOT="${_aocl_root}" \
+        -DBUILD_SHARED_LIBS=ON \
+        -DLF_ISA_CONFIG="${_isa_config}" \
+        -DENABLE_AOCL_BLAS=ON \
+        -DENABLE_AMD_FLAGS=ON
+
+    cmake --build build
+}
+
+package() {
+    DESTDIR="${pkgdir}" cmake --install build
+
+    install -Dm644 "libflame-${pkgver}/LICENSE.txt" \
+        "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE.txt"
+    install -Dm644 "libflame-${pkgver}/NOTICE.txt" \
+        "${pkgdir}/usr/share/licenses/${pkgname}/NOTICE.txt"
+}
