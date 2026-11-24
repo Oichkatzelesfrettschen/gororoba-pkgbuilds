@@ -44,7 +44,10 @@ scan aws-key '(AKIA|ASIA)[0-9A-Z]{16}'
 scan slack-token 'xox[baprs]-[0-9A-Za-z-]{10,}'
 scan api-key 'sk-[A-Za-z0-9_-]{32,}|AIza[0-9A-Za-z_-]{35}'
 
-# IPv4: candidate dotted quads, then the octet and range filter in awk.
+# IPv4: candidate dotted quads, then the private-range filter in awk. Four-part
+# version strings (26.09.0.8, 6.7.80.0) look like public addresses, so only the
+# ranges that name a local network or mesh peer are flagged: RFC 1918 and the
+# RFC 6598 shared space used by CGNAT and overlay meshes.
 while IFS= read -r path; do
     [ -f "$path" ] || continue
     grep -InoE -e '(^|[^0-9.])([0-9]{1,3}\.){3}[0-9]{1,3}($|[^0-9.]|\.[^0-9])' -- "$path" 2>/dev/null |
@@ -56,10 +59,11 @@ while IFS= read -r path; do
                 ip = substr(rest, RSTART, RLENGTH)
                 split(ip, o, ".")
                 for (i = 1; i <= 4; i++) if (o[i] + 0 > 255) next
-                if (o[1] == 127) next
-                if (o[1] == 192 && o[2] == 0 && o[3] == 2) next
-                if (o[1] == 198 && o[2] == 51 && o[3] == 100) next
-                if (o[1] == 203 && o[2] == 0 && o[3] == 113) next
+                priv = (o[1] == 10) ||
+                    (o[1] == 172 && o[2] >= 16 && o[2] <= 31) ||
+                    (o[1] == 192 && o[2] == 168) ||
+                    (o[1] == 100 && o[2] >= 64 && o[2] <= 127)
+                if (!priv) next
                 printf "%s:%s: ipv4-literal\n", path, num
             }' >> "$hits" || true
 done < "$list"
