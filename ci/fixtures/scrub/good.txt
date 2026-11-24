@@ -1,0 +1,5 @@
+Version 1.2.3.4.5 and 26.09.0.8 are not addresses.
+Documentation address 192.0.2.7 and resolver 8.8.8.8 are public.
+IPv6 documentation prefix 2001:db8::1 and loopback ::1.
+MAC fc:ab:12:34:56:78 is not an address.
+Upstream docs live at https://example.invalid/home/page.

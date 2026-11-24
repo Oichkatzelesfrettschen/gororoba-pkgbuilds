@@ -9,7 +9,7 @@ permissions:
 jobs:
   update-check:
     runs-on: ubuntu-latest
-    container: archlinux:base-devel
+    container: archlinux@sha256:949ecb1661609ab7e8f6854ba03efd62792e7a796313738e94b040c095c20d91
     steps:
       - name: Skip odd ISO weeks on schedule
         id: cadence
@@ -24,8 +24,8 @@ jobs:
           fi
       - name: Install tools
         if: steps.cadence.outputs.run == 'true'
-        run: pacman -Syu --noconfirm --needed git nvchecker expac github-cli
-      - uses: actions/checkout@v4
+        run: pacman -Syu --noconfirm --needed git nvchecker expac github-cli jq
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         if: steps.cadence.outputs.run == 'true'
       - name: Check upstream versions and readiness
         if: steps.cadence.outputs.run == 'true'
@@ -34,33 +34,20 @@ jobs:
         run: |
           git config --global --add safe.directory "$GITHUB_WORKSPACE"
           sh scripts/update-check.sh > update-check.tsv
-          {
-            printf 'Weekly upstream check (every other Monday).\n\n'
-            printf '| package | current | latest | status | readiness |\n'
-            printf '|---|---|---|---|---|\n'
-            while read -r name current latest status; do
-              [ "$status" = current ] && continue
-              readiness=-
-              if [ "$status" = outdated ]; then
-                readiness=$(for d in */; do
-                  if grep -qx "pkgname = $name" "$d.SRCINFO" 2>/dev/null; then
-                    sh scripts/readiness-gate.sh "$d" | tr '\n' ' ' || true
-                    break
-                  fi
-                done)
-              fi
-              printf '| %s | %s | %s | %s | %s |\n' "$name" "$current" "$latest" "$status" "$readiness"
-            done < update-check.tsv
-          } > issue-body.md
+          sh scripts/update-report.sh update-check.tsv > issue-body.md
       - name: Open or update the package-update issue
         if: steps.cadence.outputs.run == 'true'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh label create package-update -R "$GITHUB_REPOSITORY" \
-            --description "Upstream release available" 2>/dev/null || true
-          number=$(gh issue list -R "$GITHUB_REPOSITORY" --label package-update \
-            --state open --json number --jq '.[0].number // empty')
+          gh label list -R "$GITHUB_REPOSITORY" --json name --jq '.[].name' > labels.txt
+          if ! grep -qxF package-update labels.txt; then
+            gh label create package-update -R "$GITHUB_REPOSITORY" \
+              --description "Upstream release available"
+          fi
+          gh issue list -R "$GITHUB_REPOSITORY" --label package-update \
+            --state open --json number --jq '.[0].number // empty' > number.txt
+          number=$(cat number.txt)
           if [ -n "$number" ]; then
             gh issue edit "$number" -R "$GITHUB_REPOSITORY" --body-file issue-body.md
           else

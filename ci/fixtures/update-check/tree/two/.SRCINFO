@@ -1,0 +1,6 @@
+pkgbase = two
+	epoch = 1
+	pkgver = 2.0
+	pkgrel = 1
+
+pkgname = two
