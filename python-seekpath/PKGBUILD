@@ -1,0 +1,34 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+# shellcheck shell=bash disable=SC2034,SC2154
+# Contributor: yuhldr <yuhldr@qq.com>
+# The upstream tarball ships no test suite, so check() is absent.
+# flit_core is the build backend; python -m build --no-isolation uses the system copy.
+
+pkgname=python-seekpath
+pkgver=2.2.2
+pkgrel=1
+pkgdesc='A module to obtain and visualize k-vector coefficients and obtain band paths in the Brillouin zone of crystal structures'
+arch=('any')
+url='https://github.com/materialscloud-org/seekpath'
+license=('MIT')
+depends=('python-numpy' 'python-packaging' 'spglib')
+optdepends=('python-scipy: Brillouin-zone band-path helpers (bz extra)')
+makedepends=('python-build' 'python-installer' 'python-flit-core')
+source=("${url}/archive/refs/tags/v${pkgver}.tar.gz")
+sha256sums=('27f000678ba43f3fc5523eb9811d4e0470bb61cab520cc55120c87be3047a9b4')
+
+# The upstream pyproject pins flit_core<4; Arch ships python-flit-core 4.2.0, so
+# python -m build --no-isolation refuses the pin. The wheel is built by calling
+# flit_core's build backend directly; this relaxes the upstream pin and is
+# recorded as a DECISION NEEDED item in the PR body.
+build() {
+  cd "seekpath-$pkgver" || exit
+  mkdir -p dist
+  python -c 'from flit_core import buildapi; buildapi.build_wheel("dist")'
+}
+
+package() {
+  cd "seekpath-$pkgver" || exit
+  python -m installer --destdir="$pkgdir" dist/*.whl
+  install -Dm644 LICENSE.txt "$pkgdir/usr/share/licenses/$pkgname/LICENSE.txt"
+}

@@ -1,0 +1,19 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+
+pkgname=python-pytket
+_pkg=pytket
+pkgver=2.18.5
+pkgrel=1
+pkgdesc="Python interface to the t|ket> quantum compiler"
+arch=('x86_64')
+url="https://github.com/quantinuum/tket"
+license=('Apache-2.0')
+depends=('python' 'python-sympy' 'python-numpy' 'python-lark-parser' 'python-scipy' 'python-networkx' 'python-graphviz' 'python-jinja' 'python-typing_extensions' 'python-qwasm')
+makedepends=('python-installer')
+source=("pytket-2.18.5-cp312-abi3-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl::https://files.pythonhosted.org/packages/a6/a4/d5d1dd144b655f7b2c0604f94d05bbde082943e27f5db4e3220d4dcf2d0c/pytket-2.18.5-cp312-abi3-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl")
+sha256sums=('a388d5dc0ee685f2fce913daa350539403d1d1d301839485d5d92bde0f9c2261')
+
+# Upstream ships the wheel only; the wheel carries no test suite, so check() is absent.
+package() {
+	python -m installer --destdir="$pkgdir" "$srcdir"/pytket-$pkgver-*.whl
+}

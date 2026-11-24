@@ -1,0 +1,16 @@
+pkgbase = python-openquantum-sdk
+	pkgdesc = Python SDK for Open Quantum
+	pkgver = 1.2.2
+	pkgrel = 1
+	url = https://pypi.org/project/openquantum-sdk/
+	arch = any
+	license = Apache-2.0
+	makedepends = python-build
+	makedepends = python-installer
+	makedepends = python-setuptools
+	makedepends = python-wheel
+	depends = python-requests
+	source = https://files.pythonhosted.org/packages/b6/7a/0f84ce1476bdbef3e7e79b3cb517b8a3c862cabd0c9dd760d9c0206e5fe6/openquantum_sdk-1.2.2.tar.gz
+	sha256sums = 223b07d687ee6ba819f9b9a0910ed6683ace1f2a6367c2a637d73aabba6112f4
+
+pkgname = python-openquantum-sdk
