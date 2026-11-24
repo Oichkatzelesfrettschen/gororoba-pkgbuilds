@@ -4,8 +4,10 @@
 # dependency order: each directory's depends, makedepends and checkdepends
 # (including the _x86_64 variants) that another recipe in this repository
 # provides, by pkgname or by a provides entry, are built first. A name that
-# a recipe's pkgname supplies wins over a provides entry; names no recipe
-# supplies are left to pacman. Exit 0 ordered, 1 dependency cycle, 2 usage or a
+# a recipe's pkgname supplies wins over a provides entry; a name that only a
+# provides entry supplies is left to pacman when a sync repository has a
+# package of that exact name (a recipe providing blas does not capture every
+# depends=blas); names no recipe supplies are left to pacman. Exit 0 ordered, 1 dependency cycle, 2 usage or a
 # directory without .SRCINFO.
 set -eu
 set -f
@@ -56,12 +58,34 @@ deps_of() {
             sub(/^[^=]*= /, "", v)
             sub(/[<>=:].*/, "", v)
             gsub(/[[:space:]]/, "", v)
-            s = (v in byname) ? byname[v] : byprov[v]
+            if (v in byname) { k = "n"; s = byname[v] } else { k = "p"; s = byprov[v] }
             n = split(s, a, " ")
-            for (i = 1; i <= n; i++) print a[i]
+            for (i = 1; i <= n; i++) print k, v, a[i]
         }
     ' "$map" "$1/.SRCINFO" > "$work/deps.raw"
-    sort -u "$work/deps.raw"
+    : > "$work/deps.dirs"
+    # Distinct names: the caller's loop holds the current directory in $dir.
+    while read -r dep_kind dep_name dep_dir; do
+        if [ "$dep_kind" = p ] && repo_has "$dep_name"; then
+            continue
+        fi
+        printf '%s\n' "$dep_dir" >> "$work/deps.dirs"
+    done < "$work/deps.raw"
+    sort -u "$work/deps.dirs"
+}
+
+# Whether a sync repository holds a package named exactly $1 (cached per run).
+# Without pacman (a non-Arch host) nothing counts as repository-supplied.
+repo_has() {
+    command -v pacman > /dev/null 2>&1 || return 1
+    if grep -qxF -- "+$1" "$work/repo.cache" 2> /dev/null; then return 0; fi
+    if grep -qxF -- "-$1" "$work/repo.cache" 2> /dev/null; then return 1; fi
+    if pacman -Si -- "$1" > /dev/null 2>&1; then
+        printf '+%s\n' "$1" >> "$work/repo.cache"
+        return 0
+    fi
+    printf -- '-%s\n' "$1" >> "$work/repo.cache"
+    return 1
 }
 
 # Closure over in-repository dependencies, then a topological sort.
