@@ -1,0 +1,6 @@
+[python-qutip]
+source = "github"
+github = "qutip/qutip"
+use_latest_release = true
+prefix = "v"
+exclude_regex = "[0-9](a|b|rc|dev)[0-9]*$"
