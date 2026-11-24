@@ -64,12 +64,12 @@ source=("${_upstream_pkgname}-${pkgver}.tar.gz::https://github.com/flozz/rivalcf
         'handlers-init-oled.py.patch'
         'oled_image.py')
 sha256sums=('9ef0512b097ce46b77d0c74eb9c84411250c91a4dea1c77469a41bfacbe8705d'
-            '74e6329974db51496416404ea7f542deed1b83643e2c5ad215a96e33d5d5d282'
-            '6248ce146d0949ee28000662fbe2728e9f6f1acf1ac6c36ac240151cc38dfe73'
-            '1f20821ba74aba664c8d5e9b3345d3a23ef5403ec1da486a71695b4fcc942866'
-            '5a1138b75ad939451e16b7add564d2978fbeac95746131f60f1e06f60ab0b7bd'
+            'f0ec292f9ee4a72341faf8947e14df04d1cc2f0fd375f386f50fac91b45fd2d1'
+            '965a336d7fc917f6acc7b58099d1af72963a4179bf260dc8bf88ddfeea93a4bd'
+            'd06d1d3700198122ab89b8416c0b073650889ab67871490011caaa6eaf37b3e6'
+            'd668821896ef3e74663a0b2f3a14e10089d8b88b5bbc83ef3012640ed188b554'
             'cd5be04e43bc64fa8c84096c7bbc6bfba181557962c6c614ef1534f91e380f5e'
-            '89796c6bf8b41e1862889d57394413fd810b45a8ff10a9927da56fad67982d43'
+            '1c4d7e8e047b08f82ebff0827349a1692f9e8eb8ffb836c21ee186479bfb2c3d'
             'c457559238bb45b2227dcf16253c868b43d2e45fb15b44bb4fd756860912718a')
 
 prepare() {

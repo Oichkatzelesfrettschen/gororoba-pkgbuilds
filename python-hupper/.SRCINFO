@@ -18,6 +18,6 @@ pkgbase = python-hupper
 	source = python-hupper-1.12.1.tar.gz::https://files.pythonhosted.org/packages/source/h/hupper/hupper-1.12.1.tar.gz
 	source = 0001-tests-make-the-pytest-cov-embed-import-optional.patch
 	sha256sums = 06bf54170ff4ecf4c84ad5f188dee3901173ab449c2608ad05b9bfd6b13e32eb
-	sha256sums = 153ab4d2e19ab5c9740946354ccb804eaf4e988d77af29c41b852b5f30d75ab5
+	sha256sums = 0539fa10eb4d480ea91370238d213001d8298b04fd6b58737f4be19a45efc9d2
 
 pkgname = python-hupper
