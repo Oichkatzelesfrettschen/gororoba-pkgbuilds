@@ -1,4 +1,4 @@
-[tree-sitter-0.22-compat]
+["tree-sitter-0.22-compat"]
 source = "github"
 github = "tree-sitter/tree-sitter"
 use_max_tag = true
