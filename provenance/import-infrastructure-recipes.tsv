@@ -7,7 +7,6 @@ amd-aocl-utils	gororoba-infrastructure	packaging/amd-aocl-utils	bbf3cbbde3b4d08f
 amduprof	gororoba-infrastructure	packaging/amduprof	bbf3cbbde3b4d08fe493dddc73617ec948248170	2026-11-24T18:55:27Z
 annas-mcp	gororoba-infrastructure	packaging/annas-mcp	bbf3cbbde3b4d08fe493dddc73617ec948248170	2026-11-24T18:55:27Z
 bluequbit-stack	gororoba-infrastructure	packaging/bluequbit-stack	bbf3cbbde3b4d08fe493dddc73617ec948248170	2026-11-24T18:55:27Z
-chatgpt-webview	PKGBUILDS	packaging/chatgpt-webview	bbf3cbbde3b4d08fe493dddc73617ec948248170	2026-11-24T18:55:27Z
 cuquantum	gororoba-infrastructure	packaging/cuquantum	bbf3cbbde3b4d08fe493dddc73617ec948248170	2026-11-24T18:55:27Z
 inspire-cli-docs	gororoba-infrastructure	packaging/inspire-cli-docs	bbf3cbbde3b4d08fe493dddc73617ec948248170	2026-11-24T18:55:27Z
 ionq-stack	gororoba-infrastructure	packaging/ionq-stack	bbf3cbbde3b4d08fe493dddc73617ec948248170	2026-11-24T18:55:27Z
@@ -19,7 +18,6 @@ lean4-cuda-nightly-bin	gororoba-infrastructure	packaging/lean4-cuda-nightly-bin	
 litert-lm	PKGBUILDS	packaging/litert-lm	bbf3cbbde3b4d08fe493dddc73617ec948248170	2026-11-24T18:55:27Z
 llama.cpp-cuda	PKGBUILDS	packaging/llama.cpp-cuda	bbf3cbbde3b4d08fe493dddc73617ec948248170	2026-11-24T18:55:27Z
 oci-cli	gororoba-infrastructure	packaging/oci-cli	749e699adcc2b97532cb7d0a0ce907abc25da319	2026-11-24T18:55:27Z
-ollama-gemini-shim	PKGBUILDS	packaging/ollama-gemini-shim	bbf3cbbde3b4d08fe493dddc73617ec948248170	2026-11-24T18:55:27Z
 open-webui-stack	gororoba-infrastructure	packaging/open-webui-stack	749e699adcc2b97532cb7d0a0ce907abc25da319	2026-11-24T18:55:27Z
 originquantum-stack	gororoba-infrastructure	packaging/originquantum-stack	76871f846f03461eec155d0554c9019d5b117d7d	2026-11-24T18:55:27Z
 planck-stack	gororoba-infrastructure	packaging/planck-stack	bbf3cbbde3b4d08fe493dddc73617ec948248170	2026-11-24T18:55:27Z
