@@ -1,0 +1,6 @@
+pkgbase = e
+	pkgver = 1
+	pkgrel = 1
+	depends = zlib
+
+pkgname = e
