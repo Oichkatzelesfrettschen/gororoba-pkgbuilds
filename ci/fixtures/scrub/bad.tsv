@@ -1,0 +1,17 @@
+# class, left half, right half; the halves join at run time so this tracked file stays clean
+home-path	/ho	me/someone/file
+home-relative-private-path	~/Proj	ects/notes
+home-relative-private-path	$HO	ME/Github/x
+credential-path	cat ~/.o	ci/config
+credential-path	.a	ws/credentials
+credential-path	c	wallet.sso
+ipv6-local	fd12:34	56::1
+ipv6-local	fe	80::1
+ipv4-literal	10.1.	2.3
+ipv4-literal	100.64.	0.1
+localhost-mailbox	user@local	host
+private-key	-----BEGIN RSA PRIV	ATE KEY-----
+github-token	ghp_	0123456789abcdef0123456789abcdef0123
+aws-key	AKI	AABCDEFGHIJKLMNOP
+slack-token	xo	xb-1234567890-abc
+api-key	sk-	abcdefghijklmnopqrstuvwxyz012345

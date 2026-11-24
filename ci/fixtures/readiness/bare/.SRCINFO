@@ -1,0 +1,6 @@
+pkgbase = bare
+	pkgver = 1
+	pkgrel = 1
+	depends = libbare>=1
+
+pkgname = bare

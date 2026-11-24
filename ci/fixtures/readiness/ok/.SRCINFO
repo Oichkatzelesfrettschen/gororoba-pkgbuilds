@@ -1,0 +1,9 @@
+pkgbase = ok
+	pkgver = 1
+	pkgrel = 1
+	depends = libx>=1.5
+	makedepends = libz>=2.5
+	checkdepends = libbare
+	depends = ok
+
+pkgname = ok

@@ -1,0 +1,216 @@
+name: ci
+# Fork pull requests: GitHub withholds secrets and holds first-time contributors'
+# workflow runs until a maintainer approves them (repository setting "Require
+# approval for all outside collaborators" or stricter). Keep that setting on.
+# The build and srcinfo-namcap jobs run scripts and the allowlist from the base
+# revision, never from the pull request head.
+on:
+  pull_request:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+env:
+  PACKAGER: "gororoba-pkgbuilds CI <ci@gororoba-pkgbuilds.invalid>"
+jobs:
+  scrub-check:
+    runs-on: ubuntu-latest
+    container: archlinux@sha256:949ecb1661609ab7e8f6854ba03efd62792e7a796313738e94b040c095c20d91
+    steps:
+      - name: Install tools
+        run: pacman -Syu --noconfirm --needed git
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - name: Scrub tracked files
+        run: |
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
+          sh scripts/scrub-check.sh
+
+  shellcheck:
+    runs-on: ubuntu-latest
+    container: archlinux@sha256:949ecb1661609ab7e8f6854ba03efd62792e7a796313738e94b040c095c20d91
+    steps:
+      - name: Install tools
+        run: pacman -Syu --noconfirm --needed git shellcheck
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - name: Shellcheck scripts and recipes
+        # Scripts gate at warning severity: warning and error findings are
+        # defects (quoting, masked statuses, unreachable code); the info and
+        # style tiers flag idiom preferences in POSIX sh that carry no
+        # behavior change, so they stay advisory. Recipes gate at error
+        # because makepkg-provided variables raise warnings by design.
+        run: |
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
+          status=0
+          for f in scripts/*.sh; do
+            [ -f "$f" ] || continue
+            shellcheck -S warning -s sh "$f" || status=1
+          done
+          for f in */PKGBUILD; do
+            [ -f "$f" ] || continue
+            shellcheck -S error -s bash -e SC2034,SC2154,SC2164 "$f" || status=1
+          done
+          exit "$status"
+
+  calibrate:
+    runs-on: ubuntu-latest
+    container: archlinux@sha256:949ecb1661609ab7e8f6854ba03efd62792e7a796313738e94b040c095c20d91
+    steps:
+      - name: Install tools
+        run: pacman -Syu --noconfirm --needed git jq
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - name: Run every gate against its known-good and known-bad fixtures
+        run: |
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
+          sh scripts/calibrate.sh
+
+  recipes:
+    runs-on: ubuntu-latest
+    container: archlinux@sha256:949ecb1661609ab7e8f6854ba03efd62792e7a796313738e94b040c095c20d91
+    outputs:
+      dirs: ${{ steps.changed.outputs.dirs }}
+    steps:
+      - name: Install tools
+        run: pacman -Syu --noconfirm --needed git
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          fetch-depth: 0
+      - name: Extract trusted scripts and allowlist from the base revision
+        id: trusted
+        env:
+          EVENT: ${{ github.event_name }}
+          BASE_REF: ${{ github.base_ref }}
+        run: |
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
+          if [ "$EVENT" = pull_request ]; then
+            ref=origin/$BASE_REF
+          else
+            ref=HEAD
+          fi
+          dest=$RUNNER_TEMP/trusted
+          mkdir -p "$dest"
+          if ! git archive --format=tar -o "$RUNNER_TEMP/trusted.tar" "$ref" scripts ci || ! tar -x -f "$RUNNER_TEMP/trusted.tar" -C "$dest"; then
+            echo "::error::scripts/ and ci/ are absent from $ref; the pipeline cannot trust itself until a first revision with both is on the base branch"
+            exit 1
+          fi
+          printf 'dir=%s\n' "$dest" >> "$GITHUB_OUTPUT"
+      - name: List changed recipe directories
+        id: changed
+        env:
+          EVENT: ${{ github.event_name }}
+          BASE_REF: ${{ github.base_ref }}
+          BEFORE: ${{ github.event.before }}
+          TRUSTED: ${{ steps.trusted.outputs.dir }}
+        run: |
+          if [ "$EVENT" = pull_request ]; then
+            base=origin/$BASE_REF
+          else
+            base=$BEFORE
+          fi
+          sh "$TRUSTED/scripts/changed-recipes.sh" "$base" > "$RUNNER_TEMP/changed.txt"
+          dirs=$(tr '\n' ' ' < "$RUNNER_TEMP/changed.txt")
+          printf 'changed: %s\n' "${dirs:-none}"
+          printf 'dirs=%s\n' "$dirs" >> "$GITHUB_OUTPUT"
+
+  srcinfo-namcap:
+    needs: recipes
+    if: needs.recipes.outputs.dirs != ''
+    runs-on: ubuntu-latest
+    container: archlinux@sha256:949ecb1661609ab7e8f6854ba03efd62792e7a796313738e94b040c095c20d91
+    steps:
+      - name: Install tools
+        run: pacman -Syu --noconfirm --needed git namcap util-linux
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          fetch-depth: 0
+      - name: Extract trusted scripts and allowlist from the base revision
+        id: trusted
+        env:
+          EVENT: ${{ github.event_name }}
+          BASE_REF: ${{ github.base_ref }}
+        run: |
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
+          if [ "$EVENT" = pull_request ]; then
+            ref=origin/$BASE_REF
+          else
+            ref=HEAD
+          fi
+          dest=$RUNNER_TEMP/trusted
+          mkdir -p "$dest"
+          if ! git archive --format=tar -o "$RUNNER_TEMP/trusted.tar" "$ref" scripts ci || ! tar -x -f "$RUNNER_TEMP/trusted.tar" -C "$dest"; then
+            echo "::error::scripts/ and ci/ are absent from $ref; the pipeline cannot trust itself until a first revision with both is on the base branch"
+            exit 1
+          fi
+          printf 'dir=%s\n' "$dest" >> "$GITHUB_OUTPUT"
+      - name: Check .SRCINFO and namcap
+        env:
+          DIRS: ${{ needs.recipes.outputs.dirs }}
+          TRUSTED: ${{ steps.trusted.outputs.dir }}
+        run: |
+          set -f
+          chmod -R a+rX "$GITHUB_WORKSPACE"
+          status=0
+          for d in $DIRS; do
+            sh "$TRUSTED/scripts/srcinfo-check.sh" "$d" || status=1
+            # namcap reads the untrusted recipe: run it without privileges.
+            setpriv --reuid=nobody --regid=nobody --clear-groups -- \
+              env HOME=/ namcap -i "$d/PKGBUILD" || status=1
+          done
+          exit "$status"
+
+  build:
+    needs: recipes
+    if: needs.recipes.outputs.dirs != ''
+    runs-on: ubuntu-latest
+    container: archlinux@sha256:949ecb1661609ab7e8f6854ba03efd62792e7a796313738e94b040c095c20d91
+    steps:
+      - name: Install tools and build user
+        run: |
+          pacman -Syu --noconfirm --needed git sudo
+          useradd -m builder
+          # makepkg --syncdeps calls "sudo pacman"; nothing else is delegated.
+          printf 'builder ALL=(root) NOPASSWD: /usr/bin/pacman\n' > /etc/sudoers.d/builder
+          chmod 0440 /etc/sudoers.d/builder
+          visudo -cf /etc/sudoers.d/builder
+          install -d -o builder -g builder /var/tmp/build/work /var/tmp/build/src /var/tmp/build/pkg
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          fetch-depth: 0
+      - name: Extract trusted scripts and allowlist from the base revision
+        id: trusted
+        env:
+          EVENT: ${{ github.event_name }}
+          BASE_REF: ${{ github.base_ref }}
+        run: |
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
+          if [ "$EVENT" = pull_request ]; then
+            ref=origin/$BASE_REF
+          else
+            ref=HEAD
+          fi
+          dest=$RUNNER_TEMP/trusted
+          mkdir -p "$dest"
+          if ! git archive --format=tar -o "$RUNNER_TEMP/trusted.tar" "$ref" scripts ci || ! tar -x -f "$RUNNER_TEMP/trusted.tar" -C "$dest"; then
+            echo "::error::scripts/ and ci/ are absent from $ref; the pipeline cannot trust itself until a first revision with both is on the base branch"
+            exit 1
+          fi
+          printf 'dir=%s\n' "$dest" >> "$GITHUB_OUTPUT"
+      - name: Build changed recipes
+        env:
+          DIRS: ${{ needs.recipes.outputs.dirs }}
+          TRUSTED: ${{ steps.trusted.outputs.dir }}
+        run: |
+          set -f
+          chmod -R a+rX "$GITHUB_WORKSPACE"
+          # Only recipes on ci/build-allowlist.txt of the base revision build here
+          # (Tier A in docs/package-update-ci.md); CUDA, proprietary-download and
+          # long-build recipes build on a compute host instead.
+          # shellcheck disable=SC2086
+          sh "$TRUSTED/scripts/ci-build.sh" "$TRUSTED/ci/build-allowlist.txt" $DIRS
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: packages
+          path: /var/tmp/build/pkg/*/*.pkg.tar.*
+          if-no-files-found: ignore
