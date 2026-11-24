@@ -1,0 +1,20 @@
+pkgbase = quantum-pipeline-stack
+	pkgdesc = quantum-pipeline 2.5.1 (VQE runner on qiskit-nature and Aer 0.17) as a hash-locked Python 3.13 environment
+	pkgver = 2.5.1
+	pkgrel = 2
+	url = https://github.com/straightchlorine/quantum-pipeline
+	arch = x86_64
+	license = MIT
+	depends = python313
+	depends = gcc-libs
+	depends = glibc
+	source = requirements.in
+	source = requirements.lock
+	source = test_quantum_pipeline_stack.py
+	source = quantum-pipeline-python
+	b2sums = 7c12e24bfc884aab1d05060bcaea20f570e1f941558fdf20cb0be722d832c77e26cb796e26703aa0f3b5bd2d4efc9d1345fb7de5596b6707a908900d07bfbe23
+	b2sums = c9bac19ccd5d833313d43a1bf02e887bd590aa4291159923c0665fd07799e67cf2de81a52bc34fa95386f8ddb50f785b1c7787c5477b094da4bcd63d7e215d85
+	b2sums = de3d6a9c35debefd5792c9944c51fa452b49aede2a18961794b42f895f99610065dac6b7fc7bb70fce4dba636e0f524512a79f3a79cea74bd3baf19ce6866a33
+	b2sums = 6728dbd1f0b23e6ad42eca988664fd01fb6b5f24753233e96d80cee5e7f439dde0de9331b0812c0765c31a4a273b8424d6250bbca2cc6df4ba5047aed1a26cbc
+
+pkgname = quantum-pipeline-stack

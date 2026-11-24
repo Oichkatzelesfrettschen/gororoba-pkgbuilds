@@ -1,0 +1,2 @@
+#!/bin/sh
+exec /opt/qxelarator-python313/bin/python -I "$@"
