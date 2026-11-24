@@ -1,0 +1,4 @@
+[python-galgebra]
+source = "pypi"
+pypi = "galgebra"
+exclude_regex = "(alpha|beta|rc|dev)"

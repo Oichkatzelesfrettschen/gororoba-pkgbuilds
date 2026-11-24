@@ -1,0 +1,6 @@
+[kuna-bin]
+source = "github"
+github = "Noelo-Lab/kuna"
+use_latest_release = true
+prefix = "v"
+exclude_regex = "(alpha|beta|rc|dev)"

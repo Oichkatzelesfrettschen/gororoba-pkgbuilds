@@ -1,0 +1,4 @@
+[python-amazon-braket-sdk]
+source = "pypi"
+pypi = "amazon-braket-sdk"
+exclude_regex = "(alpha|beta|rc|dev)"

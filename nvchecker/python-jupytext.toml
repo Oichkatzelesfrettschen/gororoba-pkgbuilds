@@ -1,0 +1,4 @@
+[python-jupytext]
+source = "pypi"
+pypi = "jupytext"
+exclude_regex = "(alpha|beta|rc|dev)"

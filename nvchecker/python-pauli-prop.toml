@@ -1,0 +1,4 @@
+[python-pauli-prop]
+source = "pypi"
+pypi = "pauli-prop"
+exclude_regex = "(alpha|beta|rc|dev)"

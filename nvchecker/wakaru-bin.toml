@@ -1,0 +1,6 @@
+[wakaru-bin]
+source = "github"
+github = "pionxzh/wakaru"
+use_latest_release = true
+prefix = "v"
+exclude_regex = "(alpha|beta|rc|dev)"

@@ -1,0 +1,6 @@
+[jadx-headless-mcp-bin]
+source = "github"
+github = "1013503897/jadx-headless-mcp"
+use_latest_release = true
+prefix = "v"
+exclude_regex = "(alpha|beta|rc|dev)"

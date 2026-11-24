@@ -1,0 +1,4 @@
+[python-pycrate]
+source = "pypi"
+pypi = "pycrate"
+exclude_regex = "(alpha|beta|rc|dev)"

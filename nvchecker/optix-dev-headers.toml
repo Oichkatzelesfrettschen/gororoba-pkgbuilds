@@ -1,0 +1,6 @@
+[optix-dev-headers]
+source = "github"
+github = "NVIDIA/optix-dev"
+use_max_tag = true
+prefix = "v"
+exclude_regex = "(alpha|beta|rc|dev)"

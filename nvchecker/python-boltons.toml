@@ -1,0 +1,4 @@
+[python-boltons]
+source = "pypi"
+pypi = "boltons"
+exclude_regex = "(alpha|beta|rc|dev)"

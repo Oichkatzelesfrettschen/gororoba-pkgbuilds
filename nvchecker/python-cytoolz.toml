@@ -1,0 +1,4 @@
+[python-cytoolz]
+source = "pypi"
+pypi = "cytoolz"
+exclude_regex = "(alpha|beta|rc|dev)"

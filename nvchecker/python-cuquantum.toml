@@ -1,0 +1,6 @@
+[python-cuquantum]
+source = "github"
+github = "NVIDIA/cuQuantum"
+use_max_tag = true
+prefix = "v"
+exclude_regex = "(alpha|beta|rc|dev)"

@@ -1,0 +1,4 @@
+[datasette]
+source = "pypi"
+pypi = "datasette"
+exclude_regex = "(alpha|beta|rc|dev)"
