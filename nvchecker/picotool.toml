@@ -1,0 +1,5 @@
+[picotool]
+source = "github"
+github = "raspberrypi/picotool"
+use_latest_release = true
+exclude_regex = "(alpha|beta|rc|dev)"

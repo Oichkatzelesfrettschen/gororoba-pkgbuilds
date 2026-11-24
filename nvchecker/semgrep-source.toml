@@ -1,0 +1,6 @@
+[semgrep-source]
+source = "github"
+github = "semgrep/semgrep"
+use_max_tag = true
+prefix = "v"
+exclude_regex = "(alpha|beta|rc|dev)"
