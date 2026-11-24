@@ -21,7 +21,6 @@ pkgbase = python-cirq
 	checkdepends = python-pylatex
 	checkdepends = python-pytest
 	checkdepends = python-pytest-asyncio
-	checkdepends = python-quimb
 	checkdepends = python-requests
 	checkdepends = python-scipy
 	checkdepends = python-sortedcontainers

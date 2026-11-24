@@ -45,7 +45,6 @@ checkdepends=(
     python-pylatex
     python-pytest
     python-pytest-asyncio
-    python-quimb
     python-requests
     python-scipy
     python-sortedcontainers
@@ -83,7 +82,10 @@ check() {
         echo "Testing $PWD"
         echo "Running: pytest -v $_package"
         PYTHONPATH="$srcdir/test_dir/usr/lib/python$python_version/site-packages" \
-        pytest -o addopts="" -k "not test_json_test_data_coverage and not test_json_and_repr_data"
+        # cirq-core contrib/quimb tests import quimb, which no recipe in this repository provides.
+        ignore=
+        if [ "$_package" = python-cirq-core ]; then ignore=--ignore=cirq/contrib/quimb; fi
+        pytest -o addopts="" $ignore -k "not test_json_test_data_coverage and not test_json_and_repr_data"
     done
 }
 
