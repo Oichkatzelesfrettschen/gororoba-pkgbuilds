@@ -1,0 +1,55 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+# Contributor: Paul Irofti <paul@irofti.net>
+
+# Pyomo 6.11 has no mandatory dependency beyond Python; solver interfaces and
+# data readers load their libraries on demand, so they are optional here.
+# python-pyutilib is optional: Pyomo no longer imports it at core import time.
+
+_name=pyomo
+pkgname=python-pyomo
+pkgver=6.11.0
+pkgrel=1
+pkgdesc='Pyomo: Python Optimization Modeling Objects'
+url='https://github.com/Pyomo/pyomo'
+arch=('x86_64') # the build compiles optional Cython and pybind11 extensions
+license=('BSD-3-Clause')
+depends=('python')
+optdepends=('python-numpy: matrix and expression support'
+            'python-scipy: SciPy-based solvers and tools'
+            'python-sympy: symbolic differentiation'
+            'python-networkx: graph tools'
+            'python-pandas: data tables'
+            'python-matplotlib: plotting'
+            'python-openpyxl: spreadsheet data'
+            'python-pint: units of measure'
+            'python-pyutilib: legacy utilities'
+            'python-casadi: CasADi interface'
+            'coin-or-ipopt: Ipopt solver'
+            'glpk: GNU Linear Programming Kit solver'
+            'highs: HiGHS solver'
+            'scip: SCIP solver')
+makedepends=('cython' 'pybind11' 'python-build' 'python-installer' 'python-setuptools' 'python-wheel')
+checkdepends=('python-pytest' 'python-parameterized')
+source=("https://files.pythonhosted.org/packages/source/${_name:0:1}/${_name}/${_name}-$pkgver.tar.gz")
+sha256sums=('5eba11b6ec1325954a5a6751329a314c54e1260baffd5112814ff699be0d29e0')
+
+build() {
+  cd "$srcdir/$_name-$pkgver"
+  python -m build --wheel --no-isolation
+}
+
+check() {
+  cd "$srcdir/$_name-$pkgver"
+  python -m venv --system-site-packages test-env
+  test-env/bin/python -m installer dist/*.whl
+  cd "$srcdir"
+  # run the installed package, not the source tree
+  "$srcdir/$_name-$pkgver/test-env/bin/python" -m pytest -p no:cacheprovider -q \
+    --pyargs pyomo.common.tests.test_config pyomo.core.tests.unit.test_block
+}
+
+package() {
+  cd "$srcdir/$_name-$pkgver"
+  python -m installer --destdir="$pkgdir" dist/*.whl
+  install -Dm644 LICENSE.md -t "$pkgdir/usr/share/licenses/$pkgname"
+}

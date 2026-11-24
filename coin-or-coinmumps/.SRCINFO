@@ -1,0 +1,17 @@
+pkgbase = coin-or-coinmumps
+	pkgdesc = COIN-OR autotools harness to build MUMPS
+	pkgver = 3.0.11
+	pkgrel = 1
+	url = https://github.com/coin-or-tools/ThirdParty-Mumps/
+	arch = x86_64
+	groups = coin-or
+	license = CECILL-C
+	makedepends = gcc-fortran
+	makedepends = wget
+	depends = lapack
+	depends = gcc-libs
+	options = !lto
+	source = coin-or-coinmumps-3.0.11.tar.gz::https://github.com/coin-or-tools/ThirdParty-Mumps/archive/releases/3.0.11.tar.gz
+	sha256sums = 53935baf3a249dcecf0e74c7c2b546692ef1d580a72716ec42a38b8a4799dffb
+
+pkgname = coin-or-coinmumps

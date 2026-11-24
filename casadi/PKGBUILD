@@ -1,0 +1,68 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+# Contributor: Guilhem Saurel <guilhem.saurel@laas.fr>
+# Contributor: Andrew Sun <adsun701 at gmail dot com>
+# Contributor: Benjamin Chretien <chretien dot b +aur at gmail dot com>
+
+# One build, two packages: the C++ library and the Python binding. The
+# ProxQP interface is off: proxsuite is neither an Arch package nor in this
+# repository. check() is absent: upstream tests need the full test-data tree
+# and optional solvers.
+
+pkgbase=casadi
+pkgname=('casadi' 'python-casadi')
+pkgver=3.8.2
+pkgrel=1
+pkgdesc='Symbolic framework for automatic differentiation and numeric optimization'
+arch=('x86_64')
+url='https://github.com/casadi/casadi'
+license=('LGPL-3.0-only')
+makedepends=('cmake' 'eigen' 'simde' 'swig' 'gcc-fortran' 'python' 'python-setuptools' 'python-numpy'
+             'lapack' 'tinyxml2' 'coin-or-ipopt' 'dsdp' 'osqp' 'coin-or-qpoases')
+source=("$pkgbase-$pkgver.tar.gz::$url/archive/refs/tags/$pkgver.tar.gz")
+sha256sums=('095ddfc0b8e8a3d52b2ad2511bf9286c65eb3cb41d7ca9b904b8bfc0dc15d7f1')
+
+build() {
+  cmake -B "build-$pkgver" -S "$pkgbase-$pkgver" \
+    -DCMAKE_INSTALL_PREFIX=/usr \
+    -DFORTRAN_REQUIRED=ON \
+    -DWITH_PYTHON=ON \
+    -DWITH_PYTHON3=ON \
+    -DINSTALL_INTERNAL_HEADERS=ON \
+    -DENABLE_EXPORT_ALL=ON \
+    -DWITH_OPENMP=ON \
+    -DWITH_THREAD=ON \
+    -DWITH_BUILD_REQUIRED=OFF \
+    -DWITH_SUNDIALS=OFF \
+    -DWITH_OSQP=ON \
+    -DWITH_PROXQP=OFF \
+    -DWITH_QPOASES=ON \
+    -DWITH_LAPACK=ON \
+    -DWITH_BUILD_LAPACK=OFF \
+    -DWITH_IPOPT=ON \
+    -DWITH_TINYXML=ON \
+    -DWITH_BUILD_TINYXML=OFF \
+    -DWITH_DSDP=ON \
+    -DWITH_BUILD_DSDP=OFF \
+    -Wno-dev
+  cmake --build "build-$pkgver"
+  DESTDIR="$srcdir/stage" cmake --install "build-$pkgver"
+}
+
+package_casadi() {
+  depends=('gcc-libs' 'lapack' 'tinyxml2' 'coin-or-ipopt' 'dsdp' 'osqp' 'coin-or-qpoases')
+  cp -a "$srcdir/stage/." "$pkgdir/"
+  # the Python binding ships in python-casadi
+  rm -r "$pkgdir"/usr/lib/python*
+  install -Dm644 "$pkgbase-$pkgver/LICENSE.txt" "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}
+
+package_python-casadi() {
+  pkgdesc='Python binding of CasADi'
+  depends=('casadi' 'python' 'python-numpy')
+  optdepends=('python-scipy: sparse matrix interchange'
+              'python-matplotlib: plotting helpers'
+              'ipython: interactive use')
+  install -d "$pkgdir/usr/lib"
+  cp -a "$srcdir"/stage/usr/lib/python* "$pkgdir/usr/lib/"
+  install -Dm644 "$pkgbase-$pkgver/LICENSE.txt" "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}

@@ -1,0 +1,50 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+# Replaces the BlackArch checkov, whose post_install runs "pip install" and is
+# blocked by the pacman 7.1 scriptlet network sandbox. build() installs the
+# hash-locked closure from requirements.txt into a venv under the package
+# tree; the install scriptlets do nothing. Regenerate the lock on every bump:
+#   uv pip compile --generate-hashes --only-binary :all: --python-version 3.14 \
+#     --python-platform x86_64-manylinux_2_28 --no-header -o requirements.txt requirements.in
+
+pkgname=checkov-bundled
+_name=checkov
+pkgver=3.4.10
+pkgrel=1
+pkgdesc='Static analysis for infrastructure as code (dependency closure vendored at build time)'
+arch=('x86_64')
+url='https://github.com/bridgecrewio/checkov'
+license=('Apache-2.0')
+depends=('python')
+makedepends=('python-pip')
+provides=("checkov=$pkgver")
+conflicts=('checkov')
+replaces=('checkov')
+options=('!strip')
+source=("$_name-$pkgver.tar.gz::https://files.pythonhosted.org/packages/00/4b/b39218bf1fafb6bfca1e63a7b43a909510d21be700f9a40df3d586c016aa/checkov-$pkgver.tar.gz"
+        'requirements.in'
+        'requirements.txt')
+sha256sums=('5626d5115d91b23a5de2ad898efb13c64d00d8fb81176697ab3c64c89e16635a'
+            '535d5675c88d914acfc3300b92b0f32738e42c016e640c57d8bf6f7e3a26a3c9'
+            '0a97dd3e7952fde6f34de3cd9aed361974b92766e5c306aa3a73926163cc4de5')
+
+build() {
+  python -m venv --without-pip venv
+  # Wheels only, every artifact hash-checked, no dependency resolution at install.
+  python -m pip --python venv/bin/python install --require-hashes --no-deps \
+    --only-binary :all: --no-compile --disable-pip-version-check -r requirements.txt
+}
+
+package() {
+  local dest="$pkgdir/usr/share/checkov"
+  install -d "$dest"
+  cp -a venv "$dest/venv"
+  # venv scripts carry the build path in their shebangs; point them at the final path.
+  grep -rlI "$srcdir/venv" "$dest/venv/bin" | xargs -r sed -i "s|$srcdir/venv|/usr/share/checkov/venv|g"
+  sed -i "s|$srcdir/venv|/usr/share/checkov/venv|g" "$dest/venv/pyvenv.cfg"
+  # byte-compile with the final path recorded in each code object
+  python -m compileall -q -s "$pkgdir" -p / "$dest/venv/lib"
+
+  install -d "$pkgdir/usr/bin"
+  ln -s /usr/share/checkov/venv/bin/checkov "$pkgdir/usr/bin/checkov"
+  install -Dm644 "$_name-$pkgver/LICENSE" -t "$pkgdir/usr/share/licenses/$pkgname"
+}

@@ -1,0 +1,4 @@
+[flexiblas]
+source = "regex"
+url = "https://www.mpi-magdeburg.mpg.de/projects/flexiblas"
+regex = "flexiblas-([0-9.]+)\\.tar\\.xz"

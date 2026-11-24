@@ -1,0 +1,31 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+# Contributor: Paul Irofti <paul@irofti.net>
+# Upstream is unmaintained (last release 6.0.0). Its install_requires lists
+# nose, which Arch does not package; nose is imported only by pyutilib.th (test
+# helpers), so it is an optional dependency here.
+# The sdist carries no license file; PyPI metadata names a BSD license.
+# check() is absent: the upstream suite runs under nose, which Arch does not package.
+
+_name=PyUtilib
+pkgname=python-pyutilib
+pkgver=6.0.0
+pkgrel=1
+pkgdesc='Collection of Python utilities for Pyomo'
+url='https://github.com/PyUtilib/pyutilib'
+arch=('any')
+license=('BSD-3-Clause')
+depends=('python' 'python-six')
+optdepends=('python-nose: pyutilib.th test helpers (not in the Arch repositories)')
+makedepends=('python-build' 'python-installer' 'python-setuptools' 'python-wheel')
+source=("https://files.pythonhosted.org/packages/source/${_name:0:1}/${_name}/${_name}-$pkgver.tar.gz")
+sha256sums=('d3c14f8ed9028a831b2bf51b8ab7776eba87e66cfc58a06b99c359aaa640f040')
+
+build() {
+  cd "$srcdir/$_name-$pkgver"
+  python -m build --wheel --no-isolation
+}
+
+package() {
+  cd "$srcdir/$_name-$pkgver"
+  python -m installer --destdir="$pkgdir" dist/*.whl
+}
