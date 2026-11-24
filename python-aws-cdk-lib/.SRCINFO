@@ -1,0 +1,25 @@
+pkgbase = python-aws-cdk-lib
+	pkgdesc = AWS Cloud Development Kit construct library for Python
+	pkgver = 2.278.0
+	pkgrel = 1
+	url = https://github.com/aws/aws-cdk
+	arch = any
+	license = Apache-2.0
+	makedepends = python-installer
+	depends = python
+	depends = python-aws-cdk-asset-awscli-v1>=2.2.297
+	depends = python-aws-cdk-asset-awscli-v1<2.2.298
+	depends = python-aws-cdk-asset-node-proxy-agent-v6>=2.1.3
+	depends = python-aws-cdk-asset-node-proxy-agent-v6<3
+	depends = python-aws-cdk-cloud-assembly-schema>=55.6
+	depends = python-aws-cdk-cloud-assembly-schema<56
+	depends = python-constructs>=10.5
+	depends = python-constructs<11
+	depends = python-jsii>=1.143
+	depends = python-jsii<2
+	depends = python-publication>=0.0.3
+	noextract = aws_cdk_lib-2.278.0-py3-none-any.whl
+	source = aws_cdk_lib-2.278.0-py3-none-any.whl::https://files.pythonhosted.org/packages/d9/23/980487d45bb037c9c6af4515b4807dc12dd5bc2fc36d750714d9ddab2ab4/aws_cdk_lib-2.278.0-py3-none-any.whl
+	sha256sums = 2b2c7c8043cab9ddb7b25733eaefd7fd755247a084a96dc86fb875534b9fd3d0
+
+pkgname = python-aws-cdk-lib

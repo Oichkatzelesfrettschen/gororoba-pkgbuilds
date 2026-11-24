@@ -1,0 +1,73 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+
+# Upstream repository (https://github.com/thoppe/Cayley-Dickson) is publicly hosted
+# without an explicit open-source license grant. Under copyright law and GitHub TOS,
+# rights to view and fork are granted, with other rights reserved by default.
+# Maintained strictly for local compilation and private workstation installation.
+
+pkgname=python-cayley-dickson
+_commit=abf96e707e2af10c0f66480ebb00205d3d159e54
+pkgver=0.r26.abf96e7
+pkgrel=2
+pkgdesc="Cayley-Dickson algebra process in Python"
+arch=('any')
+url="https://github.com/thoppe/Cayley-Dickson"
+license=('LicenseRef-All-Rights-Reserved')
+depends=('python' 'python-numpy' 'python-pandas')
+makedepends=('python-build' 'python-installer' 'python-setuptools' 'python-wheel')
+source=("$pkgname-$pkgver.tar.gz::https://github.com/thoppe/Cayley-Dickson/archive/$_commit.tar.gz")
+sha256sums=('446b43f2c955c563f79660045a728b1c96d7c3ee4f7fbc0ae1ae109e90465164')
+
+prepare() {
+	cd "Cayley-Dickson-$_commit"
+	mkdir -p cayley_dickson
+	cp src/cayley_dickson.py cayley_dickson/
+	cat > cayley_dickson/__init__.py << 'EOF'
+from .cayley_dickson import *
+EOF
+	cat > pyproject.toml << 'EOF'
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cayley-dickson"
+version = "0.1.0"
+description = "Cayley-Dickson process in Python"
+readme = "README.md"
+license = "LicenseRef-All-Rights-Reserved"
+dependencies = [
+    "numpy",
+    "pandas",
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["cayley_dickson*", "src*"]
+EOF
+}
+
+build() {
+	cd "Cayley-Dickson-$_commit"
+	python -m build --wheel --no-isolation
+}
+
+package() {
+	cd "Cayley-Dickson-$_commit"
+	python -m installer --destdir="$pkgdir" dist/*.whl
+	install -dm755 "$pkgdir/usr/share/licenses/$pkgname"
+	cat > "$pkgdir/usr/share/licenses/$pkgname/LICENSE" << 'EOF'
+Cayley-Dickson (https://github.com/thoppe/Cayley-Dickson)
+Author: Travis Hoppe (http://thoppe.github.io/)
+
+Notice of Copyright and License Status:
+Upstream is published publicly on GitHub without an explicit SPDX or open-source
+license file. Under US Copyright Law (17 U.S.C.) and GitHub Terms of Service
+(Section D.4), viewing and forking are permitted, while copyright is retained
+with all other rights reserved by the author.
+
+This Arch Linux PKGBUILD is maintained strictly for local compilation and private
+installation on this workstation and is not distributed as pre-compiled binaries
+to third parties without explicit authorization.
+EOF
+}

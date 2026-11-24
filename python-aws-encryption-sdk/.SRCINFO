@@ -1,0 +1,18 @@
+pkgbase = python-aws-encryption-sdk
+	pkgdesc = AWS Encryption SDK for Python
+	pkgver = 4.0.7
+	pkgrel = 1
+	url = https://github.com/aws/aws-encryption-sdk-python
+	arch = any
+	license = Apache-2.0
+	makedepends = python-installer
+	depends = python
+	depends = python-boto3
+	depends = python-cryptography
+	depends = python-attrs
+	depends = python-wrapt
+	noextract = aws_encryption_sdk-4.0.7-py2.py3-none-any.whl
+	source = aws_encryption_sdk-4.0.7-py2.py3-none-any.whl::https://files.pythonhosted.org/packages/bb/7f/4f97f0bbc35a325f4327f18fd1fc4e781d9888e4d1f3d79ba4bc455ae145/aws_encryption_sdk-4.0.7-py2.py3-none-any.whl
+	sha256sums = 5cf36bd8ecfa35cc87dfaba91910bd999bb211588172c3fcc8273f9cb54cf776
+
+pkgname = python-aws-encryption-sdk

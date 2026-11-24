@@ -1,0 +1,17 @@
+pkgbase = python-aws-cdk-cloud-assembly-schema
+	pkgdesc = Cloud assembly schema for the AWS CDK
+	pkgver = 55.7.0
+	pkgrel = 1
+	url = https://github.com/aws/aws-cdk
+	arch = any
+	license = Apache-2.0
+	makedepends = python-installer
+	depends = python
+	depends = python-jsii>=1.142
+	depends = python-jsii<2
+	depends = python-publication
+	noextract = aws_cdk_cloud_assembly_schema-55.7.0-py3-none-any.whl
+	source = aws_cdk_cloud_assembly_schema-55.7.0-py3-none-any.whl::https://files.pythonhosted.org/packages/22/4b/f22cf83c52c701a4c4b5c210b86e2778ea2f53673594441d0961dddd1dfb/aws_cdk_cloud_assembly_schema-55.7.0-py3-none-any.whl
+	sha256sums = f068b382f7d5ce1b0258a03874e79e4f5a38482955cdf0773be110dbdb73bd9c
+
+pkgname = python-aws-cdk-cloud-assembly-schema

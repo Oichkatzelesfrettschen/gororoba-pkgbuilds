@@ -1,0 +1,17 @@
+pkgbase = python-aws-cdk-asset-node-proxy-agent-v6
+	pkgdesc = jsii asset for the CDK Node proxy-agent Lambda layer
+	pkgver = 2.1.3
+	pkgrel = 1
+	url = https://github.com/cdklabs/awscdk-asset-node-proxy-agent
+	arch = any
+	license = Apache-2.0
+	makedepends = python-installer
+	depends = python
+	depends = python-jsii>=1.140
+	depends = python-jsii<2
+	depends = python-publication
+	noextract = aws_cdk_asset_node_proxy_agent_v6-2.1.3-py3-none-any.whl
+	source = aws_cdk_asset_node_proxy_agent_v6-2.1.3-py3-none-any.whl::https://files.pythonhosted.org/packages/ba/58/2d8e000954ea1f8bf22e826e42ef0d283df9b86e25e78a06c20750dcb71d/aws_cdk_asset_node_proxy_agent_v6-2.1.3-py3-none-any.whl
+	sha256sums = b8adb536ad19f8a44e94054c712f5ea5ff487cc3c10ecdc158846b29ca2cbbe5
+
+pkgname = python-aws-cdk-asset-node-proxy-agent-v6

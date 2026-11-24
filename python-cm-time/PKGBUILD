@@ -1,0 +1,31 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+
+pkgname=python-cm-time
+_pkg=cm_time
+pkgver=1.0.2
+pkgrel=1
+pkgdesc="Context manager that measures the elapsed time of its block"
+arch=('any')
+url="https://github.com/34j/cm-time"
+license=('CC0-1.0')
+depends=('python')
+makedepends=('python-build' 'python-installer' 'python-setuptools')
+checkdepends=('python-pytest')
+source=("https://files.pythonhosted.org/packages/source/c/cm-time/$_pkg-$pkgver.tar.gz")
+sha256sums=('5ec14adf5e9a7bc1edb1991792c60fea828bbe8760fff5b62cedd59ab5a07939')
+
+build() {
+	cd "$_pkg-$pkgver"
+	python -m build --wheel --no-isolation
+}
+
+check() {
+	cd "$_pkg-$pkgver"
+	PYTHONPATH="$PWD/src" python -m pytest -q -p no:cacheprovider tests
+}
+
+package() {
+	cd "$_pkg-$pkgver"
+	python -m installer --destdir="$pkgdir" dist/*.whl
+	install -Dm644 LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}

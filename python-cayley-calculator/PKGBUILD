@@ -1,0 +1,25 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+
+pkgname=python-cayley-calculator
+_pkg=cayley_calculator
+pkgver=1.3.1
+pkgrel=1
+pkgdesc="Fast table calculator for Cayley-Dickson numbers (quaternions, octonions, sedenions)"
+arch=('any')
+url="https://github.com/Kadelka/Cayley_Calculator"
+license=('MIT')
+depends=('python' 'python-numpy' 'python-scipy' 'python-numpy-quaternion')
+makedepends=('python-build' 'python-installer' 'python-hatchling' 'python-wheel')
+source=("https://files.pythonhosted.org/packages/source/c/$_pkg/$_pkg-$pkgver.tar.gz")
+sha256sums=('65922fc90cc0d8159830e5d90424cb7cda6c6306824bea628542c647f364d55b')
+
+build() {
+	cd "$_pkg-$pkgver"
+	python -m build --wheel --no-isolation
+}
+
+package() {
+	cd "$_pkg-$pkgver"
+	python -m installer --destdir="$pkgdir" dist/*.whl
+	install -Dm644 MIT.License "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}

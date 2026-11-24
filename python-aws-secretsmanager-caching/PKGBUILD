@@ -1,0 +1,20 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+# shellcheck shell=bash disable=SC2034,SC2154
+
+pkgname=python-aws-secretsmanager-caching
+pkgver=1.2.0
+pkgrel=1
+pkgdesc='Client-side cache for AWS Secrets Manager GetSecretValue'
+arch=('any')
+url='https://github.com/aws/aws-secretsmanager-caching-python'
+license=('Apache-2.0')
+depends=('python' 'python-botocore')
+makedepends=('python-installer')
+_wheel='aws_secretsmanager_caching-1.2.0-py3-none-any.whl'
+source=("$_wheel::https://files.pythonhosted.org/packages/f2/e0/e4844b15a4a969420ed9abe8fbbefd2ea9be144ec2803ccf426e1a6a0e8c/aws_secretsmanager_caching-1.2.0-py3-none-any.whl")
+noextract=("$_wheel")
+sha256sums=('c0953195050c9796af1df98e5a629512bcfdd301443bf4c853256c3a827c6e87')
+
+package() {
+	python -m installer --destdir="$pkgdir" "$_wheel"
+}

@@ -1,0 +1,26 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+
+pkgname=python-borneo
+_pkg=borneo
+pkgver=5.5.0
+pkgrel=1
+_srcdir=borneo-$pkgver
+pkgdesc="Oracle NoSQL Database Python SDK"
+arch=('any')
+url="https://nosql-python-sdk.readthedocs.io/en/stable/index.html"
+license=('UPL-1.0')
+depends=('python' 'python-dateutil' 'python-requests')
+makedepends=('python-build' 'python-installer' 'python-setuptools' 'python-wheel')
+source=("https://files.pythonhosted.org/packages/85/37/717c81f6a61aa2026688459ca5b6ab69fcff551e145cb0e95933d5f69bc8/borneo-5.5.0.tar.gz")
+sha256sums=('8b4b19c349e9fc4003471b6258b33e1d21ecfde743216734d770011eafd2f3d5')
+
+build() {
+	cd "$_srcdir"
+	python -m build --wheel --no-isolation
+}
+
+package() {
+	cd "$_srcdir"
+	python -m installer --destdir="$pkgdir" dist/*.whl
+	find . -maxdepth 1 -iname 'LICENSE*' -exec install -Dm644 {} "$pkgdir/usr/share/licenses/$pkgname/" \;
+}

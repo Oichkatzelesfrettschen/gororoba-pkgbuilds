@@ -1,0 +1,25 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+# shellcheck shell=bash disable=SC2034,SC2154
+
+# aws-cdk-lib 2.275.0 requires this asset at exactly 2.2.297.
+# The wheel's jsii tarball stores package/lib/layer.zip, a Lambda layer of AWS CLI v1
+# (CPython 3.11 bytecode and aws.cmd). It does not install a host aws executable.
+# Do not install extra/aws-cli. aws-cli-v2 already provides /usr/bin/aws.
+
+pkgname=python-aws-cdk-asset-awscli-v1
+pkgver=2.2.297
+pkgrel=1
+pkgdesc='jsii asset that carries an AWS CLI v1 Lambda layer for the CDK'
+arch=('any')
+url='https://github.com/cdklabs/awscdk-asset-awscli'
+license=('Apache-2.0')
+depends=('python' 'python-jsii>=1.142' 'python-jsii<2' 'python-publication')
+makedepends=('python-installer')
+_wheel='aws_cdk_asset_awscli_v1-2.2.297-py3-none-any.whl'
+source=("$_wheel::https://files.pythonhosted.org/packages/e2/be/7a8ff0e83b46273172e8e3d01f0bf71fb015960da40d7542460ff7cc54c6/aws_cdk_asset_awscli_v1-2.2.297-py3-none-any.whl")
+noextract=("$_wheel")
+sha256sums=('3766e7d9280693db5bf759a0e46033ad9d996c0ccb8e832cee22a6e366e1c85e')
+
+package() {
+	python -m installer --destdir="$pkgdir" "$_wheel"
+}

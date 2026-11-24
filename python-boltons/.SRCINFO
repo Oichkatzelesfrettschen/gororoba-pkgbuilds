@@ -1,0 +1,14 @@
+pkgbase = python-boltons
+	pkgdesc = Functionality that should be in the standard library
+	pkgver = 26.2.0
+	pkgrel = 1
+	url = https://github.com/mahmoud/boltons
+	arch = any
+	license = BSD-3-Clause
+	makedepends = python-installer
+	depends = python
+	noextract = boltons-26.2.0-py3-none-any.whl
+	source = boltons-26.2.0-py3-none-any.whl::https://files.pythonhosted.org/packages/d2/ac/1f8e4f4855e382a67392ca3bba329cb93aba1e3039289c52a86bf337f7a2/boltons-26.2.0-py3-none-any.whl
+	sha256sums = 41942cbce440211bbcf2487ccdc356964ad674f95a01068b8a0dd7a1d1fed036
+
+pkgname = python-boltons
