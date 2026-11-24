@@ -1,0 +1,39 @@
+# shellcheck shell=bash
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+# QCSuper talks to the Qualcomm Diag port, which on a rooted Android phone is
+# reached through `--adb` over /dev/diag. `--efs-shell` walks the baseband's
+# embedded filesystem, where the NV items live.
+#
+# inputs/adb.py resolves `adb` through PATH before its bundled copies, so
+# android-tools supplies it and the vendored x86_64, macOS and Windows adb
+# binaries stay out of the package. inputs/adb_bridge/adb_bridge is an
+# aarch64 Android executable that `--adb` pushes to the phone; it is device
+# payload, so the package stays arch=any and strip leaves it alone.
+
+pkgname=qcsuper
+pkgver=2.1.4
+pkgrel=1
+pkgdesc="Capture raw 2G/3G/4G radio frames and browse baseband EFS over the Qualcomm Diag protocol"
+arch=('any')
+url="https://github.com/P1sec/QCSuper"
+license=('GPL-3.0-or-later')
+depends=('android-tools' 'python' 'python-crcmod' 'python-pycrate' 'python-pyserial' 'python-pyusb')
+optdepends=('wireshark-cli: --wireshark-live and PCAP inspection')
+options=('!strip')
+makedepends=('python-build' 'python-installer' 'python-poetry-core' 'python-wheel')
+source=("$pkgname-$pkgver.tar.gz::https://files.pythonhosted.org/packages/source/q/$pkgname/$pkgname-$pkgver.tar.gz")
+sha256sums=('f69805e45b8b574c7eeb98018e35e667449c2d7bd80c3fc4db795d5a91505d53')
+
+build() {
+	cd "$pkgname-$pkgver"
+	python -m build --wheel --no-isolation
+}
+
+package() {
+	cd "$pkgname-$pkgver"
+	python -m installer --destdir="$pkgdir/" dist/*.whl
+	local _site
+	_site=$(python -c 'import site; print(site.getsitepackages()[0])')
+	rm -r "$pkgdir$_site/$pkgname/inputs/external"
+	install -Dm644 LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}

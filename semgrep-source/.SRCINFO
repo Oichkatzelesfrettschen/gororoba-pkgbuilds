@@ -1,0 +1,40 @@
+pkgbase = semgrep-source
+	pkgdesc = Semgrep built from source for baseline x86-64 hosts
+	pkgver = 1.186.0
+	pkgrel = 1
+	url = https://github.com/semgrep/semgrep
+	install = semgrep-source.install
+	arch = x86_64
+	license = LGPL-2.1-or-later
+	makedepends = clang
+	makedepends = distcc
+	makedepends = dune
+	makedepends = git
+	makedepends = lld
+	makedepends = llvm
+	makedepends = m4
+	makedepends = opam
+	makedepends = patch
+	makedepends = pkgconf
+	makedepends = python-build
+	makedepends = python-pip
+	makedepends = python-virtualenv
+	makedepends = python-wheel
+	makedepends = rsync
+	makedepends = unzip
+	depends = python
+	depends = glibc
+	depends = tree-sitter-0.22-compat
+	provides = semgrep=1.186.0
+	conflicts = semgrep
+	conflicts = python-semgrep
+	options = !debug
+	options = !lto
+	source = git+https://github.com/semgrep/semgrep.git#tag=v1.186.0
+	source = semgrep-source.sh
+	source = semgrep-source.install
+	sha256sums = SKIP
+	sha256sums = 5daf6714bbe04b6f24e96a68d9bf52196424a09d193c8cc3506e1468fbe80026
+	sha256sums = 6f3a3a575825bc5efc6c73a19bb1658e8dd7a46493001657c07a426959e48c18
+
+pkgname = semgrep-source

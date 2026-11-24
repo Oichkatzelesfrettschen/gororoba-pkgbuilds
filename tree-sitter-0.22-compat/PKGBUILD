@@ -1,0 +1,28 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+
+pkgname=tree-sitter-0.22-compat
+pkgver=0.22.6
+pkgrel=1
+pkgdesc='Compatibility libtree-sitter.so.0.22 for tools built against tree-sitter 0.22'
+arch=('x86_64')
+url='https://github.com/tree-sitter/tree-sitter'
+license=('MIT')
+depends=('glibc')
+source=("tree-sitter-${pkgver}.tar.gz::https://github.com/tree-sitter/tree-sitter/archive/refs/tags/v${pkgver}.tar.gz")
+sha256sums=('e2b687f74358ab6404730b7fb1a1ced7ddb3780202d37595ecd7b20a8f41861f')
+
+build() {
+  cd "tree-sitter-${pkgver}"
+  make
+}
+
+package() {
+  cd "tree-sitter-${pkgver}"
+
+  install -Dm755 libtree-sitter.so \
+    "${pkgdir}/usr/lib/libtree-sitter.so.${pkgver}"
+  ln -s "libtree-sitter.so.${pkgver}" \
+    "${pkgdir}/usr/lib/libtree-sitter.so.0.22"
+  install -Dm644 LICENSE \
+    "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
+}
