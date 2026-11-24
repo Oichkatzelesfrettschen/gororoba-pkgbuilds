@@ -1,0 +1,4 @@
+[python-hypercomplex-algebra]
+source = "pypi"
+pypi = "hypercomplex-algebra"
+exclude_regex = "(alpha|beta|rc|dev)"

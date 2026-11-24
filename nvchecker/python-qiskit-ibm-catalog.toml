@@ -1,0 +1,4 @@
+[python-qiskit-ibm-catalog]
+source = "pypi"
+pypi = "qiskit-ibm-catalog"
+exclude_regex = "(alpha|beta|rc|dev)"

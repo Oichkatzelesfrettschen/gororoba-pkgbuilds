@@ -1,0 +1,4 @@
+[python-qiskit-serverless]
+source = "pypi"
+pypi = "qiskit-serverless"
+exclude_regex = "(alpha|beta|rc|dev)"

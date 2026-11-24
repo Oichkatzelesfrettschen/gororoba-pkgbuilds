@@ -1,0 +1,4 @@
+[python-qiskit-noise-learning]
+source = "pypi"
+pypi = "qiskit-noise-learning"
+exclude_regex = "(alpha|beta|rc|dev)"
