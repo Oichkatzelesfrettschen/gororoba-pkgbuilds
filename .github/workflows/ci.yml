@@ -112,6 +112,13 @@ jobs:
           chmod -R a+rX "$GITHUB_WORKSPACE"
           status=0
           for d in $DIRS; do
+            # Only recipes on ci/build-allowlist.txt build here (Tier A in
+            # docs/package-update-ci.md); CUDA, proprietary-download and
+            # long-build recipes build on a compute host instead.
+            if ! grep -qxF "$d" ci/build-allowlist.txt; then
+              printf 'build skipped (not on ci/build-allowlist.txt): %s\n' "$d"
+              continue
+            fi
             printf '::group::%s\n' "$d"
             ( cd "$d" && sudo -u builder env \
                 PACKAGER="$PACKAGER" BUILDDIR=/var/tmp/build/work \
