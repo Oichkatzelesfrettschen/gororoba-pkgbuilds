@@ -1,0 +1,21 @@
+pkgbase = python-pycrate
+	pkgdesc = Protocol encoders and decoders for cellular and telecom formats
+	pkgver = 0.8.1
+	pkgrel = 1
+	url = https://github.com/pycrate-org/pycrate
+	arch = any
+	license = LGPL-2.1-or-later
+	makedepends = python-build
+	makedepends = python-installer
+	makedepends = python-setuptools
+	makedepends = python-wheel
+	depends = python
+	optdepends = python-cryptomobile: NAS LTE and 5G security algorithms
+	optdepends = python-crcmod: SEDebugMux support
+	optdepends = python-gmpy2: faster large-integer handling in pycrate_core
+	optdepends = ipython: pretty-printed corenet UE handler state
+	optdepends = python-lxml: Diameter dictionary parsing
+	source = python-pycrate-0.8.1.tar.gz::https://files.pythonhosted.org/packages/source/p/pycrate/pycrate-0.8.1.tar.gz
+	sha256sums = a408c942d219c646a5a81073b8036f48a81c4540dd1f25fda2f8bbde0607db98
+
+pkgname = python-pycrate
