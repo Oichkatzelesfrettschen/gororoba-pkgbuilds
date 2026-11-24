@@ -1,0 +1,3 @@
+[mitiq-stack]
+source = "pypi"
+pypi = "mitiq"

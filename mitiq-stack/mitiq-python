@@ -1,0 +1,3 @@
+#!/bin/sh
+# Python 3.13 interpreter of the mitiq-stack environment.
+exec /opt/mitiq-stack/bin/python "$@"
