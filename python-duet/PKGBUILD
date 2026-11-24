@@ -1,0 +1,26 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+
+_name=duet
+pkgname=python-$_name
+pkgver=0.2.9
+pkgrel=1
+pkgdesc="A simple future-based async library for python."
+arch=(any)
+url=https://github.com/google/duet
+license=(Apache-2.0)
+depends=(python)
+makedepends=(python-build python-installer python-setuptools python-wheel)
+# No check() is declared: the sdist's test layout was not inspected.
+source=("https://files.pythonhosted.org/packages/c7/b8/ef7c1a8a515d5195970ba5fdf420400052346873d3370de75f8b97e413bd/duet-0.2.9.tar.gz")
+sha256sums=('d6fa39582e6a3dce1096c47e5fbcbda648a633eed94a38943e68662afa2587f3')
+
+build() {
+    cd "$_name-$pkgver"
+    python -m build --wheel --no-isolation
+}
+
+package() {
+    cd "$_name-$pkgver"
+    python -m installer --destdir="$pkgdir" dist/*.whl
+    install -Dm644 LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}

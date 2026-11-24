@@ -1,0 +1,22 @@
+pkgbase = python-typedunits
+	pkgdesc = A fast units and dimensions library with support for static dimensionality checking and protobuffer serialization
+	pkgver = 0.0.2
+	pkgrel = 1
+	url = https://github.com/quantumlib/TypedUnits
+	arch = x86_64
+	license = Apache-2.0
+	checkdepends = python-pytest
+	makedepends = git
+	makedepends = python-build
+	makedepends = python-installer
+	makedepends = python-setuptools
+	makedepends = python-wheel
+	depends = cython
+	depends = python-attrs
+	depends = python-numpy
+	depends = python-protobuf
+	depends = python-pyparsing
+	source = typedunits::git+https://github.com/quantumlib/TypedUnits#tag=v0.0.2
+	b2sums = SKIP
+
+pkgname = python-typedunits
