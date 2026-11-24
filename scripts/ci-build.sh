@@ -38,7 +38,9 @@ fi
 install -d "$root/repo"
 cp -- /etc/pacman.conf "$root/pacman.conf"
 cp -- /etc/makepkg.conf "$root/makepkg.conf"
-printf 'PACMAN_OPTS=(--config %s)\n' "$root/pacman.conf" >> "$root/makepkg.conf"
+# makepkg parses its options (adding --noconfirm to PACMAN_OPTS) before it
+# sources makepkg.conf, so the config appends rather than assigns.
+printf 'PACMAN_OPTS+=(--config %s)\n' "$root/pacman.conf" >> "$root/makepkg.conf"
 chmod a+r "$root/pacman.conf" "$root/makepkg.conf"
 local_repo=no
 status=0
