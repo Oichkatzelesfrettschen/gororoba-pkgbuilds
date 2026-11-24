@@ -7,6 +7,7 @@ pkgbase = python-plum-dispatch
 	license = MIT
 	checkdepends = python-numpy
 	checkdepends = python-pytest
+	checkdepends = python-sybil
 	makedepends = python-build
 	makedepends = python-hatch-vcs
 	makedepends = python-hatchling

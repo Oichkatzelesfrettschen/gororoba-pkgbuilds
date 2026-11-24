@@ -1,0 +1,23 @@
+pkgbase = python-pybase64
+	pkgdesc = Fast Base64 encoding/decoding in Python
+	pkgver = 1.5.2
+	pkgrel = 1
+	url = https://github.com/mayeut/pybase64
+	arch = x86_64
+	license = BSD-2-Clause
+	checkdepends = python-pytest
+	checkdepends = python-packaging
+	checkdepends = python-typing_extensions
+	makedepends = cmake
+	makedepends = python-build
+	makedepends = python-installer
+	makedepends = python-setuptools
+	makedepends = python-wheel
+	depends = glibc
+	depends = python
+	options = !strip
+	options = !debug
+	source = pybase64-1.5.2.tar.gz::https://files.pythonhosted.org/packages/source/p/pybase64/pybase64-1.5.2.tar.gz
+	sha256sums = e7bc140306325a61cb7bd18b78fbf800df6aecaa9928023b7f7425b680a7601e
+
+pkgname = python-pybase64

@@ -8,6 +8,7 @@ pkgbase = python-qiskit
 	license = Apache-2.0
 	checkdepends = ipython
 	checkdepends = python-ddt
+	checkdepends = python-pylatexenc
 	checkdepends = python-stestr
 	makedepends = cargo
 	makedepends = cbindgen

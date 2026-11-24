@@ -27,6 +27,7 @@ python-openquantum-sdk
 python-plum-dispatch
 python-proto-plus
 python-pubchempy
+python-pybase64
 python-pycrate
 python-pyomo
 python-pytket
@@ -54,6 +55,7 @@ python-seekpath
 python-tensornetwork
 python-typedunits
 python-zendriver
+python313
 qcsuper
 qiskit-legacy-stack
 quantum-compat-stack

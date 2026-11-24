@@ -15,7 +15,7 @@ license=('MIT')
 conflicts=('python-plum')
 depends=('python-beartype' 'python-rich' 'python-typing_extensions')
 makedepends=('python-build' 'python-hatch-vcs' 'python-hatchling' 'python-installer')
-checkdepends=('python-numpy' 'python-pytest')
+checkdepends=('python-numpy' 'python-pytest' 'python-sybil')
 source=("$pkgname-$pkgver.tar.gz::$url/archive/refs/tags/v$pkgver.tar.gz")
 sha256sums=('d66fbb41118e7f1bf04e861487965b19e37a5e0cfe4fde791cdeffbd8f0b12d1')
 
