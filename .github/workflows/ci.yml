@@ -9,7 +9,7 @@ concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: true
 env:
-  PACKAGER: "gororoba-pkgbuilds CI"
+  PACKAGER: "gororoba-pkgbuilds CI <ci@gororoba-pkgbuilds.invalid>"
 jobs:
   scrub-check:
     runs-on: ubuntu-latest
@@ -104,6 +104,7 @@ jobs:
           useradd -m builder
           printf 'builder ALL=(ALL) NOPASSWD: ALL\n' > /etc/sudoers.d/builder
           install -d -o builder -g builder /var/tmp/build/work /var/tmp/build/src /var/tmp/build/pkg
+          printf '\n[ci-local]\nSigLevel = Optional TrustAll\nServer = file:///var/tmp/build/pkg\n' >> /etc/pacman.conf
       - uses: actions/checkout@v4
       - name: Build changed recipes
         env:
@@ -111,7 +112,12 @@ jobs:
         run: |
           chmod -R a+rX "$GITHUB_WORKSPACE"
           status=0
-          for d in $DIRS; do
+          allowed=""
+          for d in $DIRS; do grep -qxF "$d" ci/build-allowlist.txt && allowed="$allowed $d"; done
+          order=$(sh scripts/build-order.sh $allowed)
+          printf 'build order: %s\n' "$(echo $order)"
+          repo-add -q /var/tmp/build/pkg/ci-local.db.tar.gz 2>/dev/null || true
+          for d in $order; do
             # Only recipes on ci/build-allowlist.txt build here (Tier A in
             # docs/package-update-ci.md); CUDA, proprietary-download and
             # long-build recipes build on a compute host instead.
@@ -123,7 +129,10 @@ jobs:
             ( cd "$d" && sudo -u builder env \
                 PACKAGER="$PACKAGER" BUILDDIR=/var/tmp/build/work \
                 SRCDEST=/var/tmp/build/src PKGDEST=/var/tmp/build/pkg \
-                makepkg --syncdeps --noconfirm --needed --cleanbuild ) || status=1
+                makepkg --syncdeps --noconfirm --needed --cleanbuild ) || { status=1; printf '::endgroup::\n'; continue; }
+            # Publish into the container-local repository so later recipes resolve it.
+            repo-add -q /var/tmp/build/pkg/ci-local.db.tar.gz /var/tmp/build/pkg/*.pkg.tar.zst
+            pacman -Sy --noconfirm >/dev/null
             printf '::endgroup::\n'
           done
           exit "$status"
