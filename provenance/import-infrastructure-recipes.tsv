@@ -15,8 +15,8 @@ kaggle-api	workspace-infrastructure (private)	packaging/kaggle-api	bbf3cbbde3b4d
 kaggle-benchmarks-stack	workspace-infrastructure (private)	packaging/kaggle-benchmarks-stack	749e699adcc2b97532cb7d0a0ce907abc25da319	2026-11-24T18:55:27Z
 kaggle-environments-stack	workspace-infrastructure (private)	packaging/kaggle-environments-stack	bbf3cbbde3b4d08fe493dddc73617ec948248170	2026-11-24T18:55:27Z
 lean4-cuda-nightly-bin	workspace-infrastructure (private)	packaging/lean4-cuda-nightly-bin	bbf3cbbde3b4d08fe493dddc73617ec948248170	2026-11-24T18:55:27Z
-litert-lm	PKGBUILDS	packaging/litert-lm	bbf3cbbde3b4d08fe493dddc73617ec948248170	2026-11-24T18:55:27Z
-llama.cpp-cuda	PKGBUILDS	packaging/llama.cpp-cuda	bbf3cbbde3b4d08fe493dddc73617ec948248170	2026-11-24T18:55:27Z
+litert-lm	workspace-infrastructure (private)	packaging/litert-lm	bbf3cbbde3b4d08fe493dddc73617ec948248170	2026-11-24T18:55:27Z
+llama.cpp-cuda	workspace-infrastructure (private)	packaging/llama.cpp-cuda	bbf3cbbde3b4d08fe493dddc73617ec948248170	2026-11-24T18:55:27Z
 oci-cli	workspace-infrastructure (private)	packaging/oci-cli	749e699adcc2b97532cb7d0a0ce907abc25da319	2026-11-24T18:55:27Z
 open-webui-stack	workspace-infrastructure (private)	packaging/open-webui-stack	749e699adcc2b97532cb7d0a0ce907abc25da319	2026-11-24T18:55:27Z
 originquantum-stack	workspace-infrastructure (private)	packaging/originquantum-stack	76871f846f03461eec155d0554c9019d5b117d7d	2026-11-24T18:55:27Z
