@@ -1,0 +1,223 @@
+diff --git a/bfd/bfd.c b/bfd/bfd.c
+index c8ac266c..a0029f3d 100644
+--- a/bfd/bfd.c
++++ b/bfd/bfd.c
+@@ -1018,7 +1018,7 @@ _bfd_doprnt (print_func print, void *stream, const char *format,
+       if (*ptr != '%')
+ 	{
+ 	  /* While we have regular characters, print them.  */
+-	  char *end = strchr (ptr, '%');
++	  const char *end = strchr (ptr, '%');
+ 	  if (end != NULL)
+ 	    result = print (stream, "%.*s", (int) (end - ptr), ptr);
+ 	  else
+diff --git a/bfd/targets.c b/bfd/targets.c
+index 3013e154..15295185 100644
+--- a/bfd/targets.c
++++ b/bfd/targets.c
+@@ -1739,6 +1739,6 @@ bfd_get_target_info (const char *target_name, bfd *abfd,
+       if (arches && tname)
+ 	{
+-	  char *hyp = strchr (tname, '-');
++	  const char *hyp = strchr (tname, '-');
+ 
+ 	  if (hyp != NULL)
+ 	    {
+@@ -1752,8 +1752,9 @@ bfd_get_target_info (const char *target_name, bfd *abfd,
+ 		{
+ 		  char new_tname[50];
++		  char *mutable_hyp;
+ 
+ 		  strcpy (new_tname, hyp);
+-		  while ((hyp = strrchr (new_tname, '-')) != NULL)
++		  while ((mutable_hyp = strrchr (new_tname, '-')) != NULL)
+ 		    {
+-		      *hyp = 0;
++		      *mutable_hyp = 0;
+ 		      if (_bfd_find_arch_match (new_tname, arches,
+diff --git a/bfd/elf32-i386.c b/bfd/elf32-i386.c
+index a2a5c07f..2a9c8777 100644
+--- a/bfd/elf32-i386.c
++++ b/bfd/elf32-i386.c
+@@ -4422,6 +4422,6 @@ static bfd *
+ elf_i386_link_setup_gnu_properties (struct bfd_link_info *info)
+ {
+-  struct elf_x86_init_table init_table;
++  struct elf_x86_init_table init_table = { 0 };
+ 
+   switch (get_elf_backend_data (info->output_bfd)->target_os)
+     {
+diff --git a/libiberty/make-relative-prefix.c b/libiberty/make-relative-prefix.c
+index 2c9ff32b..d6411124 100644
+--- a/libiberty/make-relative-prefix.c
++++ b/libiberty/make-relative-prefix.c
+@@ -259,10 +259,9 @@ make_relative_prefix_1 (const char *progname, const char *bin_prefix,
+ #ifdef HAVE_HOST_EXECUTABLE_SUFFIX
+	  len += strlen (HOST_EXECUTABLE_SUFFIX);
+ #endif
+-	  if (len < MAX_ALLOCA_SIZE)
+-	    nstore = (char *) alloca (len);
+-	  else
+-	    alloc_ptr = nstore = (char *) malloc (len);
++	  alloc_ptr = nstore = (char *) malloc (len);
++	  if (nstore == NULL)
++	    goto bailout;
+ 
+	  startp = endp = temp;
+	  while (1)
+diff --git a/gprof/source.c b/gprof/source.c
+index 886efb02..4401961b 100644
+--- a/gprof/source.c
++++ b/gprof/source.c
+@@ -98,7 +98,8 @@ annotate_source (Source_File *sf, unsigned int max_width,
+ 		 FILE * (*annote) (char *, int, void *), void *arg)
+ {
+   char *fname;
+-  char *annotation, *name_only;
++  char *annotation;
++  const char *name_only;
+   FILE *ifp, *ofp;
+   Search_List_Elem *sle = src_search_list.head;
+ 
+@@ -126,11 +127,11 @@ annotate_source (Source_File *sf, unsigned int max_width,
+ 	  name_only = strrchr (sf->name, '/');
+ #ifdef HAVE_DOS_BASED_FILE_SYSTEM
+ 	  {
+-	    char *bslash = strrchr (sf->name, '\\');
++	    const char *bslash = strrchr (sf->name, '\\');
+ 	    if (name_only == NULL || (bslash != NULL && bslash > name_only))
+ 	      name_only = bslash;
+ 	    if (name_only == NULL && sf->name[0] != '\0' && sf->name[1] == ':')
+-	      name_only = (char *)sf->name + 1;
++	      name_only = sf->name + 1;
+ 	  }
+ #endif
+ 	  if (name_only)
+diff --git a/binutils/prdbg.c b/binutils/prdbg.c
+index 67e54070..82551f3e 100644
+--- a/binutils/prdbg.c
++++ b/binutils/prdbg.c
+@@ -2656,7 +2656,7 @@ tg_start_function (void *p, const char *name, bool global)
+ 	  info->stack->method = xstrdup ("");
+ 	  name = dname;
+ 	}
+-      sep = strchr (name, '(');
++      sep = (char *) strchr (name, '(');
+       if (sep)
+ 	*sep = 0;
+       /* Obscure functions as type_info function.  */
+diff --git a/binutils/addr2line.c b/binutils/addr2line.c
+index c3c69794..05f61174 100644
+--- a/binutils/addr2line.c
++++ b/binutils/addr2line.c
+@@ -385,7 +385,7 @@ translate_addresses (bfd *abfd, asection *section)
+ 
+               if (base_names && filename != NULL)
+                 {
+-                  char *h;
++                  const char *h;
+ 
+                   h = strrchr (filename, '/');
+                   if (h != NULL)
+diff --git a/binutils/nm.c b/binutils/nm.c
+index 57bb3c9d..1e6ddc45 100644
+--- a/binutils/nm.c
++++ b/binutils/nm.c
+@@ -690,7 +690,7 @@ print_symname (const char *form, struct extended_symbol_info *info,
+   if (!with_symbol_versions
+       && bfd_get_flavour (abfd) == bfd_target_elf_flavour)
+     {
+-      atver = strchr (name, '@');
++      atver = (char *) strchr (name, '@');
+       if (atver)
+ 	*atver = 0;
+     }
+diff --git a/ld/ldlang.c b/ld/ldlang.c
+index e90c878a..8bbf0d7a 100644
+--- a/ld/ldlang.c
++++ b/ld/ldlang.c
+@@ -288,7 +288,7 @@ archive_path (const char *pattern)
+   if (link_info.path_separator == 0)
+     return p;
+ 
+-  p = strchr (pattern, link_info.path_separator);
++  p = (char *) strchr (pattern, link_info.path_separator);
+ #ifdef HAVE_DOS_BASED_FILE_SYSTEM
+   if (p == NULL || link_info.path_separator != ':')
+     return p;
+diff --git a/ld/ldelf.c b/ld/ldelf.c
+index 4d04f2e9..7ab971ab 100644
+--- a/ld/ldelf.c
++++ b/ld/ldelf.c
+@@ -537 +537 @@ ldelf_search_needed (const char *path, struct dt_needed *n,
+-		      if ((slash = strrchr (replacement, '/')) != NULL)
++		      if ((slash = strrchr (freeme, '/')) != NULL)
+@@ -790,7 +790,7 @@ ldelf_parse_ld_so_conf_include (struct ldelf_ld_so_conf *info,
+ 
+   if (pattern[0] != '/')
+     {
+-      char *p = strrchr (filename, '/');
++      const char *p = strrchr (filename, '/');
+       size_t patlen = strlen (pattern) + 1;
+ 
+       newp = xmalloc (p - filename + 1 + patlen);
+diff --git a/binutils/objdump.c b/binutils/objdump.c
+index 3b7c23be..873312a5 100644
+--- a/binutils/objdump.c
++++ b/binutils/objdump.c
+@@ -4738,7 +4738,7 @@ dump_ctf_errs (ctf_dict_t *fp)
+   ctf_next_t *it = NULL;
+   char *errtext;
+   int is_warning;
+-  int err;
++  int err = ECTF_NEXT_END;
+ 
+   /* Dump accumulated errors and warnings.  */
+   while ((errtext = ctf_errwarning_next (fp, &it, &is_warning, &err)) != NULL)
+diff --git a/bfd/elflink.c b/bfd/elflink.c
+index fc0f6821..045bf6ec 100644
+--- a/bfd/elflink.c
++++ b/bfd/elflink.c
+@@ -563 +563 @@ bfd_elf_link_record_dynamic_symbol (struct bfd_link_info *info,
+-      p = strchr (name, ELF_VER_CHR);
++      p = (char *) strchr (name, ELF_VER_CHR);
+@@ -643 +643 @@ bfd_elf_record_link_assignment (bfd *output_bfd,
+-      char *version = strrchr (name, ELF_VER_CHR);
++      const char *version = strrchr (name, ELF_VER_CHR);
+@@ -1078 +1078 @@ _bfd_elf_merge_symbol (bfd *abfd,
+-  char *new_version;
++  const char *new_version;
+@@ -1150 +1150 @@ _bfd_elf_merge_symbol (bfd *abfd,
+-	      char *old_version;
++	      const char *old_version;
+@@ -1876 +1876 @@ _bfd_elf_add_default_symbol (bfd *abfd,
+-  char *p;
++  const char *p;
+@@ -2528 +2528 @@ _bfd_elf_link_assign_sym_version (struct elf_link_hash_entry *h, void *data)
+-  char *p;
++  const char *p;
+@@ -5444 +5444 @@ elf_link_add_object_symbols (bfd *abfd, struct bfd_link_info *info)
+-	      char *p = strchr (name, ELF_VER_CHR);
++	      const char *p = strchr (name, ELF_VER_CHR);
+@@ -5681 +5681,2 @@ elf_link_add_object_symbols (bfd *abfd, struct bfd_link_info *info)
+-	  char *shortname, *p;
++	  char *shortname;
++	  const char *p;
+@@ -5961 +5961,2 @@ _bfd_elf_archive_symbol_lookup (bfd *abfd,
+-  char *p, *copy;
++  char *copy;
++  const char *p;
+@@ -6213 +6213 @@ elf_collect_hash_codes (struct elf_link_hash_entry *h, void *data)
+-      char *p = strchr (name, ELF_VER_CHR);
++      const char *p = strchr (name, ELF_VER_CHR);
+@@ -6286 +6286 @@ elf_collect_gnu_hash_codes (struct elf_link_hash_entry *h, void *data)
+-      char *p = strchr (name, ELF_VER_CHR);
++      const char *p = strchr (name, ELF_VER_CHR);
+@@ -10094,2 +10095,2 @@ elf_link_output_symstrtab (struct elf_final_link_info *flinfo,
+-	      char *version = strrchr (name, ELF_VER_CHR);
+-	      char *base_end = strchr (name, ELF_VER_CHR);
++	      const char *version = strrchr (name, ELF_VER_CHR);
++	      const char *base_end = strchr (name, ELF_VER_CHR);
+@@ -10827 +10828 @@ elf_link_output_extsym (struct bfd_hash_entry *bh, void *data)
+-	  char *p = strrchr (h->root.root.string, ELF_VER_CHR);
++	  const char *p = strrchr (h->root.root.string, ELF_VER_CHR);

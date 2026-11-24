@@ -1,0 +1,26 @@
+pkgbase = lttng-tools-generic-kernel
+	pkgdesc = LTTng tracing control tools without a distro-specific kernel package dependency
+	pkgver = 2.15.0
+	pkgrel = 1
+	url = https://lttng.org/
+	arch = x86_64
+	license = GPL-2.0-only
+	license = LGPL-2.1-only
+	makedepends = asciidoc
+	makedepends = xmlto
+	depends = liburcu
+	depends = libxml2
+	depends = kmod
+	depends = lttng-ust>=2.15
+	depends = lttng-ust<2.16
+	depends = popt
+	optdepends = lttng-modules-dkms-git: kernel-space tracing built for the running kernel (DKMS; avoids the stock-kernel pull)
+	optdepends = babeltrace2>=2.1: view CTF traces with the lttng view command
+	optdepends = man-db: view man pages with the lttng help command
+	provides = lttng
+	provides = lttng-tools=2.15.0
+	conflicts = lttng-tools
+	source = https://lttng.org/files/lttng-tools/lttng-tools-2.15.0.tar.bz2
+	sha512sums = a6cfe0b64d31e317c1bf48377abca917f373c959511f18f83719abc8059f1c4e69a898e056dad92fc5817f242b17358f7f893d910c7715d5710657b86cbcce56
+
+pkgname = lttng-tools-generic-kernel

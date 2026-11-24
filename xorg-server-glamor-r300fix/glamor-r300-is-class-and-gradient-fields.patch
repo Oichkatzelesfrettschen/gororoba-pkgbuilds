@@ -1,0 +1,54 @@
+diff --git a/glamor/glamor.c b/glamor/glamor.c
+index 192b1ac..b436f9c 100644
+--- a/glamor/glamor.c
++++ b/glamor/glamor.c
+@@ -824,6 +824,34 @@ glamor_init(ScreenPtr screen, unsigned int flags)
+          strstr((char *)glGetString(GL_RENDERER), "V3D")))
+         glamor_priv->use_quads = FALSE;
+ 
++    /* Detect R300-class hardware (RS482/RS485, R300, RV350...).
++     * These chips have a 64-slot fragment ALU limit.  glamor composite
++     * and gradient shaders can exceed that limit, causing a GPU hang on
++     * RS482 rather than a clean GL error.  Use renderer string as the
++     * detection heuristic; the ARB_fragment_program cap is unreliable
++     * on this GL stack. */
++    {
++        const char *renderer = (const char *)glGetString(GL_RENDERER);
++        glamor_priv->is_r300_class =
++            renderer &&
++            (strstr(renderer, "R300") || strstr(renderer, "R350") ||
++             strstr(renderer, "R360") || strstr(renderer, "RV350") ||
++             strstr(renderer, "RV370") || strstr(renderer, "RV380") ||
++             strstr(renderer, "RS400") || strstr(renderer, "RS480") ||
++             strstr(renderer, "RS482") || strstr(renderer, "RS485") ||
++             strstr(renderer, "RC410") || strstr(renderer, "RS690") ||
++             strstr(renderer, "RS600") || strstr(renderer, "RS740") ||
++             strstr(renderer, "R420") || strstr(renderer, "R423") ||
++             strstr(renderer, "R430") || strstr(renderer, "R480") ||
++             strstr(renderer, "RV410") || strstr(renderer, "R481") ||
++             strstr(renderer, "ATI RS480"));
++        if (glamor_priv->is_r300_class)
++            LogMessage(X_INFO,
++                       "glamor%d: R300-class hardware detected (%s), "
++                       "using shader budget guard\n",
++                       screen->myNum, renderer ? renderer : "unknown");
++    }
++
+     glGetIntegerv(GL_MAX_RENDERBUFFER_SIZE, &glamor_priv->max_fbo_size);
+     glGetIntegerv(GL_MAX_TEXTURE_SIZE, &glamor_priv->max_fbo_size);
+     glGetIntegerv(GL_MAX_VIEWPORT_DIMS, max_viewport_size);
+diff --git a/glamor/glamor_priv.h b/glamor/glamor_priv.h
+index ac16610..e1dfca9 100644
+--- a/glamor/glamor_priv.h
++++ b/glamor/glamor_priv.h
+@@ -247,6 +247,10 @@ typedef struct glamor_screen_private {
+     Bool use_gpu_shader4;
+     int max_fbo_size;
+     Bool enable_gradient_shader;
++    /* RS480/RS482/RS485 (R300-class) report GL_MAX_FRAGMENT_PROGRAM_ALU_INSTRUCTIONS_ARB=64.
++     * Composite and gradient shaders that exceed 64 ALU slots cause a GPU hang
++     * on these chips rather than a clean link failure.  Set at glamor init. */
++    Bool is_r300_class;
+ 
+     /**
+      * Stores information about supported formats. Note, that this list contains all

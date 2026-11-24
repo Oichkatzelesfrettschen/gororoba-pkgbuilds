@@ -1,0 +1,13 @@
+pkgbase = weggli
+	pkgdesc = Semantic search tool for C and C++ codebases
+	pkgver = 0.2.4
+	pkgrel = 1
+	url = https://github.com/weggli-rs/weggli
+	arch = x86_64
+	license = Apache-2.0
+	makedepends = cargo
+	depends = gcc-libs
+	source = weggli-0.2.4.crate::https://static.crates.io/crates/weggli/weggli-0.2.4.crate
+	sha256sums = 7cd932836bbe978e7550a2b34bef53e440c004fd2d8ba88ed0a5976f3f0ab2a0
+
+pkgname = weggli

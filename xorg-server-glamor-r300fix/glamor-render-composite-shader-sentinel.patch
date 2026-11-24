@@ -1,0 +1,41 @@
+diff --git a/glamor/glamor_render.c b/glamor/glamor_render.c
+index 00f2031..eb9871b 100644
+--- a/glamor/glamor_render.c
++++ b/glamor/glamor_render.c
+@@ -60,6 +60,10 @@ static struct blendinfo composite_op_info[] = {
+ };
+ 
+ #define RepeatFix			10
++/* Stored in shader->prog when both link variants failed permanently.
++ * GL program objects start from 1; ~0u is used as a sentinel that
++ * glamor_lookup_composite_shader recognises to skip retrying. */
++#define GLAMOR_PROGRAM_FAILED ((GLuint)~0u)
+ static GLuint
+ glamor_create_composite_fs(glamor_screen_private *glamor_priv, struct shader_key *key, Bool enable_rel_sampler)
+ {
+@@ -430,6 +434,8 @@ glamor_create_composite_shader(ScreenPtr screen, struct shader_key *key,
+ 
+         if (!glamor_link_glsl_prog(screen, prog, "composite")) {
+             glDeleteProgram(prog);
++            /* Both variants failed; prevent repeated compilation attempts. */
++            shader->prog = GLAMOR_PROGRAM_FAILED;
+             return;
+         }
+     }
+@@ -474,6 +480,7 @@ glamor_lookup_composite_shader(ScreenPtr screen, struct
+     glamor_composite_shader *shader;
+ 
+     shader = &glamor_priv->composite_shader[key->source][key->mask][key->in][key->dest_swizzle];
++    /* 0 = not yet attempted; GLAMOR_PROGRAM_FAILED = permanently failed (skip). */
+     if (shader->prog == 0)
+         glamor_create_composite_shader(screen, key, shader);
+ 
+@@ -1091,7 +1098,7 @@ glamor_composite_choose_shader(CARD8 op,
+     }
+ 
+     *shader = glamor_lookup_composite_shader(screen, &key);
+-    if ((*shader)->prog == 0) {
++    if ((*shader)->prog == 0 || (*shader)->prog == GLAMOR_PROGRAM_FAILED) {
+         glamor_fallback("no shader program for this render acccel mode\n");
+         goto fail;
+     }

@@ -1,0 +1,143 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+# shellcheck shell=bash
+# shellcheck disable=SC2034,SC2154
+pkgname=i586-elf32-minix-gcc
+pkgver=12.5.0
+pkgrel=1
+pkgdesc="GNU C cross compiler, libgcc, and CRT objects for i586-elf32-minix"
+arch=(x86_64)
+url="https://gcc.gnu.org/"
+license=(GPL-3.0-or-later LGPL-3.0-or-later GFDL-1.3-or-later)
+depends=(
+  glibc
+  gmp
+  i586-elf32-minix-binutils
+  i586-elf32-minix-netbsd11-command-sysroot
+  isl
+  libmpc
+  mpfr
+  zlib
+  zstd
+)
+makedepends=(flex gcc13-sidecar-bin)
+options=(!debug !lto staticlibs)
+validpgpkeys=(13975A70E63C361C73AE69EF6EEB81F8981C74C7)
+source=(
+  "https://ftp.gnu.org/gnu/gcc/gcc-${pkgver}/gcc-${pkgver}.tar.xz"
+  "https://ftp.gnu.org/gnu/gcc/gcc-${pkgver}/gcc-${pkgver}.tar.xz.sig"
+  "gcc-${pkgver}-i386-minix-target.patch"
+  "gcc-${pkgver}-host-format-security.patch"
+  "gcc-${pkgver}-host-werror.patch"
+  host-egrep
+  "minix-i386-abi.c"
+)
+sha256sums=(
+  "71cd373d0f04615e66c5b5b14d49c1a4c1a08efa7b30625cd240b11bab4062b3"
+  "SKIP"
+  "8db8408848356b17e829eea3bdd1c09bdf1d104fc4c7e0243e8dfb665c86c62c"
+  "68fa5321604781f9ca887e7c796df50dbfbc63e2f366044421ca6b9aeba4334f"
+  "fc7f8632fa90161dfc34ffdcdff3a38f681b238c1ceac897831087f9c8a0fa57"
+  "fdc5c7e09738f72f9097f7143fb7d8bdfadfb16ee7994c845e5c9a70346d0e7c"
+  "23e3e7fa0223e0a7a2ffe14f4a9a4e18a66ff825d8c90372a323db95a385ebdd"
+)
+
+prepare() {
+  patch -d "gcc-${pkgver}" -p1 < "gcc-${pkgver}-i386-minix-target.patch"
+  patch -d "gcc-${pkgver}" -p1 < "gcc-${pkgver}-host-format-security.patch"
+  patch -d "gcc-${pkgver}" -p1 < "gcc-${pkgver}-host-werror.patch"
+}
+
+build() {
+  CFLAGS+=" -ffile-prefix-map=${srcdir}=/usr/src/debug/${pkgname}"
+  CXXFLAGS+=" -ffile-prefix-map=${srcdir}=/usr/src/debug/${pkgname}"
+  CFLAGS_FOR_TARGET="${CFLAGS_FOR_TARGET:-} -ffile-prefix-map=${srcdir}=/usr/src/debug/${pkgname}"
+  export CFLAGS CXXFLAGS CFLAGS_FOR_TARGET
+  # GCC 12 configure scripts call the obsolete egrep entrypoint directly;
+  # the build tool preserves its extended-regex contract through grep -E.
+  local host_tools="${srcdir}/host-tools"
+  install -Dm755 "${srcdir}/host-egrep" "${host_tools}/egrep"
+  PATH="${host_tools}:${PATH}"
+  export PATH
+  local strict_host_cflags="${CFLAGS} -Werror"
+  local strict_host_cxxflags="${CXXFLAGS} -Werror"
+  local strict_target_cflags="${CFLAGS_FOR_TARGET} -Werror"
+  mkdir -p build
+  cd build || return 1
+  CC=gcc-13 CXX="g++-13 -std=gnu++17" MAKEINFO=true \
+    "../gcc-${pkgver}/configure" \
+    --target=i586-elf32-minix \
+    --prefix=/usr \
+    --with-sysroot=/usr/i586-elf32-minix/sysroot \
+    --with-as=/usr/bin/i586-elf32-minix-as \
+    --with-ld=/usr/bin/i586-elf32-minix-ld \
+    --enable-languages=c \
+    --enable-werror=yes \
+    --disable-bootstrap \
+    --disable-nls \
+    --disable-multilib \
+    --disable-threads \
+    --disable-default-pie \
+    --disable-libssp \
+    --disable-libgomp \
+    --disable-libatomic \
+    --disable-libquadmath \
+    --disable-libsanitizer \
+    --disable-libvtv
+
+  # Autoconf 2.69 function probes use legacy declarations that conflict with
+  # GCC 13 builtins, so configuration precedes strict artifact compilation.
+  make MAKEINFO=true \
+    configure-build-libiberty \
+    configure-build-libcpp \
+    configure-build-fixincludes \
+    configure-host
+  make MAKEINFO=true \
+    CFLAGS="${strict_host_cflags}" \
+    CXXFLAGS="${strict_host_cxxflags}" \
+    all-gcc
+  make MAKEINFO=true configure-target-libgcc
+  make MAKEINFO=true \
+    CFLAGS_FOR_TARGET="${strict_target_cflags}" \
+    all-target-libgcc
+}
+
+check() {
+  local compiler="${srcdir}/build/gcc/xgcc"
+  local compiler_flags=(-B "${srcdir}/build/gcc")
+  local object="${srcdir}/build/minix-i386-abi.o"
+
+  test "$("${compiler}" "${compiler_flags[@]}" -dumpmachine)" = i586-elf32-minix
+  "${compiler}" "${compiler_flags[@]}" -std=c99 -Wall -Wextra -Werror \
+    -c "${srcdir}/minix-i386-abi.c" -o "${object}"
+  test "$(i586-elf32-minix-objdump -f "${object}" \
+    | sed -n 's/.*file format //p')" = elf32-i386-minix
+
+  local crtend="${srcdir}/build/i586-elf32-minix/libgcc/crtend.o"
+  test "$(i586-elf32-minix-objdump -h "${crtend}" \
+    | awk '$2 == ".eh_frame" { print $3 }')" = 00000004
+
+  local diagnostic_log="${srcdir}/build/libcpp-diagnostic.log"
+  if printf '#define BAD(...) __VA_OPT__(##)\nBAD(x)\n' \
+    | "${compiler}" "${compiler_flags[@]}" -E -x c - \
+      > /dev/null 2> "${diagnostic_log}"; then
+    return 1
+  fi
+  grep -F "'##' cannot appear at either end of __VA_OPT__" \
+    "${diagnostic_log}"
+  printf 'long long value = 1LL;\n' \
+    | "${compiler}" "${compiler_flags[@]}" -std=c90 -Wlong-long \
+      -fsyntax-only -x c - > /dev/null 2> "${diagnostic_log}"
+  grep -F "use of C99 long long integer constant" "${diagnostic_log}"
+}
+
+package() {
+  make -C build MAKEINFO=true DESTDIR="${pkgdir}" install-gcc
+  make -C build MAKEINFO=true DESTDIR="${pkgdir}" install-target-libgcc
+  rm -rf "${pkgdir}/usr/share/info"
+  rm -f "${pkgdir}/usr/lib/libcc1.so"*
+  rm -f \
+    "${pkgdir}/usr/share/man/man7/fsf-funding.7" \
+    "${pkgdir}/usr/share/man/man7/gfdl.7" \
+    "${pkgdir}/usr/share/man/man7/gpl.7"
+  rmdir "${pkgdir}/usr/include" "${pkgdir}/usr/share/man/man7"
+}

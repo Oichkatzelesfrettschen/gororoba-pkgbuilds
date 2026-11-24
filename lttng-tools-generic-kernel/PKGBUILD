@@ -1,0 +1,63 @@
+# shellcheck shell=bash
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+# Contributor: Homalozoa <xuhaiwang at xiaomi dot com>
+# Contributor: Philippe Proulx <pproulx@efficios.com>
+# Contributor: Manuel Mendez <mmendez534 at gmail dot com>
+
+pkgname=lttng-tools-generic-kernel
+_pkgname=lttng-tools
+pkgver=2.15.0
+pkgrel=1
+pkgdesc='LTTng tracing control tools without a distro-specific kernel package dependency'
+arch=(x86_64)
+url='https://lttng.org/'
+license=(GPL-2.0-only LGPL-2.1-only)
+provides=(
+    lttng
+    "lttng-tools=${pkgver}"
+)
+conflicts=(lttng-tools)
+source=("https://lttng.org/files/${_pkgname}/${_pkgname}-${pkgver}.tar.bz2")
+sha512sums=('a6cfe0b64d31e317c1bf48377abca917f373c959511f18f83719abc8059f1c4e69a898e056dad92fc5817f242b17358f7f893d910c7715d5710657b86cbcce56')
+
+makedepends=(
+    asciidoc
+    xmlto
+)
+
+depends=(
+    liburcu
+    libxml2
+    kmod
+    # lttng-tools 2.15 configure requires lttng-ust >= 2.15 and < 2.16; an older
+    # or next-minor UST stack fails at configure or breaks the session daemon.
+    'lttng-ust>=2.15'
+    'lttng-ust<2.16'
+    popt
+)
+
+optdepends=(
+    # The whole point of this package is to avoid a distro-kernel dependency, so
+    # do not point at the stock lttng-modules (its AUR chain pulls linux +
+    # linux-headers).  The DKMS variant builds for the running kernel instead.
+    'lttng-modules-dkms-git: kernel-space tracing built for the running kernel (DKMS; avoids the stock-kernel pull)'
+    # lttng-tools 2.15 default traces are CTF 2, which the lttng view path needs
+    # Babeltrace 2.1+ to read; 2.0.x cannot open them.
+    'babeltrace2>=2.1: view CTF traces with the lttng view command'
+    'man-db: view man pages with the lttng help command'
+)
+
+build() {
+    cd "${srcdir}/${_pkgname}-${pkgver}"
+    ./configure \
+        --prefix=/usr \
+        --sysconfdir=/etc \
+        --enable-man-pages \
+        --disable-tests
+    make
+}
+
+package() {
+    cd "${srcdir}/${_pkgname}-${pkgver}"
+    make install DESTDIR="${pkgdir}"
+}
