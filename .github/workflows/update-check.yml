@@ -1,0 +1,69 @@
+name: update-check
+on:
+  schedule:
+    - cron: "0 8 * * 1"
+  workflow_dispatch:
+permissions:
+  contents: read
+  issues: write
+jobs:
+  update-check:
+    runs-on: ubuntu-latest
+    container: archlinux:base-devel
+    steps:
+      - name: Skip odd ISO weeks on schedule
+        id: cadence
+        env:
+          EVENT: ${{ github.event_name }}
+        run: |
+          week=$(date -u +%V)
+          if [ "$EVENT" = schedule ] && [ $((10#$week % 2)) -eq 1 ]; then
+            printf 'run=false\n' >> "$GITHUB_OUTPUT"
+          else
+            printf 'run=true\n' >> "$GITHUB_OUTPUT"
+          fi
+      - name: Install tools
+        if: steps.cadence.outputs.run == 'true'
+        run: pacman -Syu --noconfirm --needed git nvchecker expac github-cli
+      - uses: actions/checkout@v4
+        if: steps.cadence.outputs.run == 'true'
+      - name: Check upstream versions and readiness
+        if: steps.cadence.outputs.run == 'true'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
+          sh scripts/update-check.sh > update-check.tsv
+          {
+            printf 'Weekly upstream check (every other Monday).\n\n'
+            printf '| package | current | latest | status | readiness |\n'
+            printf '|---|---|---|---|---|\n'
+            while read -r name current latest status; do
+              [ "$status" = current ] && continue
+              readiness=-
+              if [ "$status" = outdated ]; then
+                readiness=$(for d in */; do
+                  if grep -qx "pkgname = $name" "$d.SRCINFO" 2>/dev/null; then
+                    sh scripts/readiness-gate.sh "$d" | tr '\n' ' ' || true
+                    break
+                  fi
+                done)
+              fi
+              printf '| %s | %s | %s | %s | %s |\n' "$name" "$current" "$latest" "$status" "$readiness"
+            done < update-check.tsv
+          } > issue-body.md
+      - name: Open or update the package-update issue
+        if: steps.cadence.outputs.run == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh label create package-update -R "$GITHUB_REPOSITORY" \
+            --description "Upstream release available" 2>/dev/null || true
+          number=$(gh issue list -R "$GITHUB_REPOSITORY" --label package-update \
+            --state open --json number --jq '.[0].number // empty')
+          if [ -n "$number" ]; then
+            gh issue edit "$number" -R "$GITHUB_REPOSITORY" --body-file issue-body.md
+          else
+            gh issue create -R "$GITHUB_REPOSITORY" --label package-update \
+              --title "Package updates available" --body-file issue-body.md
+          fi
