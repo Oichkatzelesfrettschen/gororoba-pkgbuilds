@@ -1,0 +1,25 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+
+pkgname=python-kagglesdk
+_pkg=kagglesdk
+pkgver=0.1.38
+pkgrel=1
+pkgdesc="Kaggle API client library (protobuf request types and the Kaggle HTTP client)"
+arch=('any')
+url="https://github.com/Kaggle/kaggle-api"
+license=('Apache-2.0')
+# certifi >= 2026.10.19 drops the compromised emSign CA (GHSA-6q48-6c7w-9gw2); kagglesdk 0.1.38 requires that floor.
+depends=('python' 'python-certifi>=2026.10.19' 'python-protobuf' 'python-requests')
+makedepends=('python-build' 'python-installer' 'python-hatchling')
+source=("https://files.pythonhosted.org/packages/source/k/$_pkg/$_pkg-$pkgver.tar.gz")
+sha256sums=('fe4033537e8546b7a3ff77da183c3410b189eb8793a7573c58780eb14f5fd5c5')
+
+build() {
+	cd "$_pkg-$pkgver"
+	python -m build --wheel --no-isolation
+}
+
+package() {
+	cd "$_pkg-$pkgver"
+	python -m installer --destdir="$pkgdir" dist/*.whl
+}

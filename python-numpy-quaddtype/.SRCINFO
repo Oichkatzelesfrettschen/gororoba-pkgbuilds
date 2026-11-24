@@ -1,0 +1,32 @@
+pkgbase = python-numpy-quaddtype
+	pkgdesc = IEEE binary128 quad-precision NumPy dtype (SLEEF quad arithmetic, QuadBLAS kernels)
+	pkgver = 1.0.0
+	pkgrel = 1
+	url = https://github.com/numpy/numpy-quaddtype
+	arch = x86_64
+	license = BSD-3-Clause
+	license = BSL-1.0
+	checkdepends = python-pytest
+	checkdepends = python-mpmath
+	makedepends = python-build
+	makedepends = python-installer
+	makedepends = meson-python
+	makedepends = meson
+	makedepends = ninja
+	makedepends = cmake
+	makedepends = git
+	makedepends = patch
+	depends = python
+	depends = python-numpy
+	depends = glibc
+	depends = gcc-libs
+	source = https://files.pythonhosted.org/packages/source/n/numpy-quaddtype/numpy_quaddtype-1.0.0.tar.gz
+	source = sleef::git+https://github.com/shibatch/sleef.git#tag=3.9.0
+	source = qblas::git+https://github.com/SwayamInSync/QBLAS.git#commit=9468e24a02b731563eba2aee0350e9219b36c102
+	source = pythoncapi-compat::git+https://github.com/python/pythoncapi-compat.git#commit=d3ebabff3a4b43e40f7b3db5f55b8a54f84b0091
+	sha256sums = e2844e879dd6f4b44971e318d17cf2c5fa1f9fd2f04d0a50fe8813139e6dcf29
+	sha256sums = SKIP
+	sha256sums = SKIP
+	sha256sums = SKIP
+
+pkgname = python-numpy-quaddtype

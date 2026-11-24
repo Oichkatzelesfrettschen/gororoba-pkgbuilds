@@ -1,0 +1,16 @@
+pkgbase = python-mathdunders
+	pkgdesc = Decorator that automatically adds math dunders to a Python class
+	pkgver = 0.4.2
+	pkgrel = 1
+	url = https://github.com/discretegames/mathdunders
+	arch = any
+	license = MIT
+	makedepends = python-build
+	makedepends = python-installer
+	makedepends = python-setuptools
+	makedepends = python-wheel
+	depends = python
+	source = https://files.pythonhosted.org/packages/source/m/mathdunders/mathdunders-0.4.2.tar.gz
+	sha256sums = ff9b624725fafd34c51decbe3e661eb91b79bbd3841ab04d2256704df0845ce5
+
+pkgname = python-mathdunders

@@ -1,0 +1,24 @@
+pkgbase = python-mthree
+	pkgdesc = Matrix-free measurement (readout) error mitigation for Qiskit
+	pkgver = 3.0.0
+	pkgrel = 1
+	url = https://github.com/Qiskit/qiskit-addon-mthree
+	arch = x86_64
+	license = Apache-2.0
+	makedepends = python-build
+	makedepends = python-installer
+	makedepends = python-setuptools
+	makedepends = python-wheel
+	makedepends = cython
+	depends = python
+	depends = python-numpy
+	depends = python-scipy
+	depends = python-qiskit
+	depends = python-psutil
+	depends = python-orjson
+	depends = python-runningman
+	depends = glibc
+	source = https://files.pythonhosted.org/packages/source/m/mthree/mthree-3.0.0.tar.gz
+	sha256sums = 20f2362aec16f06786e659c85136130197965c109179b47ce3416347a65811c5
+
+pkgname = python-mthree

@@ -1,0 +1,26 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+
+pkgname=python-kagglehub
+_pkg=kagglehub
+pkgver=1.0.3
+pkgrel=1
+pkgdesc="Download and publish Kaggle datasets, models and notebook outputs from Python"
+arch=('any')
+url="https://github.com/Kaggle/kagglehub"
+license=('Apache-2.0')
+depends=('python' 'python-kagglesdk' 'python-packaging' 'python-yaml' 'python-requests' 'python-tqdm')
+optdepends=('python-pandas: pandas dataset adapters'
+            'python-polars: polars dataset adapters')
+makedepends=('python-build' 'python-installer' 'python-hatchling')
+source=("https://files.pythonhosted.org/packages/source/k/$_pkg/$_pkg-$pkgver.tar.gz")
+sha256sums=('1ce657f17f836992bf9c341d4b203380e33beed336dffff970af10457424778b')
+
+build() {
+	cd "$_pkg-$pkgver"
+	python -m build --wheel --no-isolation
+}
+
+package() {
+	cd "$_pkg-$pkgver"
+	python -m installer --destdir="$pkgdir" dist/*.whl
+}

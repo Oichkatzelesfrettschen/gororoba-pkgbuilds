@@ -1,0 +1,22 @@
+pkgbase = python-kagglehub
+	pkgdesc = Download and publish Kaggle datasets, models and notebook outputs from Python
+	pkgver = 1.0.3
+	pkgrel = 1
+	url = https://github.com/Kaggle/kagglehub
+	arch = any
+	license = Apache-2.0
+	makedepends = python-build
+	makedepends = python-installer
+	makedepends = python-hatchling
+	depends = python
+	depends = python-kagglesdk
+	depends = python-packaging
+	depends = python-yaml
+	depends = python-requests
+	depends = python-tqdm
+	optdepends = python-pandas: pandas dataset adapters
+	optdepends = python-polars: polars dataset adapters
+	source = https://files.pythonhosted.org/packages/source/k/kagglehub/kagglehub-1.0.3.tar.gz
+	sha256sums = 1ce657f17f836992bf9c341d4b203380e33beed336dffff970af10457424778b
+
+pkgname = python-kagglehub

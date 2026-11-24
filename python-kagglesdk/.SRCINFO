@@ -1,0 +1,18 @@
+pkgbase = python-kagglesdk
+	pkgdesc = Kaggle API client library (protobuf request types and the Kaggle HTTP client)
+	pkgver = 0.1.38
+	pkgrel = 1
+	url = https://github.com/Kaggle/kaggle-api
+	arch = any
+	license = Apache-2.0
+	makedepends = python-build
+	makedepends = python-installer
+	makedepends = python-hatchling
+	depends = python
+	depends = python-certifi>=2026.10.19
+	depends = python-protobuf
+	depends = python-requests
+	source = https://files.pythonhosted.org/packages/source/k/kagglesdk/kagglesdk-0.1.38.tar.gz
+	sha256sums = fe4033537e8546b7a3ff77da183c3410b189eb8793a7573c58780eb14f5fd5c5
+
+pkgname = python-kagglesdk

@@ -1,0 +1,19 @@
+pkgbase = python-oci-openai
+	pkgdesc = OCI request signing for the OpenAI Python SDK
+	pkgver = 1.1.0
+	pkgrel = 1
+	url = https://github.com/oracle-samples/oci-openai
+	arch = any
+	license = UPL-1.0
+	makedepends = python-build
+	makedepends = python-installer
+	makedepends = python-hatchling
+	depends = python
+	depends = python-httpx
+	depends = python-oci
+	depends = python-openai
+	depends = python-requests
+	source = https://files.pythonhosted.org/packages/f7/93/c395a92c8019dec50bd5760a9fcfd718cedb416824f8ebba0b26568ab6f4/oci_openai-1.1.0.tar.gz
+	sha256sums = 1819ef7d17c1fdbe05c5c0653301fdca0d2fa99f6f8b1b7bd7667da9704d62a1
+
+pkgname = python-oci-openai

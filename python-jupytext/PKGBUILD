@@ -1,0 +1,21 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+
+pkgname=python-jupytext
+_pkg=jupytext
+pkgver=1.19.7
+pkgrel=1
+pkgdesc="Jupyter notebooks as Markdown documents, Julia, Python or R scripts"
+arch=('any')
+url="https://github.com/mwouts/jupytext"
+license=('MIT')
+depends=('python' 'jupyter-nbformat' 'python-markdown-it-py' 'python-mdit_py_plugins' 'python-packaging' 'python-yaml')
+makedepends=('python-installer')
+# The released wheel carries the prebuilt JupyterLab extension; the AUR
+# recipe rebuilds it with an unpinned yarn fetched at build time.
+source=("https://files.pythonhosted.org/packages/bd/39/91092aadbcf43fb137492134f2509279355f826954304f9e8ef15c41e78c/$_pkg-$pkgver-py3-none-any.whl")
+noextract=("$_pkg-$pkgver-py3-none-any.whl")
+sha256sums=('bbd4724f403841b4f3c439b64fcfb0a674b874e0e0ae02f2a23b7ba77382ada2')
+
+package() {
+	python -m installer --destdir="$pkgdir" "$_pkg-$pkgver-py3-none-any.whl"
+}

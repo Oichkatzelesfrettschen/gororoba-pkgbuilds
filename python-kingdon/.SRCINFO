@@ -1,0 +1,19 @@
+pkgbase = python-kingdon
+	pkgdesc = Pythonic geometric algebra with symbolic and numerical backends
+	pkgver = 3.3.0
+	pkgrel = 1
+	url = https://github.com/tBuLi/kingdon
+	arch = any
+	license = MIT
+	makedepends = python-build
+	makedepends = python-installer
+	makedepends = python-setuptools
+	makedepends = python-wheel
+	depends = python
+	depends = python-numpy
+	depends = python-sympy
+	depends = python-anywidget
+	source = https://files.pythonhosted.org/packages/source/k/kingdon/kingdon-3.3.0.tar.gz
+	sha256sums = 6c1b5d13f9f440706054a8786ab787cbb4b0e9e465606440f36650339aaeddae
+
+pkgname = python-kingdon

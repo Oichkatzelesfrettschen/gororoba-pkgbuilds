@@ -1,0 +1,20 @@
+pkgbase = python-langchain-oracledb
+	pkgdesc = LangChain integration for Oracle Database vector search
+	pkgver = 1.6.0
+	pkgrel = 1
+	url = https://github.com/oracle/langchain-oracle
+	arch = any
+	license = UPL-1.0
+	makedepends = python-build
+	makedepends = python-installer
+	makedepends = python-poetry-core
+	depends = python
+	depends = python-langchain-core
+	depends = python-langchain-text-splitters
+	depends = python-numpy
+	depends = python-oracledb
+	depends = python-pydantic
+	source = https://files.pythonhosted.org/packages/55/f9/2c5f10b7cacab51f93fd6505bc8b6c66a72d7e89d3a7737fb532d8f962e9/langchain_oracledb-1.6.0.tar.gz
+	sha256sums = 55d1cd81121bfaefb35baae4f81c8029b13acf81ccfd42ca5e56ef34db2f83c2
+
+pkgname = python-langchain-oracledb

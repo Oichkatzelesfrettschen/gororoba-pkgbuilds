@@ -1,0 +1,65 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+
+pkgname=python-merlinquantum
+_name=merlin
+pkgver=0.4.2
+pkgrel=2
+pkgdesc="Quandela's photonic quantum machine-learning layers for PyTorch (MerLin)"
+arch=('any')
+url="https://github.com/merlinquantum/merlin"
+license=('MIT')
+depends=(
+	python
+	python-numpy
+	python-pandas
+	python-perceval-quandela
+	python-pytorch
+	python-scikit-learn
+)
+# setuptools-scm derives the version from the checked-out tag.
+makedepends=(git python-build python-installer python-scmver python-setuptools python-setuptools-scm python-wheel)
+checkdepends=(python-pytest python-pytest-benchmark)
+source=("$_name::git+https://github.com/merlinquantum/$_name.git#tag=$pkgver")
+b2sums=('8cd9e6976b23c3bb52fe05327d70d73f7890c038777f1df889d61a2cbce467c95927e9a35680e3866a46c97be007a48f07728ce39dbe9c4393c5008815c779ac')
+
+prepare() {
+	cd $_name
+	# Upstream caps torch below 2.13; the 0.4.2 suite passes against the
+	# repository torch 2.15 (check() runs it), so the cap drops and every
+	# other bound stays as upstream declares it.
+	sed -i 's/"torch>=2.0.0,<2.13"/"torch>=2.0.0"/' pyproject.toml
+	grep -q '"torch>=2.0.0",' pyproject.toml
+}
+
+build() {
+	cd $_name
+	# prepare() leaves pyproject.toml modified, and setuptools-scm would label
+	# the dirty tag checkout 0.4.2.post1.dev0.
+	SETUPTOOLS_SCM_PRETEND_VERSION=$pkgver python -m build --wheel --no-isolation
+}
+
+check() {
+	cd $_name
+	python -m venv --clear --system-site-packages test-env
+	test-env/bin/python -m installer dist/*.whl
+	# pytest.ini turns every warning into an error, so only pytest-benchmark
+	# loads: an autoloaded system plugin such as pytest-asyncio warns about
+	# its own configuration. torch 2.15 imports the pynvml module, and the
+	# deprecated python-pynvml package warns on that import; the warning
+	# concerns the host's NVML binding, not MerLin. torch 2.15 on Python 3.14
+	# raises FutureWarning where
+	# test_slos_compute_slos_distribution_with_output_map_function expects
+	# DeprecationWarning from torch.jit.script. tests/docs tests the
+	# documentation build scripts, which the package does not ship.
+	PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 PYTHONNOUSERSITE=1 \
+		test-env/bin/python -P -m pytest -q -p no:cacheprovider -p pytest_benchmark.plugin tests \
+		-W "ignore:The pynvml package is deprecated:FutureWarning" \
+		--ignore=tests/docs \
+		--deselect tests/pcvl_pytorch/test_slos_torchscript.py::test_slos_compute_slos_distribution_with_output_map_function
+}
+
+package() {
+	cd $_name
+	python -m installer --destdir="$pkgdir" dist/*.whl
+	install -Dm644 LICENSE "$pkgdir"/usr/share/licenses/$pkgname/LICENSE
+}
