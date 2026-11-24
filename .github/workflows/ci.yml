@@ -175,6 +175,9 @@ jobs:
           # Arch build. The key is pinned by full fingerprint; the keyserver
           # only transports it.
           key=882DCFE48E2051D48E2562ABF3B607488DB35A47
+          # The image ships a populated public keyring without a local master
+          # key; --init adds one (existing keys stay) so --lsign-key can sign.
+          pacman-key --init
           pacman-key --recv-keys "$key" --keyserver hkps://keyserver.ubuntu.com
           pacman-key --finger "$key" | grep -q 'CachyOS <admin@cachyos.org>'
           pacman-key --lsign-key "$key"
