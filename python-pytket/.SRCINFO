@@ -1,0 +1,22 @@
+pkgbase = python-pytket
+	pkgdesc = Python interface to the t|ket> quantum compiler
+	pkgver = 2.18.5
+	pkgrel = 1
+	url = https://github.com/quantinuum/tket
+	arch = x86_64
+	license = Apache-2.0
+	makedepends = python-installer
+	depends = python
+	depends = python-sympy
+	depends = python-numpy
+	depends = python-lark-parser
+	depends = python-scipy
+	depends = python-networkx
+	depends = python-graphviz
+	depends = python-jinja
+	depends = python-typing_extensions
+	depends = python-qwasm
+	source = pytket-2.18.5-cp312-abi3-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl::https://files.pythonhosted.org/packages/a6/a4/d5d1dd144b655f7b2c0604f94d05bbde082943e27f5db4e3220d4dcf2d0c/pytket-2.18.5-cp312-abi3-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl
+	sha256sums = a388d5dc0ee685f2fce913daa350539403d1d1d301839485d5d92bde0f9c2261
+
+pkgname = python-pytket
