@@ -1,4 +1,5 @@
 # Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+# Contributor: Carlos Aznarán <caznaranl@uni.pe>
 # Contributor: haagch <christoph.haag@collabora.com>
 #
 # Local fork: build with the system toolchain via is_clang=false.

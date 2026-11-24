@@ -1,6 +1,7 @@
 # Contributor: Daniel Leidisch <spam@leidisch.net>
 # Contributor: Jens Staal <staal1978@gmail.com>
 # Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+# Contributor: aksr <aksr at t-com dot me>
 # Modified by: Eirikr (GCC 14 compatibility patch)
 pkgname="heirloom-sh"
 pkgver=050706
