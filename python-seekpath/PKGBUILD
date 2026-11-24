@@ -17,9 +17,14 @@ makedepends=('python-build' 'python-installer' 'python-flit-core')
 source=("${url}/archive/refs/tags/v${pkgver}.tar.gz")
 sha256sums=('27f000678ba43f3fc5523eb9811d4e0470bb61cab520cc55120c87be3047a9b4')
 
+# The upstream pyproject pins flit_core<4; Arch ships python-flit-core 4.2.0, so
+# python -m build --no-isolation refuses the pin. The wheel is built by calling
+# flit_core's build backend directly; this relaxes the upstream pin and is
+# recorded as a DECISION NEEDED item in the PR body.
 build() {
   cd "seekpath-$pkgver" || exit
-  python -m build --wheel --no-isolation
+  mkdir -p dist
+  python -c 'from flit_core import buildapi; buildapi.build_wheel("dist")'
 }
 
 package() {
