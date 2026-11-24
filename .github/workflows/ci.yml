@@ -209,8 +209,16 @@ jobs:
           # long-build recipes build on a compute host instead.
           # shellcheck disable=SC2086
           sh "$TRUSTED/scripts/ci-build.sh" "$TRUSTED/ci/build-allowlist.txt" $DIRS
+      # Package file names carry the epoch colon (name-1:ver-rel), which the
+      # artifact service refuses, so the packages travel as one tar archive.
+      - name: Archive built packages
+        run: |
+          set -eu
+          if ls /var/tmp/build/pkg/*/*.pkg.tar.* >/dev/null 2>&1; then
+            tar -C /var/tmp/build/pkg -cf /var/tmp/build/packages.tar .
+          fi
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: packages
-          path: /var/tmp/build/pkg/*/*.pkg.tar.*
+          path: /var/tmp/build/packages.tar
           if-no-files-found: ignore
