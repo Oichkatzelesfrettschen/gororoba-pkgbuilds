@@ -1,0 +1,4 @@
+[python-aws-cdk-lib]
+source = "pypi"
+pypi = "aws-cdk-lib"
+exclude_regex = "(alpha|beta|rc|dev)"

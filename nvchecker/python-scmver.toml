@@ -1,0 +1,4 @@
+[python-scmver]
+source = "pypi"
+pypi = "scmver"
+exclude_regex = "(alpha|beta|rc|dev)"

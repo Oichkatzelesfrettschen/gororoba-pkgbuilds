@@ -1,0 +1,4 @@
+[python-amazon-braket-schemas]
+source = "pypi"
+pypi = "amazon-braket-schemas"
+exclude_regex = "(alpha|beta|rc|dev)"

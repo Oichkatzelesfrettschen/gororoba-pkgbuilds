@@ -1,0 +1,5 @@
+[python-qiskit-aer]
+source = "github"
+github = "Qiskit/qiskit-aer"
+use_max_tag = true
+exclude_regex = "(alpha|beta|rc|dev)"

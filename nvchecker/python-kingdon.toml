@@ -1,0 +1,4 @@
+[python-kingdon]
+source = "pypi"
+pypi = "kingdon"
+exclude_regex = "(alpha|beta|rc|dev)"

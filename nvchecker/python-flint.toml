@@ -1,0 +1,4 @@
+[python-flint]
+source = "pypi"
+pypi = "python-flint"
+exclude_regex = "(alpha|beta|rc|dev)"

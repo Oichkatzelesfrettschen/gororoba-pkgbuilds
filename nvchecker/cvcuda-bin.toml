@@ -1,0 +1,6 @@
+[cvcuda-bin]
+source = "github"
+github = "CVCUDA/CV-CUDA"
+use_latest_release = true
+prefix = "v"
+exclude_regex = "(alpha|beta|rc|dev)"

@@ -1,0 +1,4 @@
+[deqp-runner]
+source = "cratesio"
+cratesio = "deqp-runner"
+exclude_regex = "(alpha|beta|rc|dev)"

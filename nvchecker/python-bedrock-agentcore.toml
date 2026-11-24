@@ -1,0 +1,4 @@
+[python-bedrock-agentcore]
+source = "pypi"
+pypi = "bedrock-agentcore"
+exclude_regex = "(alpha|beta|rc|dev)"

@@ -1,0 +1,4 @@
+[python-aws-cdk-cloud-assembly-schema]
+source = "pypi"
+pypi = "aws-cdk-cloud-assembly-schema"
+exclude_regex = "(alpha|beta|rc|dev)"

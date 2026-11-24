@@ -1,0 +1,6 @@
+[oci-cli]
+source = "github"
+github = "oracle/oci-cli"
+use_max_tag = true
+prefix = "v"
+exclude_regex = "(alpha|beta|rc|dev)"

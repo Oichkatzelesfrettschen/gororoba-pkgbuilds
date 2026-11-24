@@ -1,0 +1,4 @@
+# upstream has no tags; artifact is a github commit archive (abf96e7)
+[python-cayley-dickson]
+source = "manual"
+manual = "0.r26.abf96e7"

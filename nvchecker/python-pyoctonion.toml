@@ -1,0 +1,4 @@
+[python-pyoctonion]
+source = "pypi"
+pypi = "pyoctonion"
+exclude_regex = "(alpha|beta|rc|dev)"

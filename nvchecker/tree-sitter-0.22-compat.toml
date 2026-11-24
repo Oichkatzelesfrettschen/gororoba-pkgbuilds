@@ -1,0 +1,7 @@
+["tree-sitter-0.22-compat"]
+source = "github"
+github = "tree-sitter/tree-sitter"
+use_max_tag = true
+prefix = "v"
+include_regex = '^v0\.22\.[0-9]+$'
+exclude_regex = "(alpha|beta|rc|dev)"

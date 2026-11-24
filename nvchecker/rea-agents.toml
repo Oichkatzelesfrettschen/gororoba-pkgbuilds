@@ -1,0 +1,4 @@
+[rea-agents]
+source = "npm"
+npm = "rea-agents"
+exclude_regex = "(alpha|beta|rc|dev)"
