@@ -1,6 +1,0 @@
-[python313]
-source = "github"
-github = "python/cpython"
-use_max_tag = true
-prefix = "v"
-include_regex = "^v3\\.13\\.[0-9]+$"
