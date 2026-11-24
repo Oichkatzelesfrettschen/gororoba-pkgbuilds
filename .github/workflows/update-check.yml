@@ -1,0 +1,56 @@
+name: update-check
+on:
+  schedule:
+    - cron: "0 8 * * 1"
+  workflow_dispatch:
+permissions:
+  contents: read
+  issues: write
+jobs:
+  update-check:
+    runs-on: ubuntu-latest
+    container: archlinux@sha256:949ecb1661609ab7e8f6854ba03efd62792e7a796313738e94b040c095c20d91
+    steps:
+      - name: Skip odd ISO weeks on schedule
+        id: cadence
+        env:
+          EVENT: ${{ github.event_name }}
+        run: |
+          week=$(date -u +%V)
+          if [ "$EVENT" = schedule ] && [ $((10#$week % 2)) -eq 1 ]; then
+            printf 'run=false\n' >> "$GITHUB_OUTPUT"
+          else
+            printf 'run=true\n' >> "$GITHUB_OUTPUT"
+          fi
+      - name: Install tools
+        if: steps.cadence.outputs.run == 'true'
+        run: pacman -Syu --noconfirm --needed git nvchecker expac github-cli jq
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        if: steps.cadence.outputs.run == 'true'
+      - name: Check upstream versions and readiness
+        if: steps.cadence.outputs.run == 'true'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
+          sh scripts/update-check.sh > update-check.tsv
+          sh scripts/update-report.sh update-check.tsv > issue-body.md
+      - name: Open or update the package-update issue
+        if: steps.cadence.outputs.run == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh label list -R "$GITHUB_REPOSITORY" --json name --jq '.[].name' > labels.txt
+          if ! grep -qxF package-update labels.txt; then
+            gh label create package-update -R "$GITHUB_REPOSITORY" \
+              --description "Upstream release available"
+          fi
+          gh issue list -R "$GITHUB_REPOSITORY" --label package-update \
+            --state open --json number --jq '.[0].number // empty' > number.txt
+          number=$(cat number.txt)
+          if [ -n "$number" ]; then
+            gh issue edit "$number" -R "$GITHUB_REPOSITORY" --body-file issue-body.md
+          else
+            gh issue create -R "$GITHUB_REPOSITORY" --label package-update \
+              --title "Package updates available" --body-file issue-body.md
+          fi

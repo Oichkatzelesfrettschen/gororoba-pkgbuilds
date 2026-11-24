@@ -1,0 +1,7 @@
+pkgbase = b
+	pkgver = 1
+	pkgrel = 1
+	depends = a>=1
+	depends = glibc
+
+pkgname = b

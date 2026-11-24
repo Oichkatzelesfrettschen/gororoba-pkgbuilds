@@ -1,0 +1,7 @@
+pkgbase = c
+	pkgver = 1
+	pkgrel = 1
+	depends_x86_64 = virt
+	makedepends = b
+
+pkgname = c

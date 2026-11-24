@@ -1,0 +1,4 @@
+# publish-gate owners v1
+other /usr/lib/shared.so
+other /usr/lib/other file.so
+other /usr/bin/tool
