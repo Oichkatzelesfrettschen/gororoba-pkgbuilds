@@ -1,0 +1,55 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+# Fork of the AUR datasette package at 0.65.6, declaring the
+# python-pytest-runner build dependency the upstream setup.py needs.
+# The AUR package omits it, so `python -m build --no-isolation` aborts
+# with "Missing dependencies: pytest-runner".  epoch=1 keeps this build
+# ahead of the AUR package.
+# Contributor: Alex Hirzel <alex at hirzel period us>
+
+pkgname=datasette
+epoch=1
+_name=$pkgname
+pkgver=0.65.6
+pkgrel=1
+pkgdesc="An open source multi-tool for exploring and publishing data"
+arch=("any")
+url="https://datasette.io"
+license=("Apache-2.0")
+depends=(
+	# from setup.py install_requires
+	python-asgiref
+	python-click
+	python-click-default-group
+	python-jinja
+	python-hupper
+	python-httpx
+	python-pint
+	python-pluggy
+	uvicorn
+	python-aiofiles
+	python-janus
+	python-asgi-csrf
+	python-yaml
+	python-mergedeep
+	python-itsdangerous
+	python-setuptools
+	# pip is assumed
+
+	python-rich
+	python-importlib-metadata
+)
+makedepends=(python-build python-installer python-wheel python-pytest-runner python-setuptools)
+conflicts=("datasette")
+source=("https://pypi.io/packages/source/${pkgname::1}/${pkgname}/${pkgname}-${pkgver}.tar.gz")
+sha256sums=('ec3f5407d1f18b6afa773a18ad4989b77b23497cc0e1036fb37636d562b7afbc')
+
+build() {
+	cd "${srcdir}/${_name}-${pkgver}"
+	python -m build --wheel --no-isolation
+}
+
+package() {
+	cd "${srcdir}/${_name}-${pkgver}"
+	python -m installer --destdir="$pkgdir" dist/*.whl
+	install -Dm644 LICENSE -t "${pkgdir}/usr/share/licenses/$pkgname"
+}

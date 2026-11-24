@@ -1,0 +1,52 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+
+pkgname=facecam-tui-git
+pkgver=0.1.0.r46.g8c0ecc4
+pkgrel=1
+pkgdesc="Terminal UI for the Elgato Facecam exposure on Linux, with live preview"
+arch=('x86_64')
+url="https://github.com/hamen/facecam-tui"
+license=('MIT')
+depends=('gcc-libs' 'glibc' 'v4l-utils')
+makedepends=('cargo' 'clang' 'git')
+optdepends=(
+  'kitty: graphics preview rendering via terminal graphics protocol'
+)
+provides=('facecam-tui')
+conflicts=('facecam-tui')
+source=("git+https://github.com/hamen/facecam-tui.git")
+sha256sums=('SKIP')
+
+pkgver() {
+  cd facecam-tui
+  printf "0.1.0.r%s.g%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short=7 HEAD)"
+}
+
+prepare() {
+  cd facecam-tui
+  export RUSTUP_TOOLCHAIN=stable
+  cargo fetch --locked --target "$(rustc -vV | sed -n 's/host: //p')"
+  sed -i 's|\$HOME/\.cargo/bin/facecam-tui|/usr/bin/facecam-tui|g' contrib/facecam-tui-launch
+}
+
+build() {
+  cd facecam-tui
+  export RUSTUP_TOOLCHAIN=stable
+  export CARGO_TARGET_DIR=target
+  cargo build --frozen --release --all-targets
+}
+
+check() {
+  cd facecam-tui
+  export RUSTUP_TOOLCHAIN=stable
+  cargo test --frozen
+}
+
+package() {
+  cd facecam-tui
+  install -Dm755 target/release/facecam-tui "$pkgdir/usr/bin/facecam-tui"
+  install -Dm755 contrib/facecam-tui-launch "$pkgdir/usr/bin/facecam-tui-launch"
+  install -Dm644 contrib/facecam-tui.desktop "$pkgdir/usr/share/applications/facecam-tui.desktop"
+  install -Dm644 contrib/70-facecam.rules "$pkgdir/usr/lib/udev/rules.d/70-facecam.rules"
+  install -Dm644 LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}

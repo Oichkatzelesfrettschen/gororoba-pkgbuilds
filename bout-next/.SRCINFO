@@ -1,0 +1,27 @@
+pkgbase = bout-next
+	pkgdesc = BOUT++ plasma fluid simulation framework for tokamak edge turbulence
+	pkgver = 5.2.0
+	pkgrel = 1
+	url = https://boutproject.github.io/
+	arch = x86_64
+	license = LGPL-3.0-or-later
+	makedepends = cmake
+	makedepends = gcc-fortran
+	makedepends = python
+	makedepends = python-numpy
+	makedepends = git
+	depends = openmpi
+	depends = fftw
+	depends = fftw-openmpi
+	depends = hdf5
+	depends = netcdf
+	depends = netcdf-cxx
+	depends = sundials
+	depends = blas
+	optdepends = python-boutdata: Python analysis tools for BOUT++ output
+	optdepends = python-xbout: xarray-based BOUT++ data loading
+	optdepends = paraview: 3D visualization of simulation output
+	source = bout-next::git+https://github.com/boutproject/BOUT-dev.git#tag=v5.2.0
+	sha256sums = SKIP
+
+pkgname = bout-next

@@ -1,0 +1,14 @@
+pkgbase = jadx-headless-mcp-bin
+	pkgdesc = Headless Model Context Protocol (MCP) server for JADX APK decompilation
+	pkgver = 0.8.0
+	pkgrel = 1
+	url = https://github.com/1013503897/jadx-headless-mcp
+	arch = any
+	license = Apache-2.0
+	depends = java-runtime>=21
+	depends = jadx
+	noextract = jadx-headless-mcp-0.8.0-all.jar
+	source = https://github.com/1013503897/jadx-headless-mcp/releases/download/v0.8.0/jadx-headless-mcp-0.8.0-all.jar
+	sha256sums = 4b9a01c23845c123c217840182d2b5f2c26a7ca20dec3d08810b310fc80a2372
+
+pkgname = jadx-headless-mcp-bin
