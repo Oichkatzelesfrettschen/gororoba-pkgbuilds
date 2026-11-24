@@ -1,0 +1,27 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+
+pkgname=python-oracle-ads
+_pkg=oracle-ads
+pkgver=2.16.1
+pkgrel=1
+_srcdir=oracle_ads-$pkgver
+pkgdesc="Oracle Accelerated Data Science SDK"
+arch=('any')
+url="https://accelerated-data-science.readthedocs.io/en/latest/index.html"
+license=('UPL-1.0')
+depends=('python' 'python-yaml' 'python-asteval' 'python-cerberus' 'python-cloudpickle' 'python-fsspec' 'python-gitpython' 'python-jinja' 'python-matplotlib' 'python-numpy' 'python-oci' 'python-ocifs' 'python-pandas' 'python-psutil' 'python-jsonschema-objects' 'python-requests' 'python-scikit-learn' 'python-tabulate' 'python-tqdm' 'python-pydantic' 'python-tenacity' 'python-httpx' 'python-packaging')
+makedepends=('python-build' 'python-installer' 'python-flit-core')
+source=("https://files.pythonhosted.org/packages/6f/7f/4e746802eb8338a4b9e202b5b5a7226aaff028cb0c2ae34615fa4d0dfe6b/oracle_ads-2.16.1.tar.gz")
+sha256sums=('3bd51e4eb13ce5ddfe517c3e8663fad118a0a767a0a9f6981f6e4571881a1e34')
+
+build() {
+	cd "$_srcdir"
+	# flit-core 4 builds this sdist; upstream pins <4 only to avoid untested majors.
+	python -m build --wheel --no-isolation --skip-dependency-check
+}
+
+package() {
+	cd "$_srcdir"
+	python -m installer --destdir="$pkgdir" dist/*.whl
+	find . -maxdepth 1 -iname 'LICENSE*' -exec install -Dm644 {} "$pkgdir/usr/share/licenses/$pkgname/" \;
+}

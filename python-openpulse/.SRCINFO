@@ -1,0 +1,17 @@
+pkgbase = python-openpulse
+	pkgdesc = OpenPulse grammar and reference AST
+	pkgver = 1.0.1
+	pkgrel = 1
+	url = https://github.com/openqasm/openpulse
+	arch = any
+	license = Apache-2.0
+	makedepends = python-installer
+	depends = python
+	depends = python-antlr4>=4.7
+	depends = python-antlr4<4.14
+	depends = python-openqasm3
+	noextract = openpulse-1.0.1-py3-none-any.whl
+	source = openpulse-1.0.1-py3-none-any.whl::https://files.pythonhosted.org/packages/75/41/429b613fe56124f5714f0d7ff5c1a2c74913e3db2fdde3fd13bf732a116f/openpulse-1.0.1-py3-none-any.whl
+	sha256sums = 75fb2d4d7f74db3a86027719744541fcb725e1f5b79e14b78dc5b34ed8c66e87
+
+pkgname = python-openpulse

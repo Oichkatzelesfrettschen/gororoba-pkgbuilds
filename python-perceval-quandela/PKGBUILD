@@ -1,0 +1,53 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+
+pkgname=python-perceval-quandela
+_name=Perceval
+pkgver=1.3.1
+pkgrel=1
+pkgdesc="Quandela's framework for programming photonic quantum computers and Quandela Cloud"
+arch=('any')
+url="https://github.com/Quandela/Perceval"
+license=('MIT')
+depends=(
+	python
+	python-drawsvg
+	python-exqalibur
+	python-latexcodec
+	python-matplotlib
+	python-multipledispatch
+	python-networkx
+	python-numpy
+	python-platformdirs
+	python-requests
+	python-scipy
+	python-sympy
+	python-tabulate
+	python-tqdm
+)
+# setup.py derives the version from the checked-out tag through scmver.
+makedepends=(git python-build python-installer python-scmver python-setuptools python-wheel)
+checkdepends=(python-flaky python-pytest python-pytest-benchmark python-pytest-responses python-responses)
+source=("$_name::git+https://github.com/Quandela/$_name.git#tag=v$pkgver")
+b2sums=('f58489e4022e21babc41a43639fe9f6df9930fbb080a288ed1f34c6264c7cffeb8046112a92ec2e8e8a318721b106c64fb2b624ab863eb113dd7336932561206')
+
+build() {
+	cd $_name
+	python -m build --wheel --no-isolation
+}
+
+check() {
+	cd $_name
+	python -m venv --clear --system-site-packages test-env
+	test-env/bin/python -m installer dist/*.whl
+	# The tests save and chmod PersistentData, whose default directory is
+	# platformdirs' user data directory; XDG_DATA_HOME places it in srcdir.
+	mkdir -p "$srcdir/xdg-data"
+	XDG_DATA_HOME="$srcdir/xdg-data" \
+		test-env/bin/python -P -m pytest -q -p no:cacheprovider tests -m "not long_test and not rendering"
+}
+
+package() {
+	cd $_name
+	python -m installer --destdir="$pkgdir" dist/*.whl
+	install -Dm644 LICENSE "$pkgdir"/usr/share/licenses/$pkgname/LICENSE
+}

@@ -1,0 +1,35 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+
+pkgname=python-octonion
+_pkg=octonion
+pkgver=0.1.0
+pkgrel=1
+pkgdesc="PyTorch-native octonionic algebra for ML research"
+arch=('any')
+url="https://github.com/realnedsanders/octonion"
+license=('AGPL-3.0-or-later')
+depends=(
+	'python'
+	'python-matplotlib'
+	'python-numpy'
+	'python-optuna'
+	'python-pytorch'
+	'python-scipy'
+	'python-seaborn'
+	'python-torchvision'
+	'tensorboard'
+)
+makedepends=('python-build' 'python-installer' 'python-hatchling' 'python-wheel')
+source=("https://files.pythonhosted.org/packages/source/o/$_pkg/$_pkg-$pkgver.tar.gz")
+sha256sums=('01788b55497dd6be79411aa03ba17762211e73dafbd014b5f54e66934c98bfcc')
+
+build() {
+	cd "$_pkg-$pkgver"
+	python -m build --wheel --no-isolation
+}
+
+package() {
+	cd "$_pkg-$pkgver"
+	python -m installer --destdir="$pkgdir" dist/*.whl
+	install -Dm644 LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}

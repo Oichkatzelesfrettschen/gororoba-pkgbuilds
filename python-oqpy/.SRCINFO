@@ -1,0 +1,17 @@
+pkgbase = python-oqpy
+	pkgdesc = OpenQASM 3 and OpenPulse builder
+	pkgver = 0.3.11
+	pkgrel = 1
+	url = https://github.com/openqasm/oqpy
+	arch = any
+	license = Apache-2.0
+	makedepends = python-installer
+	depends = python
+	depends = python-mypy_extensions
+	depends = python-numpy
+	depends = python-openpulse
+	noextract = oqpy-0.3.11-py3-none-any.whl
+	source = oqpy-0.3.11-py3-none-any.whl::https://files.pythonhosted.org/packages/69/7d/f3baa346cff88e4f33a09451f1acf821aa430200dde0d8f745cf69213acb/oqpy-0.3.11-py3-none-any.whl
+	sha256sums = d9557bd5916f64e42fbefd84bcf5c93b8bd8fe76f747be8a915d7ec32b02e83b
+
+pkgname = python-oqpy

@@ -1,0 +1,20 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+# shellcheck shell=bash disable=SC2034,SC2154
+
+pkgname=python-plux
+pkgver=1.16.0
+pkgrel=1
+pkgdesc='Dynamic plugin loader used by LocalStack'
+arch=('any')
+url='https://github.com/localstack/plux'
+license=('Apache-2.0')
+depends=('python')
+makedepends=('python-installer')
+_wheel='plux-1.16.0-py3-none-any.whl'
+source=("$_wheel::https://files.pythonhosted.org/packages/ea/40/06cf1264bec1938cc94013dde7c120c0bcf6ffbaed9b4899f8db6202c8ff/plux-1.16.0-py3-none-any.whl")
+noextract=("$_wheel")
+sha256sums=('d31a46809f6160278d8726a9e2e2b0eda5fa959fe489ec0d65951c123ed37534')
+
+package() {
+	python -m installer --destdir="$pkgdir" "$_wheel"
+}

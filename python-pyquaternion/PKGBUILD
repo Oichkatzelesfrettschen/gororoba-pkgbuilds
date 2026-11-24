@@ -1,0 +1,31 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+
+pkgname=python-pyquaternion
+_pkg=pyquaternion
+pkgver=0.9.9
+# pkgrel 3 replaces the AUR build of the GitHub tarball with the PyPI sdist
+# that scripts/algebra_package_tables.py pins.
+pkgrel=3
+pkgdesc="A fully featured, pythonic library for representing and using quaternions"
+arch=('any')
+url="https://github.com/KieranWynn/pyquaternion"
+license=('MIT')
+depends=('python' 'python-numpy')
+makedepends=('python-build' 'python-installer' 'python-setuptools' 'python-wheel')
+source=("https://files.pythonhosted.org/packages/source/p/$_pkg/$_pkg-$pkgver.tar.gz")
+sha256sums=('b1f61af219cb2fe966b5fb79a192124f2e63a3f7a777ac3cadf2957b1a81bea8')
+
+prepare() {
+	# setup.py reads VERSION.txt, which the sdist omits.
+	printf '0.9.9\n' > "$_pkg-$pkgver/VERSION.txt"
+}
+
+build() {
+	cd "$_pkg-$pkgver"
+	python -m build --wheel --no-isolation
+}
+
+package() {
+	cd "$_pkg-$pkgver"
+	python -m installer --destdir="$pkgdir" dist/*.whl
+}
