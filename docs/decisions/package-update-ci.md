@@ -221,3 +221,22 @@ replaces it.
   before it left the machine.
 - Rule: documents pass the same scrub as recipes (host-name list, home paths,
   private-repository paths) before a push.
+
+## D-024 A package file a queued transaction lists is immutable
+
+- Observation (2026-11-24): a package archive was replaced by a rebuilt
+  revision while a queued `pacman -U` listed it. pacman committed 25 of the
+  other packages, removed the old package's files, left an empty local
+  database entry, and printed "no packages were upgraded".
+- Rule: CI publishes a new revision under a new file name and never touches
+  a file a pending transaction lists; a failed transaction is verified with
+  `pacman -Dk` and the log's "upgraded" lines, never its closing message.
+- CI check: publish-gate refuses to run while the pacman lock exists and
+  checksums every listed file before and after the transaction.
+
+## D-025 Measured hardware overrides recorded hardware
+
+- Observation: documentation recorded 2 x 16 GiB of RAM; the system holds
+  4 x 16 GiB from two kits rated 3600 and 2666, all at 3200 MT/s.
+- Rule: tuning values derive from a measurement taken in the same run, and a
+  disagreement with older documentation is recorded beside the value.
