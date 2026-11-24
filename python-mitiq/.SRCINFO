@@ -1,0 +1,24 @@
+pkgbase = python-mitiq
+	pkgdesc = Error mitigation for quantum programs
+	pkgver = 1.1.0
+	pkgrel = 1
+	url = https://github.com/unitaryfoundation/mitiq
+	arch = any
+	license = GPL-3.0-or-later
+	makedepends = python-build
+	makedepends = python-installer
+	makedepends = python-setuptools
+	makedepends = python-wheel
+	depends = python
+	depends = python-cirq-core>=1.6.0
+	depends = python-cirq-core<1.7.0
+	depends = python-matplotlib
+	depends = python-numpy>=2.0.0
+	depends = python-numpy<2.3.0
+	depends = python-scipy>=1.10.1
+	depends = python-scipy<=1.17.1
+	depends = python-tabulate
+	source = https://files.pythonhosted.org/packages/6f/f0/ddcec894c42fa50eca60ba1880dfc0f24c0e8d7bda2435f6ead29591e344/mitiq-1.1.0.tar.gz
+	sha256sums = 4db99d4667bd7f606e59f3715ecfccc37992ed146d1c8d373023405ff9ee38f0
+
+pkgname = python-mitiq
