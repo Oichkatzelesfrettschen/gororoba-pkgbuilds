@@ -107,6 +107,10 @@ gate_build_order() {
         failures=$((failures + 1))
         printf 'FAIL build-order: first member is %s, want a\n' "$first_line"
     fi
+    run "$fx/build-order/good" "build-order: a repository package name is not captured by a recipe's provides" 0 \
+        sh "$here/build-order.sh" e
+    saw e
+    lacks d
     run "$fx/build-order/cycle" "build-order: dependency cycle refused" 1 sh "$here/build-order.sh" x
     run "$fx/build-order/good" "build-order: directory without .SRCINFO refused" 2 sh "$here/build-order.sh" nonexistent
     run "$fx/build-order/good" "build-order: no arguments refused" 2 sh "$here/build-order.sh"
