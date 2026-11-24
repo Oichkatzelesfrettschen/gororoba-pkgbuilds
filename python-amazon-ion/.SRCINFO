@@ -1,0 +1,19 @@
+pkgbase = python-amazon-ion
+	pkgdesc = Amazon Ion data notation library
+	pkgver = 0.16.0
+	pkgrel = 1
+	url = https://github.com/amazon-ion/ion-python
+	arch = x86_64
+	license = Apache-2.0
+	makedepends = python-build
+	makedepends = python-installer
+	makedepends = python-py-build-cmake>=0.5.0
+	makedepends = python-py-build-cmake<0.6.0
+	makedepends = cmake
+	makedepends = ninja
+	depends = python
+	depends = python-jsonconversion
+	source = https://files.pythonhosted.org/packages/e9/8c/6905bf70564082cd51d272b36a35ae4e2fcdbfd4a44f2ded5101450f6532/amazon_ion-0.16.0.tar.gz
+	sha256sums = 0d96b99f0bcce0822571612c783d7d1049775c55bc0828bf6dfee30c119041ed
+
+pkgname = python-amazon-ion

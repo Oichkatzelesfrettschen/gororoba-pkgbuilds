@@ -1,0 +1,22 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+# shellcheck shell=bash disable=SC2034,SC2154
+
+# Requires antlr4-python3-runtime==4.13.2. Installed python-antlr4 is 4.13.2.
+
+pkgname=python-amazon-braket-default-simulator
+pkgver=1.43.2
+pkgrel=1
+pkgdesc='Local state-vector and density-matrix simulators for Amazon Braket'
+arch=('any')
+url='https://github.com/amazon-braket/amazon-braket-default-simulator-python'
+license=('Apache-2.0')
+depends=('python' 'python-numba' 'python-numpy' 'python-opt_einsum' 'python-pydantic' 'python-scipy' 'python-sympy' 'python-antlr4>=4.13.2' 'python-antlr4<4.13.3' 'python-amazon-braket-schemas')
+makedepends=('python-installer')
+_wheel='amazon_braket_default_simulator-1.43.2-py3-none-any.whl'
+source=("$_wheel::https://files.pythonhosted.org/packages/cd/ab/9e9c2af68f6f6a81ac8e11afb29f7038e962757cb35512dd98921d84432d/amazon_braket_default_simulator-1.43.2-py3-none-any.whl")
+noextract=("$_wheel")
+sha256sums=('06a9e92d015293744cc72e223ff34e67ef66d07f1afc2a9ea73ce047d1a02939')
+
+package() {
+	python -m installer --destdir="$pkgdir" "$_wheel"
+}

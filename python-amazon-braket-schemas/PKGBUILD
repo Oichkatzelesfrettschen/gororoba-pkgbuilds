@@ -1,0 +1,20 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+# shellcheck shell=bash disable=SC2034,SC2154
+
+pkgname=python-amazon-braket-schemas
+pkgver=1.33.0.post0
+pkgrel=1
+pkgdesc='JSON schemas for the Amazon Braket SDK'
+arch=('any')
+url='https://github.com/amazon-braket/amazon-braket-schemas-python'
+license=('Apache-2.0')
+depends=('python' 'python-pydantic')
+makedepends=('python-installer')
+_wheel='amazon_braket_schemas-1.33.0.post0-py3-none-any.whl'
+source=("$_wheel::https://files.pythonhosted.org/packages/b6/c8/4e7c603a6a7883e53e1099eab329ee8c837c545264b6913cbb637706374e/amazon_braket_schemas-1.33.0.post0-py3-none-any.whl")
+noextract=("$_wheel")
+sha256sums=('026fa1670cd46cf5b6ea9369464c1a8a2f6315e8fca25c3b85bf292a3597cc7d')
+
+package() {
+	python -m installer --destdir="$pkgdir" "$_wheel"
+}

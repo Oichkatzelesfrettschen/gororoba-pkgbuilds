@@ -1,0 +1,20 @@
+pkgbase = originquantum-stack
+	pkgdesc = Origin Quantum pyqpanda3 0.5.1 as a hash-locked Python 3.13 environment
+	pkgver = 0.5.1
+	pkgrel = 1
+	url = https://pypi.org/project/pyqpanda3/
+	arch = x86_64
+	license = Apache-2.0
+	depends = python313
+	depends = gcc-libs
+	depends = glibc
+	source = requirements.in
+	source = requirements.lock
+	source = test_originquantum_stack.py
+	source = originquantum-python
+	b2sums = 75c4d50d10b788bc74754a2860620f1863a04940435aef4cef9c38431a6c6f7afd51a61dc7f4fec1b338d19f0cf50363fefdc521d641e0d1cbaefd2bb420a083
+	b2sums = 369635a9a78e4cbf8b32f9b3e814a1d1c67e4ddc28d87d2315057c18064271c388a712cd96fe82b9ea31149e7f6f6ee42564cd5290fcddf28ec95bf04dd24438
+	b2sums = 3776c90dfcefa6299ddbe1ed3786d99e6c05546b605574247a36a9e94fa954e95444ff1bb22cbe5ba0b3ccfe8a461845e90e449a62dd29d1698e3bbf0979b154
+	b2sums = 7bfef11b9a15d714664a7803e28140bd70ecab753d38c612efff4a548ffd1bdec6afa90aa1676a13af6bdf0c24fe7ae168cdc02f846664f50ebbaca6014faa56
+
+pkgname = originquantum-stack

@@ -1,0 +1,20 @@
+pkgbase = planck-stack
+	pkgdesc = Planck SDK 1.0.0 (Planck-QSaaS sdk/python) as a hash-locked Python 3.13 environment
+	pkgver = 1.0.0
+	pkgrel = 2
+	url = https://github.com/HectorNaaa/Planck-QSaaS
+	arch = x86_64
+	license = MIT
+	depends = python313
+	source = Planck-QSaaS-d57e32e7fcfb2a7bab6f7f92533dabb4cafb7ce6.tar.gz::https://github.com/HectorNaaa/Planck-QSaaS/archive/d57e32e7fcfb2a7bab6f7f92533dabb4cafb7ce6.tar.gz
+	source = requirements.in
+	source = requirements.lock
+	source = test_planck_stack.py
+	source = planck-python
+	b2sums = 9a636be358604bae07ace05b1d40c8997f6db04c9a78223fa68a494ea6c35d8cc8febd959aa23360dd2ae28f6c9030e224bcfc81af9b0ea03f776c3c65747fc3
+	b2sums = c286540937a839e56c3527c5d53459c9370f71046ed7511a3e614f9dd201610c76a7c0a13e0a7dba336ad0a0a98e285a64afae829c6007c27b5d0e890c4e4b9c
+	b2sums = f95e0c937e9c6546c121c742ad96670faf517097c0eb9bf04004a603048b5f854b3687bd099498362fc6d2e97dfc520a4282acbd1703e257d1f3552b4ffde52d
+	b2sums = 7db0d8535bdd2d08a919d365f0bb1d29210b1a9f21d23194da115490e3e73b6c96a3cd40b2a81f25bf82dea86b5feb917313c3046def06aafba209c75f9e75ee
+	b2sums = 462b87dbc312bdde6826644595301de264f7230afb11c1da0719f6d371cd02b408f174d1380b8de6a9cc0aeba626d5f37ac6d14276fbc54e2e94ff40f16f5352
+
+pkgname = planck-stack

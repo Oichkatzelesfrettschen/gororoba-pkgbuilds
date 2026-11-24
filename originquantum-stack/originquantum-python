@@ -1,0 +1,3 @@
+#!/bin/sh
+# Python 3.13 interpreter of the originquantum-stack environment.
+exec /opt/originquantum-stack/bin/python "$@"

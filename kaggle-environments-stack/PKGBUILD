@@ -1,0 +1,63 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+
+# Kaggle Environments as one self-contained Python 3.13 environment.
+# pygame publishes no cp314 wheel, and gymnax 0.0.8 depends on gym 0.26.2,
+# which publishes an sdist and no wheel. Python 3.13 has the pygame wheel.
+# The system site-packages stay untouched: this environment also pins
+# gymnasium==1.2.0, open_spiel==2.0.1 and litellm<1.94.
+# gym's pyproject.toml has no build-system table. An isolated PEP 517 build
+# would download setuptools outside the hash lock, so the locked setuptools
+# and wheel are installed first and the lock is installed without build isolation.
+pkgname=kaggle-environments-stack
+pkgver=1.33.3
+pkgrel=1
+pkgdesc="Kaggle Environments 1.33.3 as a hash-locked Python 3.13 environment"
+arch=('x86_64')
+url="https://github.com/Kaggle/kaggle-environments"
+license=('Apache-2.0')
+depends=(python313 gcc-libs glibc)
+_prefix=/opt/$pkgname
+source=(
+	requirements.in
+	requirements.lock
+	test_kaggle_environments_stack.py
+	kaggle-environments-python
+)
+b2sums=('40c5dcfaa1fbaa8c0924e54efcc73c7e058c430d3b2b7a0e471cdf017d182c02a5e1e898a36f5a0d0c7e1742a5fc2aba530f69d0483df6a2a9aaa071911fe192'
+        '415e8ed44dd71c6faffb6bd7c8fa312402184b4c4014903030a0248353bf64145b6c1522980b3e429a8804bba7f9b9fe1c188fbc5b4a0f94de5102eb22c8606b'
+        'b5c2c9e40f380afccbeba390d0ca9e07a9e8326374ec79e5b7931fa31f198c1a5479cdc8bac1ab382ea131889247274de4d16c3ed30fd27795fd7690aa0decf7'
+        '05059f2da54fedb5b8e96c10442e2259fe35f0131593a1e51edb5101378cc3dc08bf024724200b1399949b7bc6e875a81d3a60ad1373345b723cbbaa80535eca')
+
+build() {
+	/usr/bin/python3.13 -m venv --clear "$srcdir/stack"
+	"$srcdir/stack/bin/python" -m pip install -q --no-cache-dir --upgrade pip==25.3
+	setuptools=$(sed -n 's/^\(setuptools==[^ \\]*\).*/\1/p' "$srcdir/requirements.lock")
+	wheel=$(sed -n 's/^\(wheel==[^ \\]*\).*/\1/p' "$srcdir/requirements.lock")
+	"$srcdir/stack/bin/python" -m pip install -q --no-cache-dir --only-binary :all: "$setuptools" "$wheel"
+	# --require-hashes binds every distribution to the lock and --no-deps
+	# keeps the resolved set equal to it. --no-build-isolation lets the
+	# gym sdist build with the setuptools just installed.
+	"$srcdir/stack/bin/python" -m pip install -q --no-cache-dir --require-hashes --no-deps --no-build-isolation \
+		-r "$srcdir/requirements.lock"
+}
+
+check() {
+	cd "$srcdir"
+	SDL_VIDEODRIVER=dummy SDL_AUDIODRIVER=dummy \
+		"$srcdir/stack/bin/python" -P -m pytest -q -p no:cacheprovider test_kaggle_environments_stack.py
+}
+
+package() {
+	install -d "$pkgdir$_prefix"
+	cp -a "$srcdir/stack/." "$pkgdir$_prefix/"
+	# Entry-point shebangs and activate scripts carry the build path.
+	grep -rlI --null "$srcdir/stack" "$pkgdir$_prefix/bin" "$pkgdir$_prefix/pyvenv.cfg" |
+		xargs -0 -r sed -i "s|$srcdir/stack|$_prefix|g"
+	# Deleting a cache directory while find is still walking can skip one.
+	# compileall then keeps that pyc, and its path is the packaging tree.
+	find "$pkgdir$_prefix" -depth -type d -name __pycache__ -print0 >"$srcdir/pycache-dirs"
+	xargs -0 -r rm -r <"$srcdir/pycache-dirs"
+	"$pkgdir$_prefix/bin/python" -m compileall -q -f -j0 -d "$_prefix/lib" "$pkgdir$_prefix/lib" >/dev/null
+	install -Dm644 requirements.in requirements.lock test_kaggle_environments_stack.py -t "$pkgdir/usr/share/$pkgname/"
+	install -Dm755 kaggle-environments-python "$pkgdir/usr/bin/kaggle-environments-python"
+}

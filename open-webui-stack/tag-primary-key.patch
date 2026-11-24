@@ -1,0 +1,20 @@
+--- a/open_webui/migrations/versions/3ab32c4b8f59_update_tags.py
++++ b/open_webui/migrations/versions/3ab32c4b8f59_update_tags.py
+@@ -13 +12,0 @@
+-from sqlalchemy.engine.reflection import Inspector
+@@ -24 +23 @@
+-    inspector = Inspector.from_engine(conn)
++    inspector = sa.inspect(conn)
+@@ -35 +34,3 @@
+-    with op.batch_alter_table('tag', schema=None) as batch_op:
++    reflected_tag = sa.Table('tag', sa.MetaData(), autoload_with=conn)
++    reflected_tag.c.user_id.primary_key = True
++    with op.batch_alter_table('tag', schema=None, copy_from=reflected_tag) as batch_op:
+@@ -65 +66 @@
+-    inspector = Inspector.from_engine(conn)
++    inspector = sa.inspect(conn)
+@@ -69 +70,3 @@
+-    with op.batch_alter_table('tag', schema=None) as batch_op:
++    reflected_tag = sa.Table('tag', sa.MetaData(), autoload_with=conn)
++    reflected_tag.c.user_id.primary_key = False
++    with op.batch_alter_table('tag', schema=None, copy_from=reflected_tag) as batch_op:

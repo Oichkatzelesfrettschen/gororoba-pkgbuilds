@@ -1,0 +1,59 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+
+# Planck Quantum Digital Twins SDK as one self-contained Python 3.13 environment.
+# planck_sdk is not published on PyPI: its source is the sdk/python tree of
+# HectorNaaa/Planck-QSaaS at one commit, bound by the b2sum below, and it
+# depends on nothing beyond the standard library. The hash lock covers the
+# build tooling (setuptools, wheel) and pytest; build() installs it with
+# --require-hashes, then installs the extracted source with --no-build-isolation
+# against that locked setuptools, because pip refuses --require-hashes for a
+# local directory. The SDK sends circuits to https://plancktechnologies.xyz.
+pkgname=planck-stack
+pkgver=1.0.0
+pkgrel=2
+pkgdesc="Planck SDK 1.0.0 (Planck-QSaaS sdk/python) as a hash-locked Python 3.13 environment"
+arch=('x86_64')
+url="https://github.com/HectorNaaa/Planck-QSaaS"
+license=('MIT')
+depends=(python313)
+_commit=d57e32e7fcfb2a7bab6f7f92533dabb4cafb7ce6
+_prefix=/opt/$pkgname
+source=(
+	"Planck-QSaaS-$_commit.tar.gz::https://github.com/HectorNaaa/Planck-QSaaS/archive/$_commit.tar.gz"
+	requirements.in
+	requirements.lock
+	test_planck_stack.py
+	planck-python
+)
+b2sums=('9a636be358604bae07ace05b1d40c8997f6db04c9a78223fa68a494ea6c35d8cc8febd959aa23360dd2ae28f6c9030e224bcfc81af9b0ea03f776c3c65747fc3'
+        'c286540937a839e56c3527c5d53459c9370f71046ed7511a3e614f9dd201610c76a7c0a13e0a7dba336ad0a0a98e285a64afae829c6007c27b5d0e890c4e4b9c'
+        'f95e0c937e9c6546c121c742ad96670faf517097c0eb9bf04004a603048b5f854b3687bd099498362fc6d2e97dfc520a4282acbd1703e257d1f3552b4ffde52d'
+        '7db0d8535bdd2d08a919d365f0bb1d29210b1a9f21d23194da115490e3e73b6c96a3cd40b2a81f25bf82dea86b5feb917313c3046def06aafba209c75f9e75ee'
+        '462b87dbc312bdde6826644595301de264f7230afb11c1da0719f6d371cd02b408f174d1380b8de6a9cc0aeba626d5f37ac6d14276fbc54e2e94ff40f16f5352')
+
+build() {
+	/usr/bin/python3.13 -m venv --clear "$srcdir/stack"
+	"$srcdir/stack/bin/python" -m pip install -q --no-cache-dir --upgrade pip==25.3
+	"$srcdir/stack/bin/python" -m pip install -q --no-cache-dir --require-hashes --no-deps --only-binary :all: \
+		-r "$srcdir/requirements.lock"
+	"$srcdir/stack/bin/python" -m pip install -q --no-cache-dir --no-deps --no-build-isolation --no-index \
+		"$srcdir/Planck-QSaaS-$_commit/sdk/python"
+}
+
+check() {
+	cd "$srcdir"
+	"$srcdir/stack/bin/python" -P -m pytest -q -p no:cacheprovider test_planck_stack.py
+}
+
+package() {
+	install -d "$pkgdir$_prefix"
+	cp -a "$srcdir/stack/." "$pkgdir$_prefix/"
+	# Entry-point shebangs and activate scripts carry the build path.
+	grep -rlI --null "$srcdir/stack" "$pkgdir$_prefix/bin" "$pkgdir$_prefix/pyvenv.cfg" |
+		xargs -0 -r sed -i "s|$srcdir/stack|$_prefix|g"
+	find "$pkgdir$_prefix" -name __pycache__ -prune -exec rm -r {} +
+	"$pkgdir$_prefix/bin/python" -m compileall -q -j0 -d "$_prefix/lib" "$pkgdir$_prefix/lib" >/dev/null
+	install -Dm644 requirements.in requirements.lock test_planck_stack.py -t "$pkgdir/usr/share/$pkgname/"
+	install -Dm644 "Planck-QSaaS-$_commit/sdk/python/LICENSE" "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+	install -Dm755 planck-python "$pkgdir/usr/bin/planck-python"
+}

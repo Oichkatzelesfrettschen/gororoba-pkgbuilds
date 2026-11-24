@@ -1,0 +1,3 @@
+open-webui==0.13.4
+# The UI uses the lab gateway for LLM inference; its optional embedding/audio dependencies must leave GPU memory to Ollama.
+torch @ https://download.pytorch.org/whl/cpu/torch-2.10.0%2Bcpu-cp311-cp311-manylinux_2_28_x86_64.whl#sha256=b7cb1ec66cefb90fd7b676eac72cfda3b8d4e4d0cacd7a531963bc2e0a9710ab

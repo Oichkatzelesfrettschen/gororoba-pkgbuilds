@@ -1,0 +1,54 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+
+# Kaggle Benchmarks as one self-contained Python 3.14 environment.
+# kaggle-benchmarks 0.6.3 requires protobuf<6. The system interpreter carries
+# protobuf 7.36.1 for kagglesdk, so the library stays out of the system
+# site-packages. requirements.in includes the kaggle-client extra, which is
+# jupytext. requirements.lock pins the resolved wheels by sha256.
+pkgname=kaggle-benchmarks-stack
+pkgver=0.6.3
+pkgrel=1
+pkgdesc="Kaggle Benchmarks 0.6.3 as a hash-locked Python 3.14 environment"
+arch=('x86_64')
+url="https://github.com/Kaggle/kaggle-benchmarks"
+license=('Apache-2.0')
+depends=(python gcc-libs glibc)
+optdepends=('docker: DockerEnvironment sandboxes')
+_prefix=/opt/$pkgname
+source=(
+	requirements.in
+	requirements.lock
+	test_kaggle_benchmarks_stack.py
+	kaggle-benchmarks-python
+)
+b2sums=('66600d21d2a02ebe5d1628fe311c7186826071f08574506440a9418ac6a90129b76db6c831f41229a7665513c1f2da0af70db1a5cfa881ddf757052997e2ff89'
+        '942f138af555fd8094dedd7bede645cbb4318e3a1a9bc457b11a645b0ad5bbba7a57f9e6a384e8995ae4b22dbd771a1edf230c73f33f37ef8e5203ae97c6816f'
+        'fb164e8838a3d478550bd8f30fa99d4b25c59f30cf1976f06bf092a10fc42c2c6edd38831d58feaee8ebe0370213e6e781f6c4fc43e5decd0f7d6a27e480a1cc'
+        '7b34c99d68b4d6f68b3297a439b3e4dc67acdb8dc627ded5154b1b5620b90f92dcaa350fddb6603d32a68b5ff4a7359bbced7f7bf1f9786d1a7447c5f26ff290')
+
+build() {
+	/usr/bin/python3.14 -m venv --clear "$srcdir/stack"
+	"$srcdir/stack/bin/python" -m pip install -q --no-cache-dir --upgrade pip==25.3
+	# --require-hashes binds every distribution to the lock, --only-binary
+	# keeps the install to published wheels, and --no-deps keeps the
+	# resolved set equal to the lock.
+	"$srcdir/stack/bin/python" -m pip install -q --no-cache-dir --require-hashes --no-deps --only-binary :all: \
+		-r "$srcdir/requirements.lock"
+}
+
+check() {
+	cd "$srcdir"
+	"$srcdir/stack/bin/python" -P -m pytest -q -p no:cacheprovider test_kaggle_benchmarks_stack.py
+}
+
+package() {
+	install -d "$pkgdir$_prefix"
+	cp -a "$srcdir/stack/." "$pkgdir$_prefix/"
+	# Entry-point shebangs and activate scripts carry the build path.
+	grep -rlI --null "$srcdir/stack" "$pkgdir$_prefix/bin" "$pkgdir$_prefix/pyvenv.cfg" |
+		xargs -0 -r sed -i "s|$srcdir/stack|$_prefix|g"
+	find "$pkgdir$_prefix" -name __pycache__ -prune -exec rm -r {} +
+	"$pkgdir$_prefix/bin/python" -m compileall -q -j0 -d "$_prefix/lib" "$pkgdir$_prefix/lib" >/dev/null
+	install -Dm644 requirements.in requirements.lock test_kaggle_benchmarks_stack.py -t "$pkgdir/usr/share/$pkgname/"
+	install -Dm755 kaggle-benchmarks-python "$pkgdir/usr/bin/kaggle-benchmarks-python"
+}

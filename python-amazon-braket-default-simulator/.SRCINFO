@@ -1,0 +1,23 @@
+pkgbase = python-amazon-braket-default-simulator
+	pkgdesc = Local state-vector and density-matrix simulators for Amazon Braket
+	pkgver = 1.43.2
+	pkgrel = 1
+	url = https://github.com/amazon-braket/amazon-braket-default-simulator-python
+	arch = any
+	license = Apache-2.0
+	makedepends = python-installer
+	depends = python
+	depends = python-numba
+	depends = python-numpy
+	depends = python-opt_einsum
+	depends = python-pydantic
+	depends = python-scipy
+	depends = python-sympy
+	depends = python-antlr4>=4.13.2
+	depends = python-antlr4<4.13.3
+	depends = python-amazon-braket-schemas
+	noextract = amazon_braket_default_simulator-1.43.2-py3-none-any.whl
+	source = amazon_braket_default_simulator-1.43.2-py3-none-any.whl::https://files.pythonhosted.org/packages/cd/ab/9e9c2af68f6f6a81ac8e11afb29f7038e962757cb35512dd98921d84432d/amazon_braket_default_simulator-1.43.2-py3-none-any.whl
+	sha256sums = 06a9e92d015293744cc72e223ff34e67ef66d07f1afc2a9ea73ce047d1a02939
+
+pkgname = python-amazon-braket-default-simulator

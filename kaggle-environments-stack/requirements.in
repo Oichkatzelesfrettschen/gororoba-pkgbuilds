@@ -1,0 +1,4 @@
+kaggle-environments==1.33.3
+pytest
+setuptools
+wheel
