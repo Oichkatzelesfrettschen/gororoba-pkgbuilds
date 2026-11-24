@@ -1,0 +1,4 @@
+[python-qwasm]
+source = "pypi"
+pypi = "qwasm"
+exclude_regex = "(alpha|beta|rc|dev)"
