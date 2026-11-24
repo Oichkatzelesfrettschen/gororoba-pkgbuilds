@@ -7,6 +7,7 @@ deqp-runner
 flexiblas
 jadx-headless-mcp-bin
 mitiq-stack
+python313
 python-asyncio-atexit
 python-boltons
 python-cirq
@@ -27,6 +28,7 @@ python-openquantum-sdk
 python-plum-dispatch
 python-proto-plus
 python-pubchempy
+python-pybase64
 python-pycrate
 python-pyomo
 python-pytket
