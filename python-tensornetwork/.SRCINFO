@@ -15,7 +15,7 @@ pkgbase = python-tensornetwork
 	depends = python-h5py
 	depends = python-graphviz
 	depends = python-opt_einsum
-	source = tensornetwork-0.4.6.tar.gz
+	source = tensornetwork-0.4.6.tar.gz::https://files.pythonhosted.org/packages/93/32/55c2af4e7a6257a55e6598dd199ff3aa3ca567785c67948b2dfeb5019ae7/tensornetwork-0.4.6.tar.gz
 	sha256sums = c5af810bf6c2480e1b1f3d98ccf262c5ffb5c3c513be6611f4fdd2258bbc7704
 
 pkgname = python-tensornetwork
