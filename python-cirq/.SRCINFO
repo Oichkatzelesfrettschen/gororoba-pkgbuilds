@@ -18,7 +18,6 @@ pkgbase = python-cirq
 	checkdepends = python-ply
 	checkdepends = python-protobuf
 	checkdepends = python-proto-plus
-	checkdepends = python-pylatex
 	checkdepends = python-pytest
 	checkdepends = python-pytest-asyncio
 	checkdepends = python-requests
@@ -67,6 +66,7 @@ pkgname = python-cirq-core
 	depends = python-scipy
 	depends = python-sympy
 	depends = python-tqdm
+	optdepends = python-pylatex: LaTeX output of circuit diagrams (cirq.contrib.qcircuit)
 
 pkgname = python-cirq-google
 	pkgdesc = Cirq module to support Google's quantum hardware

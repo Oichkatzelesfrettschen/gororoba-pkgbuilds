@@ -42,7 +42,6 @@ checkdepends=(
     python-ply
     python-protobuf
     python-proto-plus
-    python-pylatex
     python-pytest
     python-pytest-asyncio
     python-requests
@@ -64,7 +63,7 @@ b2sums=('SKIP')
 build() {
     cd $_name
     python -m build --wheel --no-isolation
-    for _package in ${_packages[@]}; do
+    for _package in "${_packages[@]}"; do
         cd $srcdir/$_name/${_package:7} # remove "python-"
         python -m build --wheel --no-isolation
     done
@@ -72,19 +71,19 @@ build() {
 
 check() {
     local python_version=$(python -c 'import sys; print(".".join(map(str, sys.version_info[:2])))')
-    for _package in ${_packages[@]}; do
+    for _package in "${_packages[@]}"; do
         python -m installer --destdir="$srcdir"/test_dir $_name/${_package:7}/dist/*.whl
     done
 
     # Tests are included in the source code directories
-    for _package in ${_packages[@]}; do
+    for _package in "${_packages[@]}"; do
         cd "$srcdir/$_name/${_package:7}"
         echo "Testing $PWD"
         echo "Running: pytest -v $_package"
         PYTHONPATH="$srcdir/test_dir/usr/lib/python$python_version/site-packages" \
-        # cirq-core contrib/quimb tests import quimb, which no recipe in this repository provides.
+        # cirq-core contrib/quimb tests import quimb, and contrib/qcircuit tests import pylatex; neither is a hard dependency here.
         ignore=
-        if [ "$_package" = python-cirq-core ]; then ignore=--ignore=cirq/contrib/quimb; fi
+        if [ "$_package" = python-cirq-core ]; then ignore="--ignore=cirq/contrib/quimb --ignore=cirq/contrib/qcircuit"; fi
         pytest -o addopts="" $ignore -k "not test_json_test_data_coverage and not test_json_and_repr_data"
     done
 }
@@ -117,6 +116,7 @@ package_python-cirq-core() {
         python-sympy
         python-tqdm
     )
+    optdepends+=('python-pylatex: LaTeX output of circuit diagrams (cirq.contrib.qcircuit)')
     cd $_name/cirq-core
     python -m installer --destdir="$pkgdir" dist/*.whl
     install -Dm644 LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
