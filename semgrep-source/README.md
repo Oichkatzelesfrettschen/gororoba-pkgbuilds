@@ -48,8 +48,8 @@ model.
 
 Useful environment variables:
 
-- `SEMGREP_SOURCE_USE_DISTCC=0` disables distcc masquerade.
-- `SEMGREP_SOURCE_DISTCC_HOSTS` overrides the package host list.
+- `SEMGREP_SOURCE_USE_DISTCC=1` enables distcc masquerade; the default is 0.
+- `SEMGREP_SOURCE_DISTCC_HOSTS` supplies the distcc host list; the package ships no default host list, and the build stops when masquerade is enabled without it.
 - `SEMGREP_SOURCE_DUNE_CACHE_ROOT` points Dune at a persistent cache.
 - `SEMGREP_SOURCE_OPAMROOT` and `SEMGREP_SOURCE_OPAM_SWITCH` select an existing
   opam root and switch.
@@ -84,7 +84,7 @@ multilib unwind behavior stays aligned.
 The stock x86_64 package was built and installed on a compute host with:
 
 - `SEMGREP_SOURCE_USE_DISTCC=1`
-- `SEMGREP_SOURCE_DISTCC_HOSTS="compute-host-1/32,lzo compute-host-2/16,lzo localhost/2,lzo"`
+- `SEMGREP_SOURCE_DISTCC_HOSTS="<host-list>"`, in distcc `host/jobs,lzo` form
 - `SEMGREP_SOURCE_OPAM_SWITCH=semgrep-k8-5.3.0`
 - `SEMGREP_SOURCE_DUNE_CACHE_ROOT=$HOME/.cache/dune-semgrep-source`
 

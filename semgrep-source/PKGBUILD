@@ -52,7 +52,6 @@ sha256sums=('SKIP'
             '6f3a3a575825bc5efc6c73a19bb1658e8dd7a46493001657c07a426959e48c18')
 
 _opam_switch=${SEMGREP_SOURCE_OPAM_SWITCH:-semgrep-source-ocaml-5.3.0}
-_distcc_hosts_default='compute-host-1/32,lzo compute-host-2/16,lzo localhost/2,lzo'
 
 _semgrep_source_first_tool() {
   for _tool in "$@"; do
@@ -73,7 +72,7 @@ build() {
   cd semgrep
 
   export PATH="${HOME}/.local/bin:/usr/local/bin:/usr/bin:${PATH}"
-  export DISTCC_HOSTS="${SEMGREP_SOURCE_DISTCC_HOSTS:-${_distcc_hosts_default}}"
+  export DISTCC_HOSTS="${SEMGREP_SOURCE_DISTCC_HOSTS:-}"
   export CC="${SEMGREP_SOURCE_CC:-clang-22}"
   export CXX="${SEMGREP_SOURCE_CXX:-clang++-22}"
   export CPP="${SEMGREP_SOURCE_CPP:-/usr/bin/clang-22 -E}"
@@ -91,7 +90,8 @@ build() {
   export OPAMJOBS="${SEMGREP_SOURCE_OPAMJOBS:-4}"
   export OPAMCONFIRMLEVEL=unsafe-yes
 
-  if [ "${SEMGREP_SOURCE_USE_DISTCC:-1}" = 1 ]; then
+  if [ "${SEMGREP_SOURCE_USE_DISTCC:-0}" = 1 ]; then
+    : "${SEMGREP_SOURCE_DISTCC_HOSTS:?set SEMGREP_SOURCE_DISTCC_HOSTS to the distcc host list}"
     _masquerade="${srcdir}/distcc-masquerade"
     _distcc_dir="${srcdir}/distcc-state"
     rm -rf "${_masquerade}"
