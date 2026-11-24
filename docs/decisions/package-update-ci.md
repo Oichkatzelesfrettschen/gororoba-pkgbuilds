@@ -20,6 +20,7 @@ replaces it.
   `lit.linux_x86_64` asset).
 - CI check: `update-check` resolves only declared nvchecker entries; a recipe
   without one reports `unchecked`, never `current`.
+- Status: partly enforced by `scripts/update-check.sh` (nvchecker resolution over `nvchecker/*.toml`; `unchecked` for a recipe without an entry, branch `ci-pipeline`). The HTTP 200 asset check is planned.
 
 ## D-002 Installed-version reads use the exact package name
 
@@ -28,11 +29,12 @@ replaces it.
   was installed.
 - Rule: compare the `Name` field of `pacman -Qi` with the queried name.
 - CI check: the install-state reader fails on a provides-match.
+- Status: planned. No install-state reader exists on branch `ci-pipeline`.
 
 ## D-003 Packages built from local recipes leave the AUR upgrade path
 
 - Observation: `paru -Sua` listed ten packages whose installed build came from
-  a recipe here or in gororoba-infrastructure (`joern-git`, `perfetto`,
+  a recipe here or in the private workspace infrastructure repository (`joern-git`, `perfetto`,
   `kuna-bin`, `rea-agents`, `oci-cli`, `python-jupytext`, ...). For
   `joern-git` the AUR recipe is older (4.0.523) than the local build
   (4.0.614); the AUR upgrade would have regressed it.
@@ -41,6 +43,7 @@ replaces it.
   AUR upgrades never replace them; CI owns their updates.
 - CI check: `manifest-check` fails when a manifest package is installed with
   a different recipe origin (PACKAGER stamp, D-015).
+- Status: planned. `manifest-check` is not implemented on branch `ci-pipeline`.
 
 ## D-004 Scriptlets have no network
 
@@ -52,6 +55,7 @@ replaces it.
   third-party package that does is listed with its manual post step.
 - CI check: a grep of `*.install` for curl, wget, pip, npm, bundle and gem
   fails the lint job.
+- Status: planned. No `*.install` lint exists on branch `ci-pipeline`.
 
 ## D-005 A version that sorts higher can be older code
 
@@ -80,6 +84,7 @@ replaces it.
   trees) is emptied after the boot that follows a kernel upgrade.
 - CI check: the host audit counts unowned /usr/lib/modules trees other than
   the running kernel; more than zero after a reboot fails.
+- Status: planned. No host audit of module trees exists on branch `ci-pipeline`.
 
 ## D-008 A new dependency can collide with an installed package's files
 
@@ -121,6 +126,7 @@ replaces it.
   nvidia-utils.
 - CI check: `gpu-gate` refuses to run (result `skip: driver mismatch`)
   rather than report a test failure.
+- Status: planned. `gpu-gate` is not implemented on branch `ci-pipeline`.
 
 ## D-012 Three Python interpreters carry the stacks
 
@@ -133,6 +139,7 @@ replaces it.
 - CI check: `toolchain-watch` records python, cuda, nvidia-utils, boost-libs,
   icu, qt6-base, protobuf and abseil-cpp versions each run; a change opens a
   rebuild wave and holds ordinary bumps until the wave publishes.
+- Status: planned. `toolchain-watch` is not implemented on branch `ci-pipeline`.
 
 ## D-013 Build trees live outside recipe directories
 
@@ -145,9 +152,10 @@ replaces it.
 
 - Observation: `litert-lm`, `ollama-gemini-shim` and `llama.cpp-cuda` exist
   in two origin repositories at different releases.
-- Rule: gororoba workspace recipes live in gororoba-infrastructure; this
+- Rule: gororoba workspace recipes live in the private workspace infrastructure repository; this
   repository's copies are retired with a pointer once that home is current.
 - CI check: `manifest-check` fails on a package name defined twice.
+- Status: planned. `manifest-check` is not implemented on branch `ci-pipeline`.
 
 ## D-015 Every CI build is stamped
 
@@ -229,6 +237,7 @@ replaces it.
   `pacman -Dk` and the log's "upgraded" lines, never its closing message.
 - CI check: publish-gate refuses to run while the pacman lock exists and
   checksums every listed file before and after the transaction.
+- Status: planned. `scripts/publish-gate.sh` on branch `ci-pipeline` implements the version, build-date, file-owner and DKMS checks; it has no pacman lock check and no checksum pass.
 
 ## D-025 Measured hardware overrides recorded hardware
 
