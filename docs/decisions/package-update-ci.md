@@ -156,17 +156,15 @@ replaces it.
 - Rule: CI builds set PACKAGER to a fixed CI identity; manual builds set the
   owner's identity.
 
-## D-016 No builds on the build host; no GitHub-hosted runners
+## D-016 No builds on the build host; CI on hosted runners
 
-- Observation: the owner forbade builds, compiles and test suites on
-  the workstation (2026-11-16); this run nevertheless built about 60 packages
-  there on request, at load 70 with memcg OOM kills in peer scopes. GitHub
-  Actions jobs on this private repository stop at zero steps (billing block,
-  observed since 2025-09-30), so the existing `update-check.yml` never ran;
-  it also calls a `scripts/check-updates.sh` that does not exist.
-- Rule: builds run in a clean Arch chroot on a compute host; the workstation
-  only pulls signed packages from a private repository.
-- Open: which compute host carries the runner (owner decision).
+- Observation: the owner forbade builds, compiles and test suites on the
+  workstation (2026-11-16); this run nevertheless built about 60 packages
+  there on request, at load 70 with memcg OOM kills in peer scopes. Workflows
+  in the private origin repository never ran, and its `update-check.yml`
+  calls a `scripts/check-updates.sh` that does not exist.
+- Rule: builds run in CI or in a clean Arch chroot on a compute host; the
+  workstation only installs packages that CI or a compute host produced.
 
 ## D-017 Claims in commit messages match the recipe
 
@@ -183,11 +181,9 @@ replaces it.
 
 ## D-019 Public repositories run GitHub-hosted CI
 
-- Observation: on this public repository, workflow run 45463251281 executed
-  its shellcheck, recipes and scrub-check jobs with 8 steps each and passed;
-  private repositories of the same account stop at zero steps.
-- Rule: recipes that CI builds live in public repositories; this answers the
-  runner question of D-016 for them.
+- Observation: on this repository, workflow run 45463251281 executed its
+  shellcheck, recipes and scrub-check jobs with 8 steps each and passed.
+- Rule: recipes that CI builds live in public repositories.
 
 ## D-020 Private history is not published; recipes move with fresh history
 
