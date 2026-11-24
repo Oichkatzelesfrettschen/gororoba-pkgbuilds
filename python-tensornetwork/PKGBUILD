@@ -1,0 +1,25 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+
+pkgname=python-tensornetwork
+_pkg=tensornetwork
+pkgver=0.4.6
+pkgrel=1
+pkgdesc="Library for easy manipulation of tensor networks in TensorFlow, JAX, NumPy and PyTorch"
+arch=('any')
+url="http://github.com/google/TensorNetwork"
+license=('Apache-2.0')
+depends=('python' 'python-numpy' 'python-scipy' 'python-h5py' 'python-graphviz' 'python-opt_einsum')
+makedepends=('python-build' 'python-installer' 'python-setuptools' 'python-wheel')
+source=("tensornetwork-0.4.6.tar.gz")
+sha256sums=('c5af810bf6c2480e1b1f3d98ccf262c5ffb5c3c513be6611f4fdd2258bbc7704')
+
+build() {
+	cd "tensornetwork-0.4.6"
+	python -m build --wheel --no-isolation
+}
+
+# The test suite needs TensorFlow, JAX and PyTorch backends that this recipe does not depend on; check() is absent.
+package() {
+	cd "tensornetwork-0.4.6"
+	python -m installer --destdir="$pkgdir" dist/*.whl
+}

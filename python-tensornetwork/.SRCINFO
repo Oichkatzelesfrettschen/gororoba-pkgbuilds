@@ -1,0 +1,21 @@
+pkgbase = python-tensornetwork
+	pkgdesc = Library for easy manipulation of tensor networks in TensorFlow, JAX, NumPy and PyTorch
+	pkgver = 0.4.6
+	pkgrel = 1
+	url = http://github.com/google/TensorNetwork
+	arch = any
+	license = Apache-2.0
+	makedepends = python-build
+	makedepends = python-installer
+	makedepends = python-setuptools
+	makedepends = python-wheel
+	depends = python
+	depends = python-numpy
+	depends = python-scipy
+	depends = python-h5py
+	depends = python-graphviz
+	depends = python-opt_einsum
+	source = tensornetwork-0.4.6.tar.gz
+	sha256sums = c5af810bf6c2480e1b1f3d98ccf262c5ffb5c3c513be6611f4fdd2258bbc7704
+
+pkgname = python-tensornetwork
