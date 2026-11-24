@@ -1,0 +1,6 @@
+pkgbase = z
+	pkgver = 1
+	pkgrel = 1
+	depends = a
+
+pkgname = z

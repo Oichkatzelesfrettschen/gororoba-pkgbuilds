@@ -1,0 +1,6 @@
+pkgbase = glob
+	pkgver = 1
+	pkgrel = 1
+	depends = lib*
+
+pkgname = glob
