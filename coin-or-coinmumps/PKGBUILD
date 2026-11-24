@@ -1,0 +1,40 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+
+# MUMPS linear solver for Ipopt, built through the COIN-OR ThirdParty-Mumps
+# harness. get.Mumps downloads the MUMPS source at prepare() time (network at
+# build). METIS ordering is omitted: Arch has no metis package, and MUMPS falls
+# back to its AMD, AMF, QAMD and PORD orderings.
+
+pkgname=coin-or-coinmumps
+pkgver=3.0.11
+pkgrel=1
+pkgdesc='COIN-OR autotools harness to build MUMPS'
+arch=('x86_64')
+url='https://github.com/coin-or-tools/ThirdParty-Mumps/'
+license=('CECILL-C')
+groups=('coin-or')
+depends=('lapack' 'gcc-libs')
+makedepends=('gcc-fortran' 'wget')
+options=('!lto')
+source=("$pkgname-$pkgver.tar.gz::https://github.com/coin-or-tools/ThirdParty-Mumps/archive/releases/$pkgver.tar.gz")
+sha256sums=('53935baf3a249dcecf0e74c7c2b546692ef1d580a72716ec42a38b8a4799dffb')
+
+prepare() {
+  cd "ThirdParty-Mumps-releases-$pkgver"
+  ./get.Mumps
+}
+
+build() {
+  cd "ThirdParty-Mumps-releases-$pkgver"
+  FFLAGS="-fallow-argument-mismatch" ./configure --prefix=/usr --with-precision=all
+  make -j1
+}
+
+# check() is absent: the harness has no test target.
+
+package() {
+  cd "ThirdParty-Mumps-releases-$pkgver"
+  PKG_CONFIG_LIBDIR="$pkgdir/usr/lib/pkgconfig/" \
+    make DESTDIR="$pkgdir" install
+  install -Dm644 MUMPS/LICENSE -t "$pkgdir/usr/share/licenses/$pkgname"
+}

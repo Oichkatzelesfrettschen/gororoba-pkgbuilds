@@ -1,0 +1,6 @@
+[coin-or-qpoases]
+source = "github"
+github = "coin-or/qpOASES"
+use_latest_release = false
+use_max_tag = true
+prefix = "releases/"
