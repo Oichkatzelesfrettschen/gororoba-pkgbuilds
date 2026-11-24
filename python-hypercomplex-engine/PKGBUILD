@@ -1,0 +1,26 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+
+pkgname=python-hypercomplex-engine
+_pkg=hypercomplex_engine
+pkgver=0.7.2
+pkgrel=1
+pkgdesc="Multiplication engine and table generator for Cayley-Dickson algebras"
+arch=('any')
+url="https://github.com/maher1719/hypercomplex-engine"
+license=('Apache-2.0')
+depends=('python' 'python-numpy')
+makedepends=('python-build' 'python-installer' 'python-setuptools' 'python-wheel')
+source=("https://files.pythonhosted.org/packages/source/h/$_pkg/$_pkg-$pkgver.tar.gz")
+sha256sums=('ff4436d3221eac4246ac827c95f0d1739a1b8618666dcb200b20fff7e8625cdb')
+
+build() {
+	cd "$_pkg-$pkgver"
+	python -m build --wheel --no-isolation
+}
+
+package() {
+	cd "$_pkg-$pkgver"
+	python -m installer --destdir="$pkgdir" dist/*.whl
+	install -Dm644 LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+	install -Dm644 NOTICE "$pkgdir/usr/share/licenses/$pkgname/NOTICE"
+}

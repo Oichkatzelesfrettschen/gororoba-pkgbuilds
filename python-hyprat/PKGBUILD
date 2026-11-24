@@ -1,0 +1,29 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+
+pkgname=python-hyprat
+_repo=hyper_rationals
+pkgver=0.2.0
+pkgrel=1
+pkgdesc="Exact rational Cayley-Dickson algebras with a doubling parameter, split variants and Hurwitz quaternions"
+arch=('any')
+url="https://github.com/alreich/hyper_rationals"
+license=('MIT')
+depends=('python')
+optdepends=('python-sympy: to_sympy and from_sympy'
+            'python-numpy-quaternion: numpy-quaternion interop'
+            'python-quaternionic: quaternionic interop')
+makedepends=('python-build' 'python-installer' 'python-setuptools' 'python-wheel')
+# Released only as a GitHub tag; PyPI carries no hyprat.
+source=("$_repo-$pkgver.tar.gz::https://github.com/alreich/$_repo/archive/refs/tags/v$pkgver.tar.gz")
+sha256sums=('17ae936c3fc540172c7d4b6c918620e0a96808c2bccc6e5bf8953dcec24c715f')
+
+build() {
+	cd "$_repo-$pkgver"
+	python -m build --wheel --no-isolation
+}
+
+package() {
+	cd "$_repo-$pkgver"
+	python -m installer --destdir="$pkgdir" dist/*.whl
+	install -Dm644 LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}

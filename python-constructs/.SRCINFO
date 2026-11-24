@@ -1,0 +1,17 @@
+pkgbase = python-constructs
+	pkgdesc = Construct programming model used by the AWS CDK
+	pkgver = 10.8.1
+	pkgrel = 1
+	url = https://github.com/aws/constructs
+	arch = any
+	license = Apache-2.0
+	makedepends = python-installer
+	depends = python
+	depends = python-jsii>=1.139
+	depends = python-jsii<2
+	depends = python-publication
+	noextract = constructs-10.8.1-py3-none-any.whl
+	source = constructs-10.8.1-py3-none-any.whl::https://files.pythonhosted.org/packages/2d/df/3afc4e2c4c6bdf58bfe27d7e082f82f3364562592613c159209ed50ddd16/constructs-10.8.1-py3-none-any.whl
+	sha256sums = f71297db64723889147c82de46dcacaa76b120f856d5b5ac5f65abb22ea88355
+
+pkgname = python-constructs

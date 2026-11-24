@@ -1,0 +1,29 @@
+pkgbase = python-cuquantum
+	pkgdesc = NVIDIA cuQuantum Python bindings (cuStateVec, cuTensorNet, cuDensityMat, cuPauliProp, cuStabilizer) for CUDA 13
+	pkgver = 26.11.0
+	pkgrel = 1
+	url = https://github.com/NVIDIA/cuQuantum
+	arch = x86_64
+	license = BSD-3-Clause
+	makedepends = cython
+	makedepends = python-build
+	makedepends = python-installer
+	makedepends = python-setuptools
+	makedepends = python-wheel
+	makedepends = python-packaging
+	depends = python
+	depends = python-numpy
+	depends = cuda>=13
+	depends = cuda<14
+	depends = cuquantum>=26.09
+	depends = python-cupy
+	depends = python-cuda-bindings
+	depends = python-cuda-pathfinder
+	depends = python-nvmath
+	optdepends = python-opt-einsum: einsum path finding for cuquantum.tensornet
+	optdepends = python-qiskit: circuit conversion in cuquantum.tensornet.CircuitToEinsum
+	optdepends = python-cirq: circuit conversion in cuquantum.tensornet.CircuitToEinsum
+	source = cuQuantum-26.11.0.tar.gz::https://github.com/NVIDIA/cuQuantum/archive/refs/tags/v26.11.0.tar.gz
+	sha256sums = a062ba0d3e101de5b8e352bcd46096b22d1eb0d0c2c4abcd777405416a8c0179
+
+pkgname = python-cuquantum

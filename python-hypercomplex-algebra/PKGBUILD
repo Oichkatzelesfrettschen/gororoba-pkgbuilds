@@ -1,0 +1,26 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+
+pkgname=python-hypercomplex-algebra
+_pkg=hypercomplex_algebra
+pkgver=0.2.1
+pkgrel=1
+pkgdesc="Application layer for hypercomplex algebras (Standard, Split, Dual, Tensor)"
+arch=('any')
+url="https://github.com/maher1719/hypercomplex-algebra"
+license=('Apache-2.0')
+depends=('python' 'python-hypercomplex-engine')
+makedepends=('python-build' 'python-installer' 'python-hatchling' 'python-wheel')
+source=("https://files.pythonhosted.org/packages/source/h/$_pkg/$_pkg-$pkgver.tar.gz")
+sha256sums=('5ec3b7810cd67c5f879d287924f3c3fcec998a5a4e80aa450f37ddbc9591c386')
+
+build() {
+	cd "$_pkg-$pkgver"
+	python -m build --wheel --no-isolation
+}
+
+package() {
+	cd "$_pkg-$pkgver"
+	python -m installer --destdir="$pkgdir" dist/*.whl
+	install -Dm644 LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+	install -Dm644 NOTICE "$pkgdir/usr/share/licenses/$pkgname/NOTICE"
+}

@@ -1,0 +1,26 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+
+pkgname=python-eigenkit
+_name=eigenkit
+pkgver=1.3.0
+pkgrel=1
+pkgdesc="Quantum algorithm building blocks with Qiskit and IBM Runtime backends"
+arch=('any')
+url="https://eigenorbit.com"
+license=('Apache-2.0')
+depends=('python' 'python-numpy' 'python-pydantic' 'python-scipy')
+optdepends=('python-qiskit: Qiskit backend' 'python-qiskit-aer: Aer simulator backend' 'python-qiskit-ibm-runtime: IBM Runtime backend')
+makedepends=('python-build' 'python-installer' 'python-hatchling')
+source=("https://files.pythonhosted.org/packages/source/${_name::1}/$_name/$_name-$pkgver.tar.gz")
+b2sums=('55a4a13e76b97029bef9a23c5382e942b73c8d669b81e0553b9d5620c178bbabec213fe8c5c0aba8ba5d18256caed2799a1e4ae97e74da1fa5c5f1f4396994af')
+
+build() {
+	cd "$_name-$pkgver"
+	python -m build --wheel --no-isolation
+}
+
+package() {
+	cd "$_name-$pkgver"
+	python -m installer --destdir="$pkgdir" dist/*.whl
+	install -Dm644 LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}

@@ -1,0 +1,15 @@
+pkgbase = python-jsonconversion
+	pkgdesc = JSON conversion of Python objects, including NumPy values
+	pkgver = 2.0.0
+	pkgrel = 1
+	url = https://github.com/DLR-RM/python-jsonconversion
+	arch = any
+	license = BSD-2-Clause
+	makedepends = python-installer
+	depends = python
+	depends = python-numpy
+	noextract = jsonconversion-2.0.0-py3-none-any.whl
+	source = jsonconversion-2.0.0-py3-none-any.whl::https://files.pythonhosted.org/packages/09/72/58f30a9f93c8e1225b45899c984f2035ef6c7b7128b31ced83e05c62f555/jsonconversion-2.0.0-py3-none-any.whl
+	sha256sums = adfd131ff48b9e61d6a115b650306735cc71d55a210fe961e5daea9f9043f4b5
+
+pkgname = python-jsonconversion

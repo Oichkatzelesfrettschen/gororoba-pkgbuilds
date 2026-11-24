@@ -1,0 +1,26 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+
+pkgname=python-jsonschema-objects
+_pkg=python-jsonschema-objects
+pkgver=0.5.7
+pkgrel=1
+_srcdir=python_jsonschema_objects-$pkgver
+pkgdesc="Python classes generated from JSON Schema"
+arch=('any')
+url="http://python-jsonschema-objects.readthedocs.org/"
+license=('MIT')
+depends=('python' 'python-inflection' 'python-jsonschema' 'python-markdown' 'python-six')
+makedepends=('python-build' 'python-installer' 'python-setuptools' 'python-wheel')
+source=("https://files.pythonhosted.org/packages/e7/7c/4d92e057ab8733cca4f444ba39a896444b6ae0d332fdaaf8ddcb5c022fbf/python_jsonschema_objects-0.5.7.tar.gz")
+sha256sums=('0af1a9fd207a3158a73baa895256ce0ee91bb99c5f92b07fd4fac6ff6d007c90')
+
+build() {
+	cd "$_srcdir"
+	python -m build --wheel --no-isolation
+}
+
+package() {
+	cd "$_srcdir"
+	python -m installer --destdir="$pkgdir" dist/*.whl
+	find . -maxdepth 1 -iname 'LICENSE*' -exec install -Dm644 {} "$pkgdir/usr/share/licenses/$pkgname/" \;
+}

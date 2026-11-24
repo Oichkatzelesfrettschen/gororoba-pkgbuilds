@@ -1,0 +1,19 @@
+pkgbase = python-hyprat
+	pkgdesc = Exact rational Cayley-Dickson algebras with a doubling parameter, split variants and Hurwitz quaternions
+	pkgver = 0.2.0
+	pkgrel = 1
+	url = https://github.com/alreich/hyper_rationals
+	arch = any
+	license = MIT
+	makedepends = python-build
+	makedepends = python-installer
+	makedepends = python-setuptools
+	makedepends = python-wheel
+	depends = python
+	optdepends = python-sympy: to_sympy and from_sympy
+	optdepends = python-numpy-quaternion: numpy-quaternion interop
+	optdepends = python-quaternionic: quaternionic interop
+	source = hyper_rationals-0.2.0.tar.gz::https://github.com/alreich/hyper_rationals/archive/refs/tags/v0.2.0.tar.gz
+	sha256sums = 17ae936c3fc540172c7d4b6c918620e0a96808c2bccc6e5bf8953dcec24c715f
+
+pkgname = python-hyprat

@@ -1,0 +1,17 @@
+pkgbase = python-exqalibur
+	pkgdesc = Quandela's compiled photonic simulation backend for Perceval
+	pkgver = 1.4.2
+	pkgrel = 1
+	url = https://pypi.org/project/exqalibur/
+	arch = x86_64
+	license = LicenseRef-CC-BY-NC-ND-4.0
+	makedepends = python-installer
+	depends = python
+	depends = python-protobuf
+	noextract = exqalibur-1.4.2-cp314-cp314-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl
+	options = !strip
+	options = !debug
+	source = https://files.pythonhosted.org/packages/c5/d0/f88fef26a99ffdfa0140b742b7ffeb38c2c21711fdc6bc40f64b5aa8b3d4/exqalibur-1.4.2-cp314-cp314-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl
+	sha256sums = d1cec30be1aa59a17722299c3e065912f00b5bac036e3bdce18012dee4d5a4f7
+
+pkgname = python-exqalibur

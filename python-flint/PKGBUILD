@@ -1,0 +1,41 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+
+pkgname=python-flint
+_pkg=python_flint
+pkgver=0.9.0
+pkgrel=1
+_cython=3.2.9
+pkgdesc="Python bindings for FLINT: exact integers, rationals, polynomials, matrices, finite fields and balls"
+arch=('x86_64')
+url="https://github.com/flintlib/python-flint"
+license=('MIT' 'LGPL-3.0-or-later')
+depends=('python' 'flint' 'gmp' 'mpfr' 'glibc')
+makedepends=('python-build' 'python-installer' 'meson-python' 'meson' 'ninja' 'pkgconf')
+# The sdist requires cython >=3.1,<3.3; the pinned pure-Python Cython wheel
+# supplies that compiler for the build, beside the system cython 3.3.
+source=("https://files.pythonhosted.org/packages/source/p/python-flint/$_pkg-$pkgver.tar.gz"
+        "https://files.pythonhosted.org/packages/00/ec/e61deec9bcfbb0e1b36f8b5ba75cb44644419b4bfd0fdd666bffd21d9579/cython-$_cython-py3-none-any.whl")
+noextract=("cython-$_cython-py3-none-any.whl")
+sha256sums=('686b2907eedaf0c0842caefab29a5775d2e633fd5815b81e13b81ca2c6ad0a36'
+            'a2b0e87f6b80790c929308ca0831d686f7a180feab684fe8cd4a4380bd96aaca')
+
+prepare() {
+	rm -rf cython-pinned
+	mkdir cython-pinned
+	bsdtar -xf "cython-$_cython-py3-none-any.whl" -C cython-pinned
+	mkdir -p cython-pinned/bin
+	printf '#!/bin/sh\nexec env PYTHONPATH="%s" python -m cython "$@"\n' "$srcdir/cython-pinned" > cython-pinned/bin/cython
+	chmod +x cython-pinned/bin/cython
+}
+
+build() {
+	cd "$_pkg-$pkgver"
+	PATH="$srcdir/cython-pinned/bin:$PATH" PYTHONPATH="$srcdir/cython-pinned" \
+		python -m build --wheel --no-isolation --skip-dependency-check
+}
+
+package() {
+	cd "$_pkg-$pkgver"
+	python -m installer --destdir="$pkgdir" dist/*.whl
+	install -Dm644 LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}

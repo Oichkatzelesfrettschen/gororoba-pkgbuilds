@@ -1,0 +1,20 @@
+pkgbase = python-jsonschema-objects
+	pkgdesc = Python classes generated from JSON Schema
+	pkgver = 0.5.7
+	pkgrel = 1
+	url = http://python-jsonschema-objects.readthedocs.org/
+	arch = any
+	license = MIT
+	makedepends = python-build
+	makedepends = python-installer
+	makedepends = python-setuptools
+	makedepends = python-wheel
+	depends = python
+	depends = python-inflection
+	depends = python-jsonschema
+	depends = python-markdown
+	depends = python-six
+	source = https://files.pythonhosted.org/packages/e7/7c/4d92e057ab8733cca4f444ba39a896444b6ae0d332fdaaf8ddcb5c022fbf/python_jsonschema_objects-0.5.7.tar.gz
+	sha256sums = 0af1a9fd207a3158a73baa895256ce0ee91bb99c5f92b07fd4fac6ff6d007c90
+
+pkgname = python-jsonschema-objects

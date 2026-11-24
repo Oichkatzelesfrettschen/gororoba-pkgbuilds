@@ -1,0 +1,20 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+# shellcheck shell=bash disable=SC2034,SC2154
+
+pkgname=python-constructs
+pkgver=10.8.1
+pkgrel=1
+pkgdesc='Construct programming model used by the AWS CDK'
+arch=('any')
+url='https://github.com/aws/constructs'
+license=('Apache-2.0')
+depends=('python' 'python-jsii>=1.139' 'python-jsii<2' 'python-publication')
+makedepends=('python-installer')
+_wheel='constructs-10.8.1-py3-none-any.whl'
+source=("$_wheel::https://files.pythonhosted.org/packages/2d/df/3afc4e2c4c6bdf58bfe27d7e082f82f3364562592613c159209ed50ddd16/constructs-10.8.1-py3-none-any.whl")
+noextract=("$_wheel")
+sha256sums=('f71297db64723889147c82de46dcacaa76b120f856d5b5ac5f65abb22ea88355')
+
+package() {
+	python -m installer --destdir="$pkgdir" "$_wheel"
+}
