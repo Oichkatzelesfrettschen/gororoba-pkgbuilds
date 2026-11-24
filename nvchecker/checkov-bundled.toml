@@ -1,0 +1,3 @@
+[checkov-bundled]
+source = "pypi"
+pypi = "checkov"

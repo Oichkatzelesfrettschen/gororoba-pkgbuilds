@@ -1,0 +1,21 @@
+pkgbase = checkov-bundled
+	pkgdesc = Static analysis for infrastructure as code (dependency closure vendored at build time)
+	pkgver = 3.4.10
+	pkgrel = 1
+	url = https://github.com/bridgecrewio/checkov
+	arch = x86_64
+	license = Apache-2.0
+	makedepends = python-pip
+	depends = python
+	provides = checkov=3.4.10
+	conflicts = checkov
+	replaces = checkov
+	options = !strip
+	source = checkov-3.4.10.tar.gz::https://files.pythonhosted.org/packages/00/4b/b39218bf1fafb6bfca1e63a7b43a909510d21be700f9a40df3d586c016aa/checkov-3.4.10.tar.gz
+	source = requirements.in
+	source = requirements.txt
+	sha256sums = 5626d5115d91b23a5de2ad898efb13c64d00d8fb81176697ab3c64c89e16635a
+	sha256sums = 535d5675c88d914acfc3300b92b0f32738e42c016e640c57d8bf6f7e3a26a3c9
+	sha256sums = 0a97dd3e7952fde6f34de3cd9aed361974b92766e5c306aa3a73926163cc4de5
+
+pkgname = checkov-bundled

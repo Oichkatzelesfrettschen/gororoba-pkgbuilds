@@ -1,0 +1,5 @@
+[brakeman-bundled]
+source = "github"
+github = "presidentbeef/brakeman"
+use_latest_release = true
+prefix = "v"
