@@ -1,0 +1,77 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+# shellcheck shell=bash
+# shellcheck disable=SC2034,SC2154
+pkgname=i586-elf32-minix-binutils
+pkgver=2.42
+pkgrel=1
+pkgdesc="GNU binary utilities for the i586-elf32-minix target"
+arch=(x86_64)
+url="https://www.gnu.org/software/binutils/"
+license=(GPL-3.0-or-later LGPL-3.0-or-later)
+depends=(glibc zlib zstd)
+makedepends=(bison flex gcc13-sidecar-bin texinfo)
+# LTO imports libiberty IR into links that add binutils-only stack warnings.
+# Native component builds preserve their own warning policy under --enable-werror.
+options=(!debug !lto staticlibs)
+validpgpkeys=(3A24BC1E8FB409FA9F14371813FCEF89DD9E3C4F)
+source=(
+  "https://ftp.gnu.org/gnu/binutils/binutils-${pkgver}.tar.xz"
+  "https://ftp.gnu.org/gnu/binutils/binutils-${pkgver}.tar.xz.sig"
+  "binutils-${pkgver}-i386-minix-target.patch"
+  "binutils-${pkgver}-host-werror.patch"
+)
+sha256sums=(
+  "f6e4d41fd5fc778b06b7891457b3620da5ecea1006c6a4a41ae998109f85a800"
+  "SKIP"
+  "dd267eb3d355e8187d52b5220461f4c8c2ddabc7e1225f21c64dba2555de9852"
+  "785809b758917613cf9567503d373b43949c9d9bd50505934c20ab66df9980b5"
+)
+
+prepare() {
+  patch -d "binutils-${pkgver}" -p1 \
+    < "binutils-${pkgver}-i386-minix-target.patch"
+  patch -d "binutils-${pkgver}" -p1 \
+    < "binutils-${pkgver}-host-werror.patch"
+}
+
+build() {
+  CFLAGS+=" -ffile-prefix-map=${srcdir}=/usr/src/debug/${pkgname}"
+  CXXFLAGS+=" -ffile-prefix-map=${srcdir}=/usr/src/debug/${pkgname}"
+  export CFLAGS CXXFLAGS
+  mkdir -p build
+  cd build || return 1
+  CC=gcc-13 CXX=g++-13 "${srcdir}/binutils-${pkgver}/configure" \
+    --target=i586-elf32-minix \
+    --prefix=/usr \
+    --with-sysroot=/usr/i586-elf32-minix/sysroot \
+    --with-system-zlib \
+    --enable-werror \
+    --disable-nls \
+    --disable-gdb \
+    --disable-gdbserver \
+    --disable-sim \
+    --disable-gprofng \
+    --without-debuginfod
+  make
+}
+
+check() {
+  local smoke_object="${srcdir}/build/minix-smoke.o"
+  : | "${srcdir}/build/gas/as-new" -o "${smoke_object}"
+  local object_format
+  object_format=$("${srcdir}/build/binutils/objdump" -f "${smoke_object}" \
+    | sed -n 's/.*file format //p')
+  test "${object_format}" = elf32-i386-minix
+}
+
+package() {
+  local target_tool
+  make -C build DESTDIR="${pkgdir}" install
+  for target_tool in ar as ld ld.bfd nm objcopy objdump ranlib readelf strip; do
+    rm "${pkgdir}/usr/i586-elf32-minix/bin/${target_tool}"
+    ln -s "../../bin/i586-elf32-minix-${target_tool}" \
+      "${pkgdir}/usr/i586-elf32-minix/bin/${target_tool}"
+  done
+  rm -f "${pkgdir}/usr/lib/bfd-plugins/libdep.so"
+  rm -rf "${pkgdir}/usr/share/info"
+}

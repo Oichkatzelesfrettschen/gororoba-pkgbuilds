@@ -1,0 +1,14 @@
+pkgbase = amideco
+	pkgdesc = Decompress flash files equipped with an AMI BIOS
+	pkgver = 0.31e
+	pkgrel = 1
+	url = https://salsa.debian.org/salvage-team/amideco
+	arch = x86_64
+	arch = i686
+	license = GPL-2.0-or-later
+	source = https://deb.debian.org/debian/pool/main/a/amideco/amideco_0.31e.orig.tar.gz
+	source = https://deb.debian.org/debian/pool/main/a/amideco/amideco_0.31e-4.debian.tar.xz
+	sha256sums = 0dfb1ca083fc0af07a9cae84ba7ba24c5b7bc8f0e4d9e371274e504d0d2812db
+	sha256sums = 47fd222065ee05f1a165c5d8b6e3b024407463f5ae2bc5ba6336666da7ffdca2
+
+pkgname = amideco

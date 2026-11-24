@@ -1,0 +1,41 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+# Why: nvImageCodec has no Arch or AUR package and its GitHub release carries
+#      no binary asset. NVIDIA publishes the linux-x86_64 CUDA 13 archive on
+#      the public redistributable index at
+#      developer.download.nvidia.com/compute/nvimgcodec/redist/, whose
+#      redistrib_0.10.1.json states the SHA-256 pinned below, so the package
+#      needs no developer login. The archive is installed under
+#      /opt/nvidia/nvimgcodec with its loader path registered; the extension
+#      libraries stay under lib/extensions and are also reachable at
+#      /opt/nvidia/nvimgcodec/extensions, the directory the Debian package
+#      and the library's default extension search use. The nvJPEG extension
+#      loads libnvjpeg.so.13 from the cuda package at run time.
+
+pkgname=nvimgcodec-bin
+pkgver=0.10.1.12
+pkgrel=1
+pkgdesc='NVIDIA nvImageCodec 0.10.1 GPU image decode and encode, CUDA 13 x86_64 archive'
+arch=(x86_64)
+url='https://github.com/NVIDIA/nvImageCodec'
+license=('Apache-2.0')
+depends=('cuda>=13' 'nvidia-utils>=530')
+provides=(nvimgcodec)
+conflicts=(nvimgcodec)
+options=(!strip)
+
+_archive="nvimgcodec-linux-x86_64-${pkgver}_cuda13-archive"
+source=("${_archive}.tar.xz::https://developer.download.nvidia.com/compute/nvimgcodec/redist/nvimgcodec/linux-x86_64/${_archive}.tar.xz")
+sha256sums=('d7483edf242035706c79ef4460bc2730a3a95547d3026a45b95ef47d0bcb6851')
+
+package() {
+    install -d "${pkgdir}/opt/nvidia/nvimgcodec"
+    cp -a "${srcdir}/${_archive}/bin" "${srcdir}/${_archive}/include" \
+        "${srcdir}/${_archive}/lib" "${pkgdir}/opt/nvidia/nvimgcodec/"
+    ln -s lib/extensions "${pkgdir}/opt/nvidia/nvimgcodec/extensions"
+    install -d "${pkgdir}/etc/ld.so.conf.d"
+    printf '/opt/nvidia/nvimgcodec/lib\n' >"${pkgdir}/etc/ld.so.conf.d/nvimgcodec.conf"
+    install -d "${pkgdir}/usr/share/licenses/${pkgname}"
+    install -m644 "${srcdir}/${_archive}/LICENSE" "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
+    install -m644 "${srcdir}/${_archive}/Acknowledgements.txt" \
+        "${pkgdir}/usr/share/licenses/${pkgname}/Acknowledgements.txt"
+}

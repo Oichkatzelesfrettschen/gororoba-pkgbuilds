@@ -1,0 +1,16 @@
+pkgbase = bios_extract-git
+	pkgdesc = Tool for extracting individual modules from proprietary BIOS images
+	pkgver = r131.0a7bc1d
+	pkgrel = 1
+	url = http://www.coreboot.org/Bios_extract
+	arch = i686
+	arch = x86_64
+	license = GPL2
+	makedepends = git
+	depends = glibc
+	provides = bios_extract
+	conflicts = bios_extract
+	source = git+https://github.com/coreboot/bios_extract
+	sha1sums = SKIP
+
+pkgname = bios_extract-git

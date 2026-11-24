@@ -1,0 +1,20 @@
+diff --git a/glamor/glamor_gradient.c b/glamor/glamor_gradient.c
+index ed136d0..4ddeee8 100644
+--- a/glamor/glamor_gradient.c
++++ b/glamor/glamor_gradient.c
+@@ -567,6 +567,15 @@ glamor_init_gradient_shader(ScreenPtr screen)
+ 
+     glamor_priv = glamor_get_screen_private(screen);
+ 
++    /* R300-class hardware (RS482/RS485, R300, RV350...) has a 64-slot
++     * fragment ALU limit.  Gradient shaders for even modest stop counts
++     * exceed that limit after Mesa r300g NIR lowering.  glLinkProgram on
++     * an over-budget shader can cause a GPU hang rather than a clean GL
++     * error on RS482.  Disable gradient acceleration entirely and let
++     * glamor fall back to the CPU pixman path. */
++    if (glamor_priv->is_r300_class)
++        return FALSE;
++
+     for (i = 0; i < 3; i++) {
+         glamor_priv->gradient_prog[SHADER_GRADIENT_LINEAR][i] = 0;
+         glamor_priv->gradient_prog[SHADER_GRADIENT_RADIAL][i] = 0;

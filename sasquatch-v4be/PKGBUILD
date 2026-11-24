@@ -1,0 +1,64 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+
+# unblob calls two squashfs extractors, "sasquatch" for little-endian images
+# and "sasquatch-v4be" for big-endian SquashFS v4. Upstream builds both from
+# one source tree: the second pass compiles with CFLAGS=-DFIX_BE and renames
+# the binary, which onekey-sec/sasquatch does identically in debian/rules and
+# flake.nix. The AUR sasquatch package ships only the little-endian binary, so
+# this package supplies the big-endian one and the two install side by side
+# without a file conflict.
+
+pkgname=sasquatch-v4be
+_upstream=sasquatch
+pkgver=4.5.1_6
+pkgrel=1
+pkgdesc="Big-endian SquashFS v4 build of sasquatch, the extractor unblob calls for byte-swapped images"
+arch=(x86_64)
+url='https://github.com/onekey-sec/sasquatch'
+license=(GPL-2.0-or-later)
+depends=(
+  glibc
+  gcc-libs
+  lz4
+  lzo
+  xz
+  zlib
+  zstd
+)
+makedepends=(git)
+source=("git+$url.git#tag=$_upstream-v${pkgver//_/-}")
+sha512sums=('a0d7837941b01746146fa5ecb1a854c6462cfaee7f3c78322655185a727f985fc322e022b14fb6930c44520f1b1bd154e901aeaed5c6996181b26bcf37e3b673')
+
+prepare() {
+  cd "$srcdir/$_upstream"
+  # The 4.5.1 tree still declares these handlers with an empty parameter list,
+  # which C23 reads as (void) and mismatches signal(2)'s void (*)(int).
+  sed -i -E \
+    's/^void[[:space:]]+sigwinch_handler\(\)/void sigwinch_handler(int __attribute__((unused)) signum)/' \
+    squashfs-tools/unsquashfs.c
+  sed -i -E \
+    's/^void[[:space:]]+sigalrm_handler\(\)/void sigalrm_handler(int __attribute__((unused)) signum)/' \
+    squashfs-tools/unsquashfs.c
+}
+
+build() {
+  # -DFIX_BE is the whole difference between the two binaries; the compression
+  # backends must match the little-endian build so both read the same images.
+  CFLAGS="${CFLAGS} -DFIX_BE" make \
+    GZIP_SUPPORT=1 \
+    LZ4_SUPPORT=1 \
+    LZO_SUPPORT=1 \
+    XATTR_SUPPORT=1 \
+    XZ_SUPPORT=1 \
+    ZSTD_SUPPORT=1 \
+    -C "$_upstream/squashfs-tools"
+}
+
+package() {
+  # Install only the renamed big-endian binary. /usr/bin/sasquatch belongs to
+  # the sasquatch package and is deliberately left alone.
+  install -vDm755 "$_upstream/squashfs-tools/sasquatch" \
+    "$pkgdir/usr/bin/sasquatch-v4be"
+  install -vDm644 "$_upstream/COPYING" \
+    "$pkgdir/usr/share/licenses/$pkgname/COPYING"
+}

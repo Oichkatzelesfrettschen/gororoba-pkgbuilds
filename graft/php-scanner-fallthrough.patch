@@ -1,0 +1,10 @@
+--- a/node_modules/tree-sitter-php/common/scanner.h
++++ b/node_modules/tree-sitter-php/common/scanner.h
+@@ -356,6 +356,7 @@
+                     }
+                     break;
+                 }
++                /* fall through */
+             case '[':
+                 if (is_after_variable) {
+                     return has_content;

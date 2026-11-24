@@ -1,0 +1,97 @@
+# shellcheck shell=bash
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+pkgname=graft
+pkgver=0.21.1
+pkgrel=1
+pkgdesc="Repository context graphs and tools for coding agents"
+arch=('x86_64')
+url="https://github.com/Oichkatzelesfrettschen/graft-gororoba"
+license=('MIT')
+depends=('bash' 'glibc' 'libgcc' 'libstdc++' 'nodejs>=20')
+makedepends=('npm' 'python' 'git')
+options=('!debug' '!emptydirs')
+# graft-gororoba main: upstream trailhq/Graft fe30ead, open upstream PR #522,
+# and the local collector, C declarator and concept-pass corrections.
+_commit=012bb4e418e7aa9b437a66d6be108651fbfcca0b
+_sourcedir=Oichkatzelesfrettschen-graft-gororoba-012bb4e
+source=("graft-${_commit}.tar.gz::https://api.github.com/repos/Oichkatzelesfrettschen/graft-gororoba/tarball/${_commit}"
+        'php-scanner-fallthrough.patch'
+        'python-scanner-discard-pop.patch')
+sha256sums=('bd87871dc3fcf9ba99ec2b7b9d771c7dfdc90cf6b9034b96737b426af3c4fcd4'
+            '3fe711732b86082f45572d1e159ccc3d0d08e3755115947f497cf3781d3f0ce6'
+            'a0571c5fd9972b1236b8bd3fd07ec96d5edbfe043e452dd82e697f5a7d18cde3')
+
+build() {
+  cd "$_sourcedir"
+  export CI=1 DO_NOT_TRACK=1
+  export npm_config_cache="$srcdir/npm-cache"
+  export CCACHE_DIR="$srcdir/ccache"
+  : "${PYTHON:?set PYTHON to the intended interpreter}"
+  export PYTHON
+  export CFLAGS="$CFLAGS -Werror" CXXFLAGS="$CXXFLAGS -Werror"
+
+  # The lockfile fixes registry dependencies. Lifecycle hooks would stamp a
+  # telemetry key and run the upstream install notifier in the build account.
+  npm ci --ignore-scripts --no-audit --no-fund
+  patch -Np1 -i "$srcdir/php-scanner-fallthrough.patch"
+  patch -Np1 -i "$srcdir/python-scanner-discard-pop.patch"
+  # Compile native bindings with Arch hardening flags; the npm prebuilds lack
+  # full RELRO and Kotlin supplies only source on Linux.
+  local native_module
+  for native_module in tree-sitter tree-sitter-go tree-sitter-java \
+    tree-sitter-javascript tree-sitter-kotlin tree-sitter-php tree-sitter-python \
+    tree-sitter-r tree-sitter-swift tree-sitter-typescript; do
+    node node_modules/node-gyp/bin/node-gyp.js rebuild \
+      --directory="node_modules/$native_module" --nodedir=/usr --jobs=2
+  done
+  npm run build
+}
+
+check() {
+  cd "$_sourcedir"
+  export CI=1 DO_NOT_TRACK=1
+  export TMPDIR="$srcdir/test-tmp"
+  # Fixture directories represent standalone repositories. Stop Git discovery
+  # before the packaging checkout's ignore rules hide those fixture sources.
+  export GIT_CEILING_DIRECTORIES="$srcdir"
+  export XDG_CONFIG_HOME="$srcdir/test-config" XDG_STATE_HOME="$srcdir/test-state"
+  export XDG_CACHE_HOME="$srcdir/test-cache"
+  mkdir -p "$TMPDIR" "$XDG_CONFIG_HOME" "$XDG_STATE_HOME" "$XDG_CACHE_HOME"
+  node --import tsx --test \
+    test/cli-concept-concurrency.test.ts \
+    test/generic-c-declarator.test.ts \
+    test/graph-enrich-identity.test.ts \
+    test/generic-extract.test.ts \
+    test/graph-enrich-checkpoint.test.ts \
+    test/graph-enrich-failures.test.ts \
+    test/graph-enrich-pending.test.ts \
+    test/graph-enrich-quality.test.ts \
+    test/cli-synth-batch-chars.test.ts \
+    test/context-batch-stability.test.ts \
+    test/context-synth-cache-compat.test.ts \
+    test/context-synth-cache.test.ts \
+    test/context-synth-clamp.test.ts \
+    test/context-synth-concurrency.test.ts \
+    test/engine-synth-model.test.ts \
+    test/providers-config.test.ts
+}
+
+package() {
+  cd "$_sourcedir"
+  export CI=1 DO_NOT_TRACK=1 npm_config_cache="$srcdir/npm-cache"
+  npm prune --omit=dev --ignore-scripts --no-audit --no-fund
+  local package_root="$pkgdir/usr/lib/node_modules/@nanonets/graft"
+  install -d "$package_root" "$pkgdir/usr/bin"
+  cp -a dist scripts package.json package-lock.json README.md LICENSE "$package_root/"
+  # Ship the native modules built with the package, excluding vendor prebuilds
+  # and intermediate object files that retain build-directory identities.
+  tar --exclude='*/prebuilds' --exclude='node_modules/tree-sitter*/build' \
+    -cf - node_modules | tar -xf - -C "$package_root"
+  local native_binding
+  for native_binding in node_modules/tree-sitter*/build/Release/*.node; do
+    install -Dm644 "$native_binding" "$package_root/$native_binding"
+  done
+  chmod 755 "$package_root/dist/cli.js"
+  ln -s ../lib/node_modules/@nanonets/graft/dist/cli.js "$pkgdir/usr/bin/graft"
+  install -Dm644 LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}

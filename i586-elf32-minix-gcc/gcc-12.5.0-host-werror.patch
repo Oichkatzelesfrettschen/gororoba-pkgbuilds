@@ -1,0 +1,503 @@
+--- a/fixincludes/fixincl.c
++++ b/fixincludes/fixincl.c
+@@ -741,10 +741,11 @@
+ 
+ static void
+ extract_quoted_files (char* pz_data, 
+-                      const char* pz_fixed_file,
++                      char* pz_fixed_file,
+                       regmatch_t* p_re_match)
+ {
+   char *pz_dir_end = strrchr (pz_fixed_file, '/');
++  const char *pz_fixed_dir;
+   char *pz_incl_quot = pz_data;
+ 
+   if (VLEVEL( VERB_APPLIES ))
+@@ -750,13 +751,16 @@
+   if (VLEVEL( VERB_APPLIES ))
+     fprintf (stderr, "Quoted includes in %s\n", pz_fixed_file);
+ 
+-  /*  Set "pz_fixed_file" to point to the containing subdirectory of the source
++  /*  Set "pz_fixed_dir" to point to the containing subdirectory of the source
+       If there is none, then it is in our current directory, ".".   */
+ 
+   if (pz_dir_end == (char *) NULL)
+-    pz_fixed_file = ".";
++    pz_fixed_dir = ".";
+   else
+-    *pz_dir_end = '\0';
++    {
++      *pz_dir_end = '\0';
++      pz_fixed_dir = pz_fixed_file;
++    }
+ 
+   for (;;)
+     {
+@@ -766,11 +771,11 @@
+       while (*pz_incl_quot != '"')
+         pz_incl_quot++;
+ 
+-      if (quoted_file_exists (pz_src_dir, pz_fixed_file, pz_incl_quot))
++      if (quoted_file_exists (pz_src_dir, pz_fixed_dir, pz_incl_quot))
+         {
+           /* Print the source directory and the subdirectory
+              of the file in question.  */
+-          printf ("%s  %s/", pz_src_dir, pz_fixed_file);
++          printf ("%s  %s/", pz_src_dir, pz_fixed_dir);
+           pz_dir_end = pz_incl_quot;
+ 
+           /* Append to the directory the relative path of the desired file */
+@@ -779,7 +784,7 @@
+ 
+           /* Now print the destination directory appended with the
+              relative path of the desired file */
+-          printf ("  %s/%s/", pz_dest_dir, pz_fixed_file);
++          printf ("  %s/%s/", pz_dest_dir, pz_fixed_dir);
+           while (*pz_dir_end != '"')
+             putc (*pz_dir_end++, stdout);
+ 
+--- a/lto-plugin/lto-plugin.c
++++ b/lto-plugin/lto-plugin.c
+@@ -1033,7 +1033,7 @@
+ process_symtab (void *data, const char *name, off_t offset, off_t length)
+ {
+   struct plugin_objfile *obj = (struct plugin_objfile *)data;
+-  char *s;
++  const char *s;
+   char *secdatastart, *secdata;
+ 
+   if (!startswith (name, ".gnu.lto_.symtab"))
+@@ -1085,7 +1085,7 @@
+ 			  off_t length)
+ {
+   struct plugin_objfile *obj = (struct plugin_objfile *)data;
+-  char *s;
++  const char *s;
+   char *secdatastart, *secdata;
+ 
+   if (!startswith (name, ".gnu.lto_.ext_symtab"))
+--- a/libcpp/expr.cc
++++ b/libcpp/expr.cc
+@@ -829,11 +829,11 @@
+ 	  if ((result & CPP_N_UNSIGNED) == CPP_N_UNSIGNED)
+ 	    cpp_warning_with_line (pfile, CPP_W_SIZE_T_LITERALS,
+ 				   virtual_location, 0,
+-				   "use of C++23 %<size_t%> integer constant");
++				   "use of C++23 '%s' integer constant", "size_t");
+ 	  else
+ 	    cpp_warning_with_line
+ 	      (pfile, CPP_W_SIZE_T_LITERALS, virtual_location, 0,
+-	       "use of C++23 %<make_signed_t<size_t>%> integer constant");
++	       "use of C++23 '%s' integer constant", "make_signed_t<size_t>");
+        }
+ 
+       result |= CPP_N_INTEGER;
+--- a/libcpp/charset.cc
++++ b/libcpp/charset.cc
+@@ -240,19 +240,23 @@
+     {
+       do
+ 	{
++	  if (nbytes == sizeof buf)
++	    return EILSEQ;
+ 	  *--p = ((c & 0x3F) | 0x80);
+ 	  c >>= 6;
+ 	  nbytes++;
+ 	}
+       while (c >= 0x3F || (c & limits[nbytes-1]));
+       *--p = (c | masks[nbytes-1]);
+     }
+ 
++  if (nbytes > sizeof buf)
++    return EILSEQ;
+   if (*outbytesleftp < nbytes)
+     return E2BIG;
+ 
+-  while (p < &buf[6])
+-    *outbuf++ = *p++;
++  memcpy (outbuf, &buf[sizeof buf - nbytes], nbytes);
++  outbuf += nbytes;
+   *outbytesleftp -= nbytes;
+   *outbufp = outbuf;
+   return 0;
+--- a/gcc/genhooks.cc
++++ b/gcc/genhooks.cc
+@@ -111,3 +111,2 @@
+-  while (fscanf (f, "%*[^@]"), buf[0] = '\0',
+-	 fscanf (f, "@%5[^ \n]", buf) != EOF)
++  while (fscanf (f, "%*[^@]") != EOF)
+     {
+@@ -114,10 +113,14 @@
+       void **p;
+       struct s_hook *shp;
++      buf[0] = '\0';
++      if (fscanf (f, "@%5[^ \n]", buf) == EOF)
++	break;
+-
++
+       if (strcmp (buf, "hook") != 0)
+ 	continue;
+       buf[0] = '\0';
+-      fscanf (f, "%999s", buf);
++      if (fscanf (f, "%999s", buf) != 1)
++	fatal ("Malformed hook placement in %s\n", in_fname);
+       shp = XNEW (struct s_hook);
+       shp->name = upstrdup (buf);
+       shp->pos = -1;
+@@ -170,13 +173,18 @@
+ 	  continue;
+ 	}
+       buf[0] = '\0';
+-      fscanf (f, "%5[^ \n]", buf);
++      if (fscanf (f, "%5[^ \n]", buf) != 1)
++	{
++	  putchar ('@');
++	  continue;
++	}
+       if (strcmp (buf, "hook") != 0)
+ 	{
+ 	  printf ("@%s", buf);
+ 	  continue;
+ 	}
+-      fscanf (f, "%999s", buf);
++      if (fscanf (f, "%999s", buf) != 1)
++	fatal ("Malformed hook directive in %s\n", in_fname);
+       sh.name = name = upstrdup (buf);
+       shp = (struct s_hook *) htab_find (start_hooks, &sh);
+       if (!shp || shp->pos < 0)
+--- a/gcc/gengtype-lex.l
++++ b/gcc/gengtype-lex.l
+@@ -109,9 +109,18 @@
+ \\\n				{ lexer_line.line++; }
+ 
+ "const"/{EOID}			/* don't care */
+-{CXX_KEYWORD}/{EOID}			|
+-"~"					|
+-"^"					|
++{CXX_KEYWORD}/{EOID}			{
++    *yylval = XDUPVAR (const char, yytext, yyleng, yyleng + 1);
++    return IGNORABLE_CXX_KEYWORD;
++}
++"~"					{
++    *yylval = XDUPVAR (const char, yytext, yyleng, yyleng + 1);
++    return IGNORABLE_CXX_KEYWORD;
++}
++"^"					{
++    *yylval = XDUPVAR (const char, yytext, yyleng, yyleng + 1);
++    return IGNORABLE_CXX_KEYWORD;
++}
+ "&"					{
+     *yylval = XDUPVAR (const char, yytext, yyleng, yyleng + 1);
+     return IGNORABLE_CXX_KEYWORD;
+@@ -130,7 +139,16 @@
+   return NUM;
+ }
+ 
+-{IWORD}({WS}{IWORD})*/{EOID}		|
++{IWORD}({WS}{IWORD})*/{EOID}		{
++  size_t len;
++
++  for (len = yyleng; ISSPACE (yytext[len-1]); len--)
++    ;
++
++  *yylval = XDUPVAR (const char, yytext, len, len+1);
++  update_lineno (yytext, yyleng);
++  return SCALAR;
++}
+ "ENUM_BITFIELD"{WS}?"("{WS}?{ID}{WS}?")"	{
+   size_t len;
+ 
+--- a/gcc/gengtype.cc
++++ b/gcc/gengtype.cc
+@@ -4839,8 +4839,9 @@
+ static void
+ dump_fileloc (int indent, struct fileloc line)
+ {
++  const char *input_name = get_input_file_name (line.file);
+   printf ("%*cfileloc: file = %s, line = %d\n", indent, ' ', 
+-	  get_input_file_name (line.file),
++	  input_name ? input_name : "(null)",
+ 	  line.line);
+ }
+
+--- a/libdecnumber/decNumber.c
++++ b/libdecnumber/decNumber.c
+@@ -950,7 +950,7 @@ decNumber * decNumberCompareTotalMag(decNumber *res, const decNumber *lhs,
+ 	a=allocbufa;			/* use the allocated space */
+ 	}
+       decNumberCopy(a, lhs);		/* copy content */
+-      a->bits&=~DECNEG; 		/* .. and clear the sign */
++      a->bits=lhs->bits&~DECNEG; 	/* .. and clear the sign */
+       lhs=a;				/* use copy from here on */
+       }
+     if (decNumberIsNegative(rhs)) {	/* rhs<0 */
+@@ -964,7 +964,7 @@ decNumber * decNumberCompareTotalMag(decNumber *res, const decNumber *lhs,
+ 	b=allocbufb;			/* use the allocated space */
+ 	}
+       decNumberCopy(b, rhs);		/* copy content */
+-      b->bits&=~DECNEG; 		/* .. and clear the sign */
++      b->bits=rhs->bits&~DECNEG; 	/* .. and clear the sign */
+       rhs=b;				/* use copy from here on */
+       }
+     decCompareOp(res, lhs, rhs, set, COMPTOTAL, &status);
+@@ -5376,7 +5376,7 @@ decNumber * decExpOp(decNumber *res, const decNumber *rhs,
+       /* need to allow for all its digits to potentially participate */
+       /* (consider an x where all the excess digits are 9s) so in */
+       /* this case use x->digits+h+2 */
+-      p=MAXI(x->digits, set->digits)+h+2;    /* [h<=8] */
++      p=MAXI(rhs->digits, set->digits)+h+2;  /* [h<=8] */
+ 
+       /* a and t are variable precision, and depend on p, so space */
+       /* must be allocated for them if necessary */
+
+--- a/gcc/spellcheck.h
++++ b/gcc/spellcheck.h
+@@ -95,7 +95,8 @@
+   : m_goal (goal_traits::get_string (goal)),
+     m_goal_len (goal_traits::get_length (goal)),
+     m_best_candidate (NULL),
+-    m_best_distance (best_distance_so_far)
++    m_best_distance (best_distance_so_far),
++    m_best_candidate_len (0)
+   {}
+ 
+   /* Compare the edit distance between CANDIDATE and m_goal,
+
+--- a/gcc/dwarf2out.cc
++++ b/gcc/dwarf2out.cc
+@@ -12917,7 +12917,7 @@
+   char line_label[MAX_ARTIFICIAL_LABEL_BYTES];
+   unsigned int current_line = 1;
+   bool current_is_stmt = DWARF_LINE_DEFAULT_IS_STMT_START;
+-  dw_line_info_entry *ent, *prev_addr;
++  dw_line_info_entry *ent, *prev_addr = NULL;
+   size_t i;
+   unsigned int view;
+ 
+--- a/gcc/optabs.cc
++++ b/gcc/optabs.cc
+@@ -264,10 +264,8 @@
+   bool sbool = false;
+ 
+   oprnd0 = ops->op0;
+-  if (nops >= 2)
+-    oprnd1 = ops->op1;
+-  if (nops >= 3)
+-    oprnd2 = ops->op2;
++  oprnd1 = nops >= 2 ? ops->op1 : NULL_TREE;
++  oprnd2 = nops >= 3 ? ops->op2 : NULL_TREE;
+ 
+   tmode0 = TYPE_MODE (TREE_TYPE (oprnd0));
+   if (ops->code == VEC_UNPACK_FIX_TRUNC_HI_EXPR
+
+--- a/gcc/analyzer/diagnostic-manager.cc
++++ b/gcc/analyzer/diagnostic-manager.cc
+@@ -780,7 +780,11 @@
+       pp_newline (pp);
+     }
+   if (m_var)
+-    pp_printf (pp, "var: %qE\n", m_var);
++    {
++      pp_string (pp, "var: ");
++      dump_quoted_tree (pp, m_var);
++      pp_newline (pp);
++    }
+   if (m_sval)
+     {
+       pp_string (pp, "sval: ");
+
+--- a/gcc/diagnostic.cc
++++ b/gcc/diagnostic.cc
+@@ -2024,7 +2024,7 @@
+   if (global_dc->printer == NULL)
+     {
+       /* Print the error message.  */
+-      fnotice (stderr, diagnostic_kind_text[DK_ICE]);
++      fputs (_(diagnostic_kind_text[DK_ICE]), stderr);
+       fnotice (stderr, "in %s, at %s:%d", function, trim_filename (file), line);
+       fputc ('\n', stderr);
+ 
+--- a/gcc/lto/lto-common.cc
++++ b/gcc/lto/lto-common.cc
+@@ -2076,9 +2076,11 @@
+ 
+   name_len = strlen (file->filename);
+   obj_name = XNEWVEC (char, name_len + 1);
+-  fscanf (resolution, " ");   /* Read white space.  */
++  if (fscanf (resolution, " ") == EOF)   /* Read white space.  */
++    internal_error ("unexpected end of linker resolution file");
+ 
+-  fread (obj_name, sizeof (char), name_len, resolution);
++  if (fread (obj_name, sizeof (char), name_len, resolution) != name_len)
++    internal_error ("could not read file name from linker resolution file");
+   obj_name[name_len] = '\0';
+   if (filename_cmp (obj_name, file->filename) != 0)
+     internal_error ("unexpected file name %s in linker resolution file. "
+@@ -2098,7 +2100,8 @@
+ 
+   free (obj_name);
+ 
+-  fscanf (resolution, "%u", &num_symbols);
++  if (fscanf (resolution, "%u", &num_symbols) != 1)
++    internal_error ("could not parse symbol count in linker resolution file");
+ 
+   for (i = 0; i < num_symbols; i++)
+     {
+
+--- a/gcc/config/i386/i386-expand.cc
++++ b/gcc/config/i386/i386-expand.cc
+@@ -19722,6 +19722,9 @@
+   rtx_insn *seq;
+   bool ok, same_halves = false;
+ 
++  if (nelt > MAX_VECT_LEN)
++    return false;
++
+   if (GET_MODE_SIZE (d->vmode) == 4
+       || GET_MODE_SIZE (d->vmode) == 8
+       || GET_MODE_SIZE (d->vmode) == 16)
+
+--- a/gcc/lto-wrapper.cc
++++ b/gcc/lto-wrapper.cc
+@@ -1109,6 +1109,29 @@
+    the same name.  */
+ 
+ static bool
++read_all_bytes (int fd, off_t offset, char *buffer, size_t size)
++{
++  if (lseek (fd, offset, SEEK_SET) < 0)
++    return false;
++
++  while (size > 0)
++    {
++      ssize_t bytes_read = read (fd, buffer, size);
++      if (bytes_read > 0)
++	{
++	  buffer += bytes_read;
++	  size -= bytes_read;
++	}
++      else if (bytes_read == 0)
++	return false;
++      else if (errno != EINTR)
++	return false;
++    }
++
++  return true;
++}
++
++static bool
+ find_and_merge_options (int fd, off_t file_offset, const char *prefix,
+ 			vec<cl_decoded_option> decoded_cl_options, bool first,
+ 			vec<cl_decoded_option> *opts, const char *collect_gcc)
+@@ -1139,9 +1162,9 @@
+       return false;
+     }
+ 
+-  lseek (fd, file_offset + offset, SEEK_SET);
+   data = (char *)xmalloc (length);
+-  read (fd, data, length);
++  if (!read_all_bytes (fd, file_offset + offset, data, length))
++    fatal_error (input_location, "cannot read LTO options section");
+   fopts = data;
+   do
+     {
+
+--- a/gcc/gcc.cc
++++ b/gcc/gcc.cc
+@@ -7774,6 +7774,26 @@
+    add information in report file.  RUN_ATTEMPT should return
+    ATTEMPT_STATUS_SUCCESS, in other case we cannot generate the report.  */
+ 
++static bool
++write_all_bytes (int fd, const char *buffer, size_t size)
++{
++  while (size > 0)
++    {
++      ssize_t bytes_written = write (fd, buffer, size);
++      if (bytes_written > 0)
++	{
++	  buffer += bytes_written;
++	  size -= bytes_written;
++	}
++      else if (bytes_written == 0)
++	return false;
++      else if (errno != EINTR)
++	return false;
++    }
++
++  return true;
++}
++
+ static void
+ do_report_bug (const char **new_argv, const int nargs,
+ 	       char **out_file, char **err_file)
+@@ -7782,14 +7802,19 @@
+   int fd = open (*out_file, O_RDWR | O_APPEND);
+   if (fd < 0)
+     return;
+-  write (fd, "\n//", 3);
+-  for (i = 0; i < nargs; i++)
++  bool write_ok = write_all_bytes (fd, "\n//", 3);
++  for (i = 0; write_ok && i < nargs; i++)
+     {
+-      write (fd, " ", 1);
+-      write (fd, new_argv[i], strlen (new_argv[i]));
+-    }
+-  write (fd, "\n\n", 2);
+-  close (fd);
++      write_ok = write_all_bytes (fd, " ", 1);
++      if (write_ok)
++	write_ok = write_all_bytes (fd, new_argv[i], strlen (new_argv[i]));
++    }
++  if (write_ok)
++    write_ok = write_all_bytes (fd, "\n\n", 2);
++  if (close (fd) < 0)
++    write_ok = false;
++  if (!write_ok)
++    return;
+   new_argv[nargs] = "-E";
+   new_argv[nargs + 1] = NULL;
+ 
+@@ -10541,9 +10566,12 @@
+   fd = open ("/dev/urandom", O_RDONLY); 
+   if (fd >= 0)
+     {
+-      read (fd, &ret, sizeof (HOST_WIDE_INT));
++      ssize_t bytes_read;
++      do
++	bytes_read = read (fd, &ret, sizeof (HOST_WIDE_INT));
++      while (bytes_read < 0 && errno == EINTR);
+       close (fd);
+-      if (ret)
++      if (bytes_read == (ssize_t) sizeof (HOST_WIDE_INT) && ret)
+         return ret;
+     }
+ 
+--- a/gcc/expmed.cc
++++ b/gcc/expmed.cc
+@@ -1789,7 +1789,7 @@
+   /* Make sure we are playing with integral modes.  Pun with subregs
+      if we aren't.  */
+   opt_scalar_int_mode op0_mode = int_mode_for_mode (GET_MODE (op0));
+-  scalar_int_mode imode;
++  scalar_int_mode imode = word_mode;
+   if (!op0_mode.exists (&imode) || imode != GET_MODE (op0))
+     {
+       if (MEM_P (op0))
+
+--- a/libgcc/libgcov-util.c
++++ b/libgcc/libgcov-util.c
+@@ -462,7 +462,12 @@
+ #ifdef HAVE_FTW_H
+   ftw (".", ftw_read_file, 50);
+ #endif
+-  chdir (pwd);
++  if (chdir (pwd) != 0)
++    {
++      fnotice (stderr, "cannot restore working directory %s\n", pwd);
++      free (pwd);
++      return NULL;
++    }
+   free (pwd);
+ 
+   return gcov_info_head;;

@@ -1,0 +1,170 @@
+diff -ruN binutils-2.42.orig/bfd/config.bfd binutils-2.42/bfd/config.bfd
+--- binutils-2.42.orig/bfd/config.bfd	2026-08-08 12:19:53.966075377 -0700
++++ binutils-2.42/bfd/config.bfd	2026-08-08 12:19:53.966614619 -0700
+@@ -604,6 +604,10 @@
+     want64=true
+     ;;
+ #endif
++  i[3-7]86-*-minix*)
++    targ_defvec=i386_elf32_minix_vec
++    targ_selvecs="iamcu_elf32_vec i386_elf32_vec"
++    ;;
+   i[3-7]86-*-nto*)
+     targ_defvec=i386_elf32_vec
+     targ_selvecs="iamcu_elf32_vec i386_coff_vec"
+diff -ruN binutils-2.42.orig/bfd/configure binutils-2.42/bfd/configure
+--- binutils-2.42.orig/bfd/configure	2026-08-08 12:19:53.972707759 -0700
++++ binutils-2.42/bfd/configure	2026-08-08 12:19:53.973647594 -0700
+@@ -15895,6 +15895,7 @@
+     i386_coff_lynx_vec)		 tb="$tb cf-i386lynx.lo lynx-core.lo $coff" ;;
+     i386_elf32_vec)		 tb="$tb elf32-i386.lo $elfxx_x86 elf32.lo $elf" ;;
+     i386_elf32_fbsd_vec)	 tb="$tb elf32-i386.lo $elfxx_x86 elf32.lo $elf" ;;
++    i386_elf32_minix_vec)	 tb="$tb elf32-i386.lo $elfxx_x86 elf32.lo $elf" ;;
+     i386_elf32_sol2_vec)	 tb="$tb elf32-i386.lo $elfxx_x86 elf32.lo $elf" ;;
+     i386_elf32_vxworks_vec)	 tb="$tb elf32-i386.lo $elfxx_x86 elf32.lo $elf" ;;
+     i386_mach_o_vec)		 tb="$tb mach-o-i386.lo" ;;
+diff -ruN binutils-2.42.orig/bfd/configure.ac binutils-2.42/bfd/configure.ac
+--- binutils-2.42.orig/bfd/configure.ac	2026-08-08 12:19:53.968976484 -0700
++++ binutils-2.42/bfd/configure.ac	2026-08-08 12:19:53.969804027 -0700
+@@ -480,6 +480,7 @@
+     i386_coff_lynx_vec)		 tb="$tb cf-i386lynx.lo lynx-core.lo $coff" ;;
+     i386_elf32_vec)		 tb="$tb elf32-i386.lo $elfxx_x86 elf32.lo $elf" ;;
+     i386_elf32_fbsd_vec)	 tb="$tb elf32-i386.lo $elfxx_x86 elf32.lo $elf" ;;
++    i386_elf32_minix_vec)	 tb="$tb elf32-i386.lo $elfxx_x86 elf32.lo $elf" ;;
+     i386_elf32_sol2_vec)	 tb="$tb elf32-i386.lo $elfxx_x86 elf32.lo $elf" ;;
+     i386_elf32_vxworks_vec)	 tb="$tb elf32-i386.lo $elfxx_x86 elf32.lo $elf" ;;
+     i386_mach_o_vec)		 tb="$tb mach-o-i386.lo" ;;
+diff -ruN binutils-2.42.orig/bfd/elf32-i386.c binutils-2.42/bfd/elf32-i386.c
+--- binutils-2.42.orig/bfd/elf32-i386.c	2026-08-08 12:19:53.976492465 -0700
++++ binutils-2.42/bfd/elf32-i386.c	2026-08-08 12:19:53.977246541 -0700
+@@ -4498,6 +4498,18 @@
+ 
+ #include "elf32-target.h"
+ 
++/* MINIX 3 support.  */
++
++#undef	TARGET_LITTLE_SYM
++#define	TARGET_LITTLE_SYM		i386_elf32_minix_vec
++#undef	TARGET_LITTLE_NAME
++#define	TARGET_LITTLE_NAME		"elf32-i386-minix"
++
++#undef	elf32_bed
++#define	elf32_bed			elf32_i386_minix_bed
++
++#include "elf32-target.h"
++
+ /* FreeBSD support.  */
+ 
+ #undef	TARGET_LITTLE_SYM
+diff -ruN binutils-2.42.orig/bfd/targets.c binutils-2.42/bfd/targets.c
+--- binutils-2.42.orig/bfd/targets.c	2026-08-08 12:19:53.979739291 -0700
++++ binutils-2.42/bfd/targets.c	2026-08-08 12:19:53.980337885 -0700
+@@ -752,6 +752,7 @@
+ extern const bfd_target i386_coff_lynx_vec;
+ extern const bfd_target i386_elf32_vec;
+ extern const bfd_target i386_elf32_fbsd_vec;
++extern const bfd_target i386_elf32_minix_vec;
+ extern const bfd_target i386_elf32_sol2_vec;
+ extern const bfd_target i386_elf32_vxworks_vec;
+ extern const bfd_target i386_mach_o_vec;
+@@ -1101,6 +1102,7 @@
+ 	&i386_coff_lynx_vec,
+ 	&i386_elf32_vec,
+ 	&i386_elf32_fbsd_vec,
++	&i386_elf32_minix_vec,
+ 	&i386_elf32_sol2_vec,
+ 	&i386_elf32_vxworks_vec,
+ 	&i386_mach_o_vec,
+diff -ruN binutils-2.42.orig/gas/config/tc-i386.h binutils-2.42/gas/config/tc-i386.h
+--- binutils-2.42.orig/gas/config/tc-i386.h	2026-08-08 12:19:53.985474971 -0700
++++ binutils-2.42/gas/config/tc-i386.h	2026-08-08 12:19:53.986036054 -0700
+@@ -68,6 +68,10 @@
+ #define ELF_TARGET_FORMAT64	"elf64-x86-64-sol2"
+ #endif
+ 
++#ifdef TE_MINIX
++#define ELF_TARGET_FORMAT	"elf32-i386-minix"
++#endif
++
+ #ifndef ELF_TARGET_FORMAT
+ #define ELF_TARGET_FORMAT	"elf32-i386"
+ #endif
+diff -ruN binutils-2.42.orig/gas/config/te-minix.h binutils-2.42/gas/config/te-minix.h
+--- binutils-2.42.orig/gas/config/te-minix.h	1969-12-31 16:00:00.000000000 -0800
++++ binutils-2.42/gas/config/te-minix.h	2026-08-08 12:19:53.983097908 -0700
+@@ -0,0 +1,9 @@
++#define TE_MINIX 1
++
++/* Added these, because if we don't know what we're targeting we may
++   need an assembler version of libgcc, and that will use local
++   labels.  */
++#define LOCAL_LABELS_DOLLAR 1
++#define LOCAL_LABELS_FB 1
++
++#include "obj-format.h"
+diff -ruN binutils-2.42.orig/gas/configure.tgt binutils-2.42/gas/configure.tgt
+--- binutils-2.42.orig/gas/configure.tgt	2026-08-08 12:19:53.988653128 -0700
++++ binutils-2.42/gas/configure.tgt	2026-08-08 12:19:53.989271499 -0700
+@@ -244,6 +244,7 @@
+   i386-*-lynxos*)			fmt=elf em=lynx ;;
+   i386-*-redox*)			fmt=elf ;;
+   i386-*-solaris*)			fmt=elf em=solaris ;;
++  i386-*-minix*)			fmt=elf em=minix ;;
+   i386-*-freebsd* \
+   | i386-*-kfreebsd*-gnu)		fmt=elf em=freebsd ;;
+   i386-*-msdosdjgpp* \
+diff -ruN binutils-2.42.orig/ld/configure.tgt binutils-2.42/ld/configure.tgt
+--- binutils-2.42.orig/ld/configure.tgt	2026-08-08 12:19:53.991828630 -0700
++++ binutils-2.42/ld/configure.tgt	2026-08-08 12:19:53.992505311 -0700
+@@ -409,6 +409,9 @@
+ i[3-7]86-*-dragonfly*)	targ_emul=elf_i386
+ 			targ_extra_emuls="elf_iamcu i386bsd"
+ 			;;
++i[3-7]86-*-minix*)	targ_emul=elf_i386_minix
++			targ_extra_emuls=elf_i386
++			;;
+ i[3-7]86-*-freebsd* | i[3-7]86-*-kfreebsd*-gnu)
+ 			targ_emul=elf_i386_fbsd
+ 			targ_extra_emuls="elf_i386 elf_iamcu i386bsd"
+diff -ruN binutils-2.42.orig/ld/emulparams/elf_i386_minix.sh binutils-2.42/ld/emulparams/elf_i386_minix.sh
+--- binutils-2.42.orig/ld/emulparams/elf_i386_minix.sh	1969-12-31 16:00:00.000000000 -0800
++++ binutils-2.42/ld/emulparams/elf_i386_minix.sh	2026-08-08 12:19:53.997376120 -0700
+@@ -0,0 +1,3 @@
++. ${srcdir}/emulparams/elf_i386.sh
++. ${srcdir}/emulparams/elf_minix.sh
++OUTPUT_FORMAT="elf32-i386-minix"
+diff -ruN binutils-2.42.orig/ld/emulparams/elf_minix.sh binutils-2.42/ld/emulparams/elf_minix.sh
+--- binutils-2.42.orig/ld/emulparams/elf_minix.sh	1969-12-31 16:00:00.000000000 -0800
++++ binutils-2.42/ld/emulparams/elf_minix.sh	2026-08-08 12:19:53.995069806 -0700
+@@ -0,0 +1 @@
++ELF_INTERPRETER_NAME=\"/libexec/ld-elf.so.1\"
+diff -ruN binutils-2.42.orig/ld/Makefile.am binutils-2.42/ld/Makefile.am
+--- binutils-2.42.orig/ld/Makefile.am	2026-08-08 12:19:54.000393922 -0700
++++ binutils-2.42/ld/Makefile.am	2026-08-08 12:19:54.001083006 -0700
+@@ -279,6 +279,7 @@
+ 	eelf_i386.c \
+ 	eelf_i386_be.c \
+ 	eelf_i386_fbsd.c \
++	eelf_i386_minix.c \
+ 	eelf_i386_haiku.c \
+ 	eelf_i386_ldso.c \
+ 	eelf_i386_sol2.c \
+diff -ruN binutils-2.42.orig/ld/Makefile.in binutils-2.42/ld/Makefile.in
+--- binutils-2.42.orig/ld/Makefile.in	2026-08-08 12:19:54.003636911 -0700
++++ binutils-2.42/ld/Makefile.in	2026-08-08 12:19:54.004319282 -0700
+@@ -790,6 +790,7 @@
+ 	eelf_i386.c \
+ 	eelf_i386_be.c \
+ 	eelf_i386_fbsd.c \
++	eelf_i386_minix.c \
+ 	eelf_i386_haiku.c \
+ 	eelf_i386_ldso.c \
+ 	eelf_i386_sol2.c \
+@@ -1480,6 +1481,7 @@
+ @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/eelf_i386.Po@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/eelf_i386_be.Po@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/eelf_i386_fbsd.Po@am__quote@
++@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/eelf_i386_minix.Po@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/eelf_i386_haiku.Po@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/eelf_i386_ldso.Po@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/eelf_i386_sol2.Po@am__quote@

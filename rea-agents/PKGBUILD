@@ -1,0 +1,33 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+
+pkgname=rea-agents
+pkgver=6.10.1
+pkgrel=1
+pkgdesc="Reverse engineer anything from your terminal or agent with one CLI and MCP server"
+arch=('any')
+url="https://github.com/morluto/rea"
+license=('MIT')
+depends=('nodejs' 'npm')
+optdepends=(
+  'ghidra: native binary analysis (Ghidra provider)'
+  'hopper: native binary analysis (Hopper provider)'
+  'jadx: Android APK analysis'
+  'android-tools: ADB device analysis'
+)
+provides=("rea=${pkgver}")
+conflicts=('rea')
+source=("${pkgname}-${pkgver}.tgz::https://registry.npmjs.org/${pkgname}/-/${pkgname}-${pkgver}.tgz")
+sha256sums=('e8cf08c9fa954e998fc8868c23fa8e5f518cdb9553488ec227b31a3bb6903150')
+noextract=("${pkgname}-${pkgver}.tgz")
+
+package() {
+  npm install -g --prefix "${pkgdir}/usr" "${srcdir}/${pkgname}-${pkgver}.tgz"
+
+  # Remove unwanted cache and etc files created by npm
+  rm -rf "${pkgdir}/usr/etc"
+
+  # Ensure canonical directory and file permissions
+  find "${pkgdir}/usr" -type d -exec chmod 755 '{}' +
+
+  install -Dm644 "${pkgdir}/usr/lib/node_modules/${pkgname}/LICENSE" "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
+}

@@ -1,0 +1,19 @@
+CUDA 13 renames cuCtxCreate to cuCtxCreate_v4, which takes a CUctxCreateParams
+pointer ahead of the flags; the three-argument form the SDK calls is gone from
+the default prototype set. A null parameter block asks for the same context the
+old call created.
+
+--- a/physx/source/cudamanager/src/CudaContextManager.cpp
++++ b/physx/source/cudamanager/src/CudaContextManager.cpp
+@@ -575,7 +575,11 @@
+ 				return;
+ 			}
+ 			
++#if CUDA_VERSION >= 13000
++			status = cuCtxCreate(&mCtx, NULL, (unsigned int)flags, mDevHandle);
++#else
+ 			status = cuCtxCreate(&mCtx, (unsigned int)flags, mDevHandle);
++#endif
+ 			if (CUDA_SUCCESS != status)
+ 			{
+ 				const size_t bufferSize = 128;

@@ -1,0 +1,68 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+# Contributor: Carlos Aznarán <caznaranl@uni.pe>
+# Contributor: haagch <christoph.haag@collabora.com>
+#
+# Local fork: build with the system toolchain via is_clang=false.
+# perfetto vendors a pinned Chromium clang (buildtools/linux64/clang, reporting
+# "clang version 19.0.0git") that predates __builtin_clzg. GCC's libstdc++ has
+# used that builtin unconditionally in bits/random.tcc since GCC 14, and this
+# host carries GCC 16.2.1, so src/tracing/service/random.cc fails to compile
+# with "use of undeclared identifier '__builtin_clzg'". Routing the GN build
+# through system GCC pairs the compiler with the libstdc++ it was built against.
+#
+# tools/gen_amalgamated runs a SECOND, independently configured gn gen whose
+# default arg list lives at the top of that script, so the out/linux setting
+# does not reach it and it falls back to the vendored clang. prepare() appends
+# is_clang=false to that list as well.
+
+pkgname=perfetto
+pkgver=59.1
+pkgrel=1
+pkgdesc="Python APIs and bindings for Perfetto"
+arch=(x86_64)
+url="https://github.com/google/${pkgname}"
+license=(Apache-2.0)
+depends=(gcc-libs python-protobuf)
+makedepends=(git python-setuptools clang)
+source=(${pkgname}-${pkgver}.tar.gz::${url}/archive/v${pkgver}.tar.gz)
+sha512sums=('9223d446fddf83ebf0bf2a9553a77493939dca651ea70d58cebe2b9b57026e24ac9e2d5af0b12689dfeaf6bd01e3f6e411305b3b2158d043e2377bdbaf3b5b42')
+
+prepare() {
+  cd ${pkgname}-${pkgver}
+  # gen_amalgamated builds its own out dir from a hardcoded default arg list.
+  grep -q "is_clang=false" tools/gen_amalgamated || \
+    sed -i "s/^    'is_debug=false',$/    'is_debug=false',\n    'is_clang=false',/" tools/gen_amalgamated
+  grep -n "is_clang=false" tools/gen_amalgamated
+}
+
+build() {
+  cd ${pkgname}-${pkgver}
+  tools/install-build-deps
+  tools/gn gen --args='is_debug=false is_clang=false' out/linux
+  tools/ninja -C out/linux tracebox traced traced_probes perfetto
+  tools/gen_amalgamated --output sdk/perfetto
+  
+  cd python
+  python setup.py build
+}
+
+package() {
+  cd ${pkgname}-${pkgver}
+  #DESTDIR="$pkgdir/" ninja -C out/linux install
+  #install -d -m755 "$pkgdir"/usr/lib/
+  install -D -m644 out/linux/libperfetto.so "$pkgdir"/usr/lib/libperfetto.so
+  for i in perfetto tracebox traced; do
+    install -D -m755 "out/linux/$i" "$pkgdir/usr/bin/$i"
+  done
+
+  install -d -D -m755 test/configs "$pkgdir"/usr/share/perfetto/configs
+  install -D -m755 test/configs/* "$pkgdir"/usr/share/perfetto/configs
+
+  install -d -D -m755 sdk "$pkgdir"/usr/share/perfetto/sdk
+  install -D -m755 sdk/perfetto.* "$pkgdir"/usr/share/perfetto/sdk
+
+  install -Dm 644 LICENSE -t "${pkgdir}/usr/share/licenses/${pkgname}"
+
+  cd python
+  PYTHONPYCACHEPREFIX="${PWD}/.cache/cpython/" python setup.py install --prefix=/usr --root="${pkgdir}" --optimize=1 --skip-build
+}

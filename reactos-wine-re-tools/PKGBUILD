@@ -1,0 +1,86 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+
+pkgname=reactos-wine-re-tools
+pkgver=2026.05.27
+pkgrel=1
+pkgdesc="Isolated Wine launchers for Windows x86 and .NET reverse-engineering tools"
+arch=('any')
+url="https://github.com/x64dbg/x64dbg"
+license=('GPL-3.0-only' 'MIT')
+depends=('wine' 'wine-mono')
+optdepends=(
+    'detect-it-easy: native PE identification and batch inspection'
+    'pe-bear: native PE inspection and the pe-bear-wine launcher'
+    'wine-gecko: HTML rendering in Windows tools'
+)
+provides=('dependencies=1.11.1' 'dnspy=6.6.0' 'x64dbg=2026.05.27')
+conflicts=('dnspy' 'x64dbg')
+replaces=('dnspy' 'x64dbg')
+source=(
+    'https://github.com/x64dbg/x64dbg/releases/download/2026.05.27/snapshot_2026-05-27_12-11.zip'
+    'https://github.com/lucasg/Dependencies/releases/download/v1.11.1/Dependencies_x86_Release.zip'
+    'https://github.com/lucasg/Dependencies/releases/download/v1.11.1/Dependencies_x64_Release.zip'
+    'https://github.com/dnSpyEx/dnSpy/releases/download/v6.6.0/dnSpy-netframework.zip'
+    'x64dbg-LICENSE::https://raw.githubusercontent.com/x64dbg/x64dbg/2026.05.27/LICENSE'
+    'dependencies-LICENSE::https://raw.githubusercontent.com/lucasg/Dependencies/v1.11.1/LICENSE'
+    'dnSpyEx-LICENSE::https://raw.githubusercontent.com/dnSpyEx/dnSpy/v6.6.0/LICENSE.txt'
+    'reactos-wine-re-tools'
+)
+noextract=(
+    'snapshot_2026-05-27_12-11.zip'
+    'Dependencies_x86_Release.zip'
+    'Dependencies_x64_Release.zip'
+    'dnSpy-netframework.zip'
+)
+sha256sums=(
+    'd41966dfc5b435a372798245300ca0ab7bb8e48bdbf48512c6fb20fcca427697'
+    '3e6bc62b4163c4e8035e8a597515c116343fcb76fa4315317c3cafe0bdc9e257'
+    '7d22dc00f1c09fd4415d48ad74d1cf801893e83b9a39944b0fce6dea7ceaea99'
+    '2eadb7f4931ad1882d10477cf57185d288cacc6e3abf9958e7ae73c0a0f31dd1'
+    '1791b618e0aab8312274d6d229e692a680cc633676cd7f87e189f79097951f92'
+    '5d7cbf9b08285c1f89e4f4f1341090c662f4078dbf7ce8a7d392d2482e550fb6'
+    '8ceb4b9ee5adedde47b31e975c1d90c73ad27b6b165a1dcd80c7c545eb65b903'
+    'f62fc9820e04e1eac69050ec0eff5eb59e433c60b962fcc31d668e5cecccd398'
+)
+
+package() {
+    local tool_root="${pkgdir}/usr/share/${pkgname}"
+
+    install -d "${tool_root}/x64dbg"
+    bsdtar -xf "${srcdir}/snapshot_2026-05-27_12-11.zip" \
+        -C "${tool_root}/x64dbg" --strip-components 1 release
+
+    install -d "${tool_root}/dependencies-x86"
+    bsdtar -xf "${srcdir}/Dependencies_x86_Release.zip" \
+        -C "${tool_root}/dependencies-x86"
+
+    install -d "${tool_root}/dependencies-x64"
+    bsdtar -xf "${srcdir}/Dependencies_x64_Release.zip" \
+        -C "${tool_root}/dependencies-x64"
+
+    install -d "${tool_root}/dnspyex"
+    bsdtar -xf "${srcdir}/dnSpy-netframework.zip" \
+        -C "${tool_root}/dnspyex"
+
+    chmod -R go-w "${tool_root}"
+
+    install -Dm755 "${srcdir}/reactos-wine-re-tools" \
+        "${pkgdir}/usr/bin/reactos-wine-re-tools"
+
+    local command_name
+    for command_name in \
+        dependencies-cli-x64 dependencies-cli-x86 \
+        dependencies-x64 dependencies-x86 \
+        dnspyex dnspyex-x86 pe-bear-wine \
+        x32dbg x64dbg x96dbg
+    do
+        ln -s reactos-wine-re-tools "${pkgdir}/usr/bin/${command_name}"
+    done
+
+    install -Dm644 "${srcdir}/x64dbg-LICENSE" \
+        "${pkgdir}/usr/share/licenses/${pkgname}/x64dbg-LICENSE"
+    install -Dm644 "${srcdir}/dependencies-LICENSE" \
+        "${pkgdir}/usr/share/licenses/${pkgname}/dependencies-LICENSE"
+    install -Dm644 "${srcdir}/dnSpyEx-LICENSE" \
+        "${pkgdir}/usr/share/licenses/${pkgname}/dnSpyEx-LICENSE"
+}

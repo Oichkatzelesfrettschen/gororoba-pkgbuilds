@@ -1,0 +1,33 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+pkgname=weggli
+pkgver=0.2.4
+pkgrel=1
+pkgdesc='Semantic search tool for C and C++ codebases'
+arch=('x86_64')
+url='https://github.com/weggli-rs/weggli'
+license=('Apache-2.0')
+depends=('gcc-libs')
+makedepends=('cargo')
+source=("${pkgname}-${pkgver}.crate::https://static.crates.io/crates/${pkgname}/${pkgname}-${pkgver}.crate")
+sha256sums=('7cd932836bbe978e7550a2b34bef53e440c004fd2d8ba88ed0a5976f3f0ab2a0')
+
+prepare() {
+    cd "${pkgname}-${pkgver}"
+    cargo fetch --locked --target "${CARCH}-unknown-linux-gnu"
+}
+
+build() {
+    cd "${pkgname}-${pkgver}"
+    RUSTFLAGS="-C target-cpu=x86-64 ${RUSTFLAGS:-}" cargo build --release --frozen --locked
+}
+
+check() {
+    cd "${pkgname}-${pkgver}"
+    RUSTFLAGS="-C target-cpu=x86-64 ${RUSTFLAGS:-}" cargo test --release --frozen --locked
+}
+
+package() {
+    cd "${pkgname}-${pkgver}"
+    install -Dm755 "target/release/${pkgname}" "${pkgdir}/usr/bin/${pkgname}"
+    install -Dm644 LICENSE "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
+}

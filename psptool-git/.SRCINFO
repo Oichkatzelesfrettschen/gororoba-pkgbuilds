@@ -1,0 +1,24 @@
+pkgbase = psptool-git
+	pkgdesc = Swiss Army knife for dealing with firmware of the AMD Secure Processor
+	pkgver = r332.edae097
+	pkgrel = 1
+	url = https://github.com/PSPReverse/PSPTool
+	arch = any
+	license = GPL-3.0-or-later
+	makedepends = git
+	makedepends = python-build
+	makedepends = python-installer
+	makedepends = python-hatchling
+	makedepends = python-hatch-vcs
+	makedepends = python-wheel
+	depends = python
+	depends = python-cryptography
+	depends = python-prettytable
+	optdepends = ipython: interactive use as a Python module
+	provides = psptool
+	conflicts = psptool
+	options = !emptydirs
+	source = git+https://github.com/PSPReverse/PSPTool.git
+	sha256sums = SKIP
+
+pkgname = psptool-git

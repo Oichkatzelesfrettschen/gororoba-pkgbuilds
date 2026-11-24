@@ -1,0 +1,34 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+# Built from the maintained git source rather than the repo binary.  The
+# packager key that signed mdns-scan 0.5-5 (37E0AF1FDA48F373) expired on
+# 2025-01-01 and is disabled, so pacman rejects that package as
+# corrupted and no keyring refresh can revive the signature.  epoch=1
+# keeps this build ahead of the unverifiable repo package.
+
+pkgname=mdns-scan
+epoch=1
+pkgver=0.5
+pkgrel=1
+_commit=9c307d81d82812e423664e4ebe135f429d995ac8
+pkgdesc="Scan for mDNS/DNS-SD services published on the local network"
+arch=('x86_64' 'aarch64')
+url="https://github.com/alteholz/mdns-scan"
+license=('GPL-2.0-or-later')
+depends=('glibc')
+makedepends=('git')
+provides=("mdns-scan=$pkgver")
+conflicts=('mdns-scan')
+source=("$pkgname::git+https://github.com/alteholz/mdns-scan.git#commit=$_commit")
+sha256sums=('SKIP')
+
+build() {
+  cd "$pkgname"
+  make CFLAGS="$CFLAGS -Wall -W"
+}
+
+package() {
+  cd "$pkgname"
+  install -Dm755 mdns-scan "$pkgdir/usr/bin/mdns-scan"
+  install -Dm644 mdns-scan.1 "$pkgdir/usr/share/man/man1/mdns-scan.1"
+  install -Dm644 LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}

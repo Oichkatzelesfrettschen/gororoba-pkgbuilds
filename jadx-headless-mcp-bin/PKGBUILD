@@ -1,0 +1,19 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+
+pkgname=jadx-headless-mcp-bin
+_pkgname=jadx-headless-mcp
+pkgver=0.8.0
+pkgrel=1
+pkgdesc="Headless Model Context Protocol (MCP) server for JADX APK decompilation"
+arch=('any')
+url="https://github.com/1013503897/jadx-headless-mcp"
+license=('Apache-2.0')
+depends=('java-runtime>=21' 'jadx')
+source=("https://github.com/1013503897/jadx-headless-mcp/releases/download/v${pkgver}/jadx-headless-mcp-${pkgver}-all.jar")
+sha256sums=('4b9a01c23845c123c217840182d2b5f2c26a7ca20dec3d08810b310fc80a2372')
+noextract=("jadx-headless-mcp-${pkgver}-all.jar")
+
+package() {
+  install -Dm644 "$srcdir/jadx-headless-mcp-${pkgver}-all.jar" "$pkgdir/usr/share/java/jadx/jadx-headless-mcp-${pkgver}-all.jar"
+  ln -s "jadx-headless-mcp-${pkgver}-all.jar" "$pkgdir/usr/share/java/jadx/jadx-headless-mcp.jar"
+}

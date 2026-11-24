@@ -1,0 +1,17 @@
+pkgbase = mdns-scan
+	pkgdesc = Scan for mDNS/DNS-SD services published on the local network
+	pkgver = 0.5
+	pkgrel = 1
+	epoch = 1
+	url = https://github.com/alteholz/mdns-scan
+	arch = x86_64
+	arch = aarch64
+	license = GPL-2.0-or-later
+	makedepends = git
+	depends = glibc
+	provides = mdns-scan=0.5
+	conflicts = mdns-scan
+	source = mdns-scan::git+https://github.com/alteholz/mdns-scan.git#commit=9c307d81d82812e423664e4ebe135f429d995ac8
+	sha256sums = SKIP
+
+pkgname = mdns-scan

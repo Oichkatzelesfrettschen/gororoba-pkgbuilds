@@ -1,0 +1,88 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+
+pkgname=amd-aocl-crypto
+pkgver=5.3
+pkgrel=1
+pkgdesc='AMD AOCL cryptographic primitives optimized for Zen CPUs'
+arch=('x86_64')
+url='https://github.com/amd/aocl-crypto'
+license=('BSD-3-Clause')
+depends=('amd-aocl-utils' 'gcc-libs' 'glibc' 'openssl')
+makedepends=('clang>=22' 'cmake' 'lsb-release' 'ninja' 'p7zip')
+provides=("aocl-crypto=${pkgver}" 'aocl-crypto')
+conflicts=('aocl-crypto' 'aocl-crypto-aocc')
+options=('staticlibs' '!emptydirs' '!lto')
+source=("${pkgname}-${pkgver}.tar.gz::${url}/archive/refs/tags/${pkgver}.tar.gz")
+sha256sums=('8f7fa806879aac399c73e044048fc507c06fd099642cd7fece9e6ba9945d968e')
+
+_cc=${AOCL_CRYPTO_CC:-clang-22}
+_cxx=${AOCL_CRYPTO_CXX:-clang++-22}
+_aocl_utils_root=${AOCL_UTILS_ROOT:-/usr}
+
+# AOCL arch-specific objects carry their own ISA flags.  Host makepkg flags must
+# not add a second target identity that would make the package CPU-local.
+_sanitize_march_flags() {
+    printf '%s' "$1" |
+        sed -E \
+            -e 's/(^|[[:space:]])-(march|mtune)=[^[:space:]]+//g' \
+            -e 's/(^|[[:space:]])-flto(=[^[:space:]]+)?//g' \
+            -e 's/^[[:space:]]+//' \
+            -e 's/[[:space:]]+$//' \
+            -e 's/[[:space:]]+/ /g'
+}
+
+prepare() {
+    cd "aocl-crypto-${pkgver}" || exit
+
+    # AOCL Crypto disables assembly for every non-GNU C++ compiler even though
+    # its Zen4 GCM path already carries Clang flag plumbing.
+    sed -i \
+        's/NOT CMAKE_CXX_COMPILER_ID STREQUAL "GNU"/NOT CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang"/' \
+        CMakeLists.txt
+
+    # Clang treats the plain inline-asm label as a duplicated symbol when this
+    # header is instantiated by multiple arch translation units.  A numeric
+    # local label preserves the loop target without exporting a named symbol.
+    sed -i \
+        -e 's/"loop:"/"1:"/' \
+        -e 's/"jge loop;"/"jge 1b;"/' \
+        lib/include/alcp/ec/x25519_radix64bit.hh
+}
+
+build() {
+    CFLAGS="$(_sanitize_march_flags "${CFLAGS}")"
+    CXXFLAGS="$(_sanitize_march_flags "${CXXFLAGS}")"
+    LDFLAGS="$(_sanitize_march_flags "${LDFLAGS}")"
+    export CFLAGS CXXFLAGS LDFLAGS
+    export CC="${_cc}"
+    export CXX="${_cxx}"
+
+    cmake -S "aocl-crypto-${pkgver}" -B build -G Ninja \
+        -DCMAKE_BUILD_TYPE=Release \
+        -DCMAKE_INSTALL_PREFIX=/usr \
+        -DBUILD_SHARED_LIBS=ON \
+        -DAOCL_COMPAT_LIBS=openssl \
+        -DOPENSSL_INSTALL_DIR=/usr \
+        -DENABLE_AOCL_UTILS=ON \
+        -DAOCL_UTILS_INSTALL_DIR="${_aocl_utils_root}" \
+        -DALCP_DISABLE_ASSEMBLY=OFF \
+        -DALCP_ENABLE_DYNAMIC_COMPILER_PICK=OFF \
+        -DALCP_ENABLE_EXAMPLES=OFF \
+        -DALCP_ENABLE_TESTS=OFF
+
+    cmake --build build
+}
+
+package() {
+    DESTDIR="${pkgdir}" cmake --install build
+
+    install -Dm644 "aocl-crypto-${pkgver}/LICENSE" \
+        "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
+
+    install -d "${pkgdir}/usr/share/doc/${pkgname}"
+    mv "${pkgdir}/usr/CHANGELOG.md" \
+        "${pkgdir}/usr/share/doc/${pkgname}/CHANGELOG.md"
+    cp -a "${pkgdir}/usr/docs/." \
+        "${pkgdir}/usr/share/doc/${pkgname}/"
+    rm -rf "${pkgdir}/usr/LICENSE" "${pkgdir}/usr/docs"
+}

@@ -1,0 +1,45 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+# Upstream (biosgfx.narod.ru) is defunct; Debian pool carries the preserved
+# orig tarball.  amideco is actively maintained by the Debian salvage team.
+# After first successful fetch: run updpkgsums to replace SKIP with real hashes.
+pkgname=amideco
+pkgver=0.31e
+pkgrel=1
+_debver=4
+pkgdesc='Decompress flash files equipped with an AMI BIOS'
+arch=('x86_64' 'i686')
+url='https://salsa.debian.org/salvage-team/amideco'
+license=('GPL-2.0-or-later')
+source=(
+  "https://deb.debian.org/debian/pool/main/a/amideco/amideco_${pkgver}.orig.tar.gz"
+  "https://deb.debian.org/debian/pool/main/a/amideco/amideco_${pkgver}-${_debver}.debian.tar.xz"
+)
+sha256sums=('0dfb1ca083fc0af07a9cae84ba7ba24c5b7bc8f0e4d9e371274e504d0d2812db'
+            '47fd222065ee05f1a165c5d8b6e3b024407463f5ae2bc5ba6336666da7ffdca2')
+
+prepare() {
+  cd "$srcdir/amideco-${pkgver}.orig"
+  # Apply Debian patches in series order; these fix Makefile, clang FTBFS,
+  # printf format specifiers, and missing headers for modern GCC/clang.
+  while IFS= read -r _patch; do
+    [[ "$_patch" =~ ^[[:space:]]*(#.*)?$ ]] && continue
+    patch -Np1 -i "$srcdir/debian/patches/${_patch}" || return 1
+  done < "$srcdir/debian/patches/series"
+}
+
+build() {
+  cd "$srcdir/amideco-${pkgver}.orig/src"
+  # Strip -flto* from CFLAGS and LDFLAGS: distcc distributes compile units
+  # across nodes with different GCC major versions, so LTO bytecode versions
+  # will not match at link time.
+  make CC="${CC:-gcc}" \
+    CFLAGS="${CFLAGS//-flto*/} -fpack-struct -funsigned-char" \
+    LDFLAGS="${LDFLAGS//-flto*/}"
+}
+
+package() {
+  cd "$srcdir/amideco-${pkgver}.orig/src"
+  install -Dm755 amideco "$pkgdir/usr/bin/amideco"
+  install -Dm644 "$srcdir/debian/amideco.1" \
+    "$pkgdir/usr/share/man/man1/amideco.1"
+}

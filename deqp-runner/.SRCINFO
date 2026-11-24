@@ -1,0 +1,17 @@
+pkgbase = deqp-runner
+	pkgdesc = Parallel VK-GL-CTS/dEQP test runner reporting results against a baseline
+	pkgver = 0.24.0
+	pkgrel = 1
+	epoch = 1
+	url = https://gitlab.freedesktop.org/mesa/deqp-runner
+	arch = x86_64
+	arch = aarch64
+	license = MIT
+	makedepends = cargo
+	depends = gcc-libs
+	depends = glibc
+	options = !lto
+	source = deqp-runner-0.24.0.tar.gz::https://static.crates.io/crates/deqp-runner/deqp-runner-0.24.0.crate
+	sha256sums = 06bc5432359b2150cde819f2e324995c1ce3b29ce060af9d5cb9526d1481f5e2
+
+pkgname = deqp-runner

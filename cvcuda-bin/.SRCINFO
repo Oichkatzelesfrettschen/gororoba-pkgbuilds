@@ -1,0 +1,18 @@
+pkgbase = cvcuda-bin
+	pkgdesc = NVIDIA CV-CUDA 0.19.0 GPU image and vision operators, CUDA 13 x86_64 library and headers
+	pkgver = 0.19.0
+	pkgrel = 1
+	url = https://github.com/CVCUDA/CV-CUDA
+	arch = x86_64
+	license = Apache-2.0
+	depends = cuda>=13
+	depends = nvidia-utils>=580
+	provides = cvcuda
+	conflicts = cvcuda
+	options = !strip
+	source = cvcuda-lib-0.19.0-cuda13-x86_64-linux.tar.xz::https://github.com/CVCUDA/CV-CUDA/releases/download/v0.19.0/cvcuda-lib-0.19.0-cuda13-x86_64-linux.tar.xz
+	source = cvcuda-dev-0.19.0-cuda13-x86_64-linux.tar.xz::https://github.com/CVCUDA/CV-CUDA/releases/download/v0.19.0/cvcuda-dev-0.19.0-cuda13-x86_64-linux.tar.xz
+	sha256sums = fc655a8eda2ea9e16ed3f255338534f6d33eda0f01a9f18149b9f47a2aca9205
+	sha256sums = 3d545e78bad59b924a8642e826ec871c63b4fb92f4e746dff39a3d5949637446
+
+pkgname = cvcuda-bin

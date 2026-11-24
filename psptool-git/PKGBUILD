@@ -1,0 +1,51 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+# Contributor: Lahfa Samy (AkechiShiro) <'akechishiro-aur' at the domain 'lahfa.xyz'>
+# Contributor: Daniel Maslowski <info@orangecms.org>
+
+_gitname=PSPTool
+_pyname=psptool
+pkgname=psptool-git
+pkgver=r332.edae097
+pkgrel=1
+pkgdesc="Swiss Army knife for dealing with firmware of the AMD Secure Processor"
+arch=('any')
+url="https://github.com/PSPReverse/PSPTool"
+license=('GPL-3.0-or-later')
+depends=(
+  'python'
+  'python-cryptography'
+  'python-prettytable'
+)
+makedepends=(
+  'git'
+  'python-build'
+  'python-installer'
+  'python-hatchling'
+  'python-hatch-vcs'
+  'python-wheel'
+)
+optdepends=('ipython: interactive use as a Python module')
+provides=("$_pyname")
+conflicts=("$_pyname")
+options=(!emptydirs)
+source=("git+https://github.com/PSPReverse/PSPTool.git")
+sha256sums=('SKIP')
+
+pkgver() {
+  cd "$_gitname"
+  printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
+}
+
+build() {
+  cd "$_gitname"
+  # hatch-vcs derives the package version from git metadata, so the build
+  # runs against the live checkout (its .git/ and tags must stay in place).
+  python -m build --wheel --no-isolation
+}
+
+package() {
+  cd "$_gitname"
+  python -m installer --destdir="$pkgdir" dist/*.whl
+}
+
+# vim:set ts=2 sw=2 et:

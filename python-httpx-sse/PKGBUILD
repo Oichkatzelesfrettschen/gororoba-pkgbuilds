@@ -1,0 +1,43 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+pkgname=python-httpx-sse
+_pkgname=httpx-sse
+_pkgsrc=httpx_sse
+pkgver=0.4.3
+pkgrel=1
+pkgdesc='Consume Server-Sent Event messages with HTTPX'
+arch=('any')
+url='https://github.com/florimondmanca/httpx-sse'
+license=('MIT')
+depends=(
+  'python'
+  'python-httpx'
+)
+makedepends=(
+  'python-build'
+  'python-installer'
+  'python-wheel'
+  'python-hatchling'
+  'python-setuptools-scm'
+)
+source=("https://files.pythonhosted.org/packages/source/h/${_pkgname}/${_pkgsrc}-${pkgver}.tar.gz")
+sha256sums=('9b1ed0127459a66014aec3c56bebd93da3c1bc8bb6618c8082039a44889a755d')
+
+build() {
+  cd "${_pkgsrc}-${pkgver}"
+  python -m build --wheel --no-isolation
+}
+
+package() {
+  cd "${_pkgsrc}-${pkgver}"
+  python -m installer --destdir="${pkgdir}" dist/*.whl
+
+  # The wheel carries the MIT text in its dist-info, and namcap requires it
+  # under /usr/share/licenses for any identifier outside the common set. The
+  # link follows the version-stamped dist-info path, which moves with pkgver
+  # and so stays correct without a second copy of the text.
+  local _site
+  _site="$(python -c 'import site; print(site.getsitepackages()[0])')"
+  install -dm755 "${pkgdir}/usr/share/licenses/${pkgname}"
+  ln -sv "${_site}/${_pkgsrc}-${pkgver}.dist-info/licenses/LICENSE" \
+    "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
+}

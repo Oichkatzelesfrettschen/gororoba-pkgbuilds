@@ -1,0 +1,60 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+# Fork of the AUR aide package, carrying the nettle 4 digest-signature
+# backport.  epoch=1 keeps this build ahead of the AUR package until the
+# fix reaches an upstream release, so a later `paru -Syu` cannot pull a
+# version that fails to compile against the installed nettle.
+# Contributor: AlphaJack <alphajack at tuta dot io>
+# Contributor: Lukas Jirkovsky <l.jirkovsky@gmail.com>
+# Contributor: Thomas S Hatch <thatch45@gmail.com>
+# Contributor: Daniel J Griffiths <ghost1227@archlinux.us>
+# Contributor: Tom Newsom <Jeepster@gmx.co.uk>
+
+pkgname="aide"
+epoch=1
+pkgver=0.19.5
+pkgrel=1
+pkgdesc="A file integrity checker and intrusion detection program"
+arch=("x86_64" "armv7h" "aarch64")
+url="https://aide.github.io/"
+license=("GPL-2.0-or-later")
+depends=("acl"
+         "e2fsprogs"
+         "libelf"
+         "mhash"
+         "nettle"
+         "pcre")
+source=("https://github.com/aide/aide/releases/download/v$pkgver/aide-$pkgver.tar.gz"
+        "aide.conf"
+        "aidecheck.service"
+        "aidecheck.timer")
+sha256sums=('6b004557e9493048ceb5fa84fb44b904c16e23bed8850dc21316e7c44247a350'
+            '86705e81d1e83434ec60b065e9ade6b34b31dc84e28d0db2ca083da696214f42'
+            'fc7bd68dccc0e8694bb5a001fb6a80514f1380e41b95742e19d19b3172b22878'
+            '818a70166118652c217cbc64d24eee4d8adc8f40dd41edaca543f67e2117b242')
+backup=("etc/aide.conf")
+install="aide.install"
+
+
+build(){
+ cd "$pkgname-$pkgver"
+ ./configure \
+  --prefix="/usr" \
+  --sysconfdir="/etc" \
+  --with-posix-acl \
+  --with-xattr \
+  --with-zlib \
+  --with-e2fsattrs \
+  --disable-static \
+  --with-curl
+ make
+}
+
+package(){
+ cd "$pkgname-$pkgver"
+ make DESTDIR="$pkgdir" install
+ install -d -m 700 "$pkgdir/var/lib/aide"
+ install -d -m 700 "$pkgdir/var/log/aide"
+ install -D -m 600 "$srcdir/aide.conf" "$pkgdir/etc/aide.conf"
+ install -D -m 644 "$srcdir/aidecheck.service" -t "$pkgdir/usr/lib/systemd/system"
+ install -D -m 644 "$srcdir/aidecheck.timer"   -t "$pkgdir/usr/lib/systemd/system"
+}

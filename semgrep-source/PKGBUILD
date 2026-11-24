@@ -1,0 +1,145 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+
+pkgname=semgrep-source
+pkgver=1.186.0
+pkgrel=1
+pkgdesc='Semgrep built from source for baseline x86-64 hosts'
+arch=(x86_64)
+url='https://github.com/semgrep/semgrep'
+license=(LGPL-2.1-or-later)
+depends=(
+  python
+  glibc
+  tree-sitter-0.22-compat
+)
+makedepends=(
+  clang
+  distcc
+  dune
+  git
+  lld
+  llvm
+  m4
+  opam
+  patch
+  pkgconf
+  python-build
+  python-pip
+  python-virtualenv
+  python-wheel
+  rsync
+  unzip
+)
+provides=(
+  "semgrep=${pkgver}"
+)
+conflicts=(
+  semgrep
+  python-semgrep
+)
+install=${pkgname}.install
+options=(
+  !debug
+  !lto
+)
+source=(
+  "git+https://github.com/semgrep/semgrep.git#tag=v${pkgver}"
+  "${pkgname}.sh"
+  "${pkgname}.install"
+)
+sha256sums=('SKIP'
+            '5daf6714bbe04b6f24e96a68d9bf52196424a09d193c8cc3506e1468fbe80026'
+            '6f3a3a575825bc5efc6c73a19bb1658e8dd7a46493001657c07a426959e48c18')
+
+_opam_switch=${SEMGREP_SOURCE_OPAM_SWITCH:-semgrep-source-ocaml-5.3.0}
+
+_semgrep_source_first_tool() {
+  for _tool in "$@"; do
+    if command -v "${_tool}" >/dev/null 2>&1; then
+      command -v "${_tool}"
+      return 0
+    fi
+  done
+  return 1
+}
+
+prepare() {
+  cd semgrep
+  git submodule update --init --recursive
+}
+
+build() {
+  cd semgrep
+
+  export PATH="${HOME}/.local/bin:/usr/local/bin:/usr/bin:${PATH}"
+  export DISTCC_HOSTS="${SEMGREP_SOURCE_DISTCC_HOSTS:-}"
+  export CC="${SEMGREP_SOURCE_CC:-clang-22}"
+  export CXX="${SEMGREP_SOURCE_CXX:-clang++-22}"
+  export CPP="${SEMGREP_SOURCE_CPP:-/usr/bin/clang-22 -E}"
+  export CXXCPP="${SEMGREP_SOURCE_CXXCPP:-/usr/bin/clang++-22 -E}"
+  export AR="${SEMGREP_SOURCE_AR:-$(_semgrep_source_first_tool llvm-ar-22 llvm-ar ar)}"
+  export STRIP="${SEMGREP_SOURCE_STRIP:-$(_semgrep_source_first_tool llvm-strip-22 llvm-strip strip)}"
+  export CFLAGS="${SEMGREP_SOURCE_CFLAGS:--march=x86-64 -mtune=generic -O2 -pipe -fno-plt -fexceptions}"
+  export CXXFLAGS="${SEMGREP_SOURCE_CXXFLAGS:-${CFLAGS} -Wp,-D_GLIBCXX_ASSERTIONS}"
+  export LDFLAGS="${SEMGREP_SOURCE_LDFLAGS:--fuse-ld=lld -Wl,-O1,--as-needed}"
+  export OPAMROOT="${SEMGREP_SOURCE_OPAMROOT:-${srcdir}/opam-root}"
+  export DUNE_CACHE="${SEMGREP_SOURCE_DUNE_CACHE:-enabled}"
+  export DUNE_CACHE_ROOT="${SEMGREP_SOURCE_DUNE_CACHE_ROOT:-${srcdir}/dune-cache}"
+  export DUNE_CACHE_STORAGE_MODE="${SEMGREP_SOURCE_DUNE_CACHE_STORAGE_MODE:-copy}"
+  export OPAMYES=1
+  export OPAMJOBS="${SEMGREP_SOURCE_OPAMJOBS:-4}"
+  export OPAMCONFIRMLEVEL=unsafe-yes
+
+  if [ "${SEMGREP_SOURCE_USE_DISTCC:-0}" = 1 ]; then
+    : "${SEMGREP_SOURCE_DISTCC_HOSTS:?set SEMGREP_SOURCE_DISTCC_HOSTS to the distcc host list}"
+    _masquerade="${srcdir}/distcc-masquerade"
+    _distcc_dir="${srcdir}/distcc-state"
+    rm -rf "${_masquerade}"
+    rm -rf "${_distcc_dir}"
+    mkdir -p "${_masquerade}" "${_distcc_dir}"
+    ln -s /usr/bin/distcc "${_masquerade}/clang-22"
+    ln -s /usr/bin/distcc "${_masquerade}/clang++-22"
+    printf '%s\n' "${DISTCC_HOSTS}" > "${_distcc_dir}/hosts"
+    export DISTCC_DIR="${_distcc_dir}"
+    export PATH="${_masquerade}:${PATH}"
+  fi
+
+  opam init --bare --disable-sandboxing --no-setup
+  if ! opam switch list --short | grep -qx "${_opam_switch}"; then
+    opam switch create "${_opam_switch}" ocaml-base-compiler.5.3.0
+  fi
+  eval "$(opam env --switch="${_opam_switch}")"
+
+  ./scripts/pick-lockfile.sh --strict semgrep.opam
+  make setup
+  make core
+  make copy-core-for-cli
+
+  python -m build --wheel --no-isolation cli
+  rm -rf "${srcdir}/wheelhouse"
+  mkdir -p "${srcdir}/wheelhouse"
+  python -m pip download \
+    --dest "${srcdir}/wheelhouse" \
+    --only-binary=:all: \
+    cli/dist/semgrep-${pkgver}-*.whl
+}
+
+check() {
+  cd semgrep
+
+  _core=cli/src/semgrep/bin/semgrep-core
+  test -x "${_core}"
+  readelf -n "${_core}" > "${srcdir}/semgrep-core.readelf-notes"
+  "${_core}" -version >/dev/null
+}
+
+package() {
+  install -Dm755 "${srcdir}/${pkgname}.sh" "${pkgdir}/usr/bin/semgrep"
+  install -Dm755 "${srcdir}/${pkgname}.sh" "${pkgdir}/usr/bin/pysemgrep"
+
+  install -d "${pkgdir}/usr/share/${pkgname}/wheelhouse"
+  cp -a "${srcdir}/wheelhouse/." "${pkgdir}/usr/share/${pkgname}/wheelhouse/"
+
+  install -Dm644 "${srcdir}/semgrep-core.readelf-notes" \
+    "${pkgdir}/usr/share/doc/${pkgname}/semgrep-core.readelf-notes"
+}

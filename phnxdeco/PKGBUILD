@@ -1,0 +1,50 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+# Upstream (biosgfx.narod.ru) is defunct.  Upstream released only 0.31; Debian
+# carries 0.33 with accumulated fixes.  Removed from Debian unstable 2025-08;
+# deb.debian.org pool dropped the Debian tarball.  snapshot.debian.org is the
+# stable permanent archive for both tarballs.
+# After first successful fetch: run updpkgsums to replace SKIP with real hashes.
+pkgname=phnxdeco
+pkgver=0.33
+pkgrel=1
+_debver=3.2
+# snapshot timestamps are permanent; update only if you want a newer Debian rev.
+_snap_orig=20061006T000000Z
+_snap_deb=20240619T203839Z
+pkgdesc='Decompress flash files equipped with a Phoenix BIOS'
+arch=('x86_64' 'i686')
+url='https://web.archive.org/web/20070608175640/http://www.kaos.ru/biosgfx/'
+license=('GPL-2.0-or-later')
+source=(
+  "https://snapshot.debian.org/archive/debian/${_snap_orig}/pool/main/p/phnxdeco/phnxdeco_${pkgver}.orig.tar.gz"
+  "https://snapshot.debian.org/archive/debian/${_snap_deb}/pool/main/p/phnxdeco/phnxdeco_${pkgver}-${_debver}.debian.tar.xz"
+)
+sha256sums=('72d92897fbb082d2b62190b8cc59404b40de6c5456350d8be49e67f5e8330ec6'
+            '0f47924463d33ad0354bc793a705f1427c21f417c4e2c068ec7f4e6f2d0e45d4')
+
+prepare() {
+  cd "$srcdir/phnxdeco-${pkgver}.orig"
+  # Apply Debian patches in series order; these fix Makefile (add all target),
+  # clang FTBFS (wrong main declaration), a bugfix in phnxhelp.h, and
+  # cross-compilation support ($(CC) instead of hardcoded gcc).
+  while IFS= read -r _patch; do
+    [[ "$_patch" =~ ^[[:space:]]*(#.*)?$ ]] && continue
+    patch -Np1 -i "$srcdir/debian/patches/${_patch}" || return 1
+  done < "$srcdir/debian/patches/series"
+}
+
+build() {
+  cd "$srcdir/phnxdeco-${pkgver}.orig/src"
+  # Makefile has no $(CFLAGS) slot; the 40_cross patch adds $(CC) only.
+  # GCC 14 in gnu17 mode makes implicit function declarations errors.
+  # phnxfunc.c (2002) relies on implicit memcmp/calloc/free/atoi/decode;
+  # pass -std=gnu89 via CC to restore C89 implicit-decl semantics.
+  make CC="${CC:-gcc} -std=gnu89"
+}
+
+package() {
+  cd "$srcdir/phnxdeco-${pkgver}.orig/src"
+  install -Dm755 phnxdeco "$pkgdir/usr/bin/phnxdeco"
+  install -Dm644 "$srcdir/debian/phnxdeco.1" \
+    "$pkgdir/usr/share/man/man1/phnxdeco.1"
+}

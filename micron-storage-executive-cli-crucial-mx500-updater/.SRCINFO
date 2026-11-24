@@ -1,0 +1,17 @@
+pkgbase = micron-storage-executive-cli-crucial-mx500-updater
+	pkgdesc = Crucial MX500 SSD firmware M3CR046 and a guarded updater that drives msecli
+	pkgver = M3CR046
+	pkgrel = 1
+	url = https://www.crucial.com/support/ssd-support/mx500-support
+	arch = any
+	license = LicenseRef-proprietary
+	makedepends = libarchive
+	depends = micron-storage-executive-cli
+	depends = util-linux
+	noextract = micron-storage-executive-cli-crucial-mx500-updater-M3CR046.zip
+	source = micron-storage-executive-cli-crucial-mx500-updater-M3CR046.zip::https://assets.micron.com/adobe/assets/urn:aaid:aem:54e3cc94-57cc-4e0f-990e-ddf9a4ac51e1/renditions/original/as/M3CR046.zip
+	source = crucial-mx500-fwupdate.sh
+	sha256sums = d4de0611dea30cc449eb3fa181f9a178f312774a6b167512d344205bcd014a4d
+	sha256sums = f1a1a9627428b217b1b70d8564b491673fa851e6b2ba10e9a56c3e0857ec2428
+
+pkgname = micron-storage-executive-cli-crucial-mx500-updater

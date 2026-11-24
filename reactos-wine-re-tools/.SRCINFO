@@ -1,0 +1,42 @@
+pkgbase = reactos-wine-re-tools
+	pkgdesc = Isolated Wine launchers for Windows x86 and .NET reverse-engineering tools
+	pkgver = 2026.05.27
+	pkgrel = 1
+	url = https://github.com/x64dbg/x64dbg
+	arch = any
+	license = GPL-3.0-only
+	license = MIT
+	depends = wine
+	depends = wine-mono
+	optdepends = detect-it-easy: native PE identification and batch inspection
+	optdepends = pe-bear: native PE inspection and the pe-bear-wine launcher
+	optdepends = wine-gecko: HTML rendering in Windows tools
+	provides = dependencies=1.11.1
+	provides = dnspy=6.6.0
+	provides = x64dbg=2026.05.27
+	conflicts = dnspy
+	conflicts = x64dbg
+	replaces = dnspy
+	replaces = x64dbg
+	noextract = snapshot_2026-05-27_12-11.zip
+	noextract = Dependencies_x86_Release.zip
+	noextract = Dependencies_x64_Release.zip
+	noextract = dnSpy-netframework.zip
+	source = https://github.com/x64dbg/x64dbg/releases/download/2026.05.27/snapshot_2026-05-27_12-11.zip
+	source = https://github.com/lucasg/Dependencies/releases/download/v1.11.1/Dependencies_x86_Release.zip
+	source = https://github.com/lucasg/Dependencies/releases/download/v1.11.1/Dependencies_x64_Release.zip
+	source = https://github.com/dnSpyEx/dnSpy/releases/download/v6.6.0/dnSpy-netframework.zip
+	source = x64dbg-LICENSE::https://raw.githubusercontent.com/x64dbg/x64dbg/2026.05.27/LICENSE
+	source = dependencies-LICENSE::https://raw.githubusercontent.com/lucasg/Dependencies/v1.11.1/LICENSE
+	source = dnSpyEx-LICENSE::https://raw.githubusercontent.com/dnSpyEx/dnSpy/v6.6.0/LICENSE.txt
+	source = reactos-wine-re-tools
+	sha256sums = d41966dfc5b435a372798245300ca0ab7bb8e48bdbf48512c6fb20fcca427697
+	sha256sums = 3e6bc62b4163c4e8035e8a597515c116343fcb76fa4315317c3cafe0bdc9e257
+	sha256sums = 7d22dc00f1c09fd4415d48ad74d1cf801893e83b9a39944b0fce6dea7ceaea99
+	sha256sums = 2eadb7f4931ad1882d10477cf57185d288cacc6e3abf9958e7ae73c0a0f31dd1
+	sha256sums = 1791b618e0aab8312274d6d229e692a680cc633676cd7f87e189f79097951f92
+	sha256sums = 5d7cbf9b08285c1f89e4f4f1341090c662f4078dbf7ce8a7d392d2482e550fb6
+	sha256sums = 8ceb4b9ee5adedde47b31e975c1d90c73ad27b6b165a1dcd80c7c545eb65b903
+	sha256sums = f62fc9820e04e1eac69050ec0eff5eb59e433c60b962fcc31d668e5cecccd398
+
+pkgname = reactos-wine-re-tools

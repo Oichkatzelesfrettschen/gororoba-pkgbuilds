@@ -1,0 +1,77 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+#
+# Add-on to micron-storage-executive-cli for Crucial MX500 SATA SSDs.
+#
+# Crucial publishes MX500 firmware only as a Windows updater or a bootable
+# ISO (M3CR046.zip holds M3CR046_ISO.iso). The ISO's initramfs carries the
+# firmware image (opt/firmware/1/1.bin) and a manifest (firmware.properties)
+# naming the accepted source revisions, and the ISO runs msecli against that
+# directory. fwupd cannot flash the drive because Crucial publishes no LVFS
+# metadata for it. The package extracts that directory at build time and
+# installs it beside crucial-mx500-fwupdate, a guarded wrapper that drives the
+# AUR-packaged msecli from the running system.
+#
+# The zip stays out of the package; each build fetches it from Micron's CDN.
+# No license text accompanies the download (the zip, its ISO and the ISO's
+# initramfs hold none), so the package ships a NOTICE recording the ownership
+# and that absence.
+
+pkgname=micron-storage-executive-cli-crucial-mx500-updater
+pkgver=M3CR046
+pkgrel=1
+pkgdesc='Crucial MX500 SSD firmware M3CR046 and a guarded updater that drives msecli'
+arch=('any')
+url='https://www.crucial.com/support/ssd-support/mx500-support'
+license=('LicenseRef-proprietary')
+depends=('micron-storage-executive-cli' 'util-linux')
+makedepends=('libarchive')
+_zip="$pkgname-$pkgver.zip"
+noextract=("$_zip")
+source=("$_zip::https://assets.micron.com/adobe/assets/urn:aaid:aem:54e3cc94-57cc-4e0f-990e-ddf9a4ac51e1/renditions/original/as/M3CR046.zip"
+        'crucial-mx500-fwupdate.sh')
+sha256sums=('d4de0611dea30cc449eb3fa181f9a178f312774a6b167512d344205bcd014a4d'
+            'f1a1a9627428b217b1b70d8564b491673fa851e6b2ba10e9a56c3e0857ec2428')
+
+# The CDN answers any User-Agent other than a full Firefox string with an HTTP
+# 200 "Request Rejected" HTML page. curl exits 0 on that page, so a rejected
+# download lands in SRCDEST under the name above and every later build reports
+# a checksum mismatch until that file is deleted. makepkg reads a DLAGENTS entry
+# with `read -a` and no `-r`, so a backslash keeps a space inside one argument.
+# -f makes curl fail on genuine HTTP errors.
+DLAGENTS=('https::/usr/bin/curl -qgfL --retry 3 --retry-delay 3 -C - -A Mozilla/5.0\ (X11;\ Linux;\ rv:130.0)\ Gecko/20100101\ Firefox/130.0 -o %o %u')
+
+# SHA-256 of the firmware image inside the ISO's initramfs.
+_fw_sha256=b57d9a33f6cc72d33c5349ca87b48fc3efba435499aa64ed0d7d85d10c5b7751
+
+build() {
+  bsdtar -xf "$_zip" "${pkgver}_ISO.iso"
+  bsdtar -xf "${pkgver}_ISO.iso" boot/corepure64.gz
+  # Extracting only opt/firmware keeps the device nodes in the initramfs out of
+  # an unprivileged extraction.
+  gzip -dc boot/corepure64.gz | bsdtar -xf - opt/firmware
+}
+
+check() {
+  cd opt/firmware
+  grep -qx 'drive_model=MX500' firmware.properties
+  grep -q '^precondition=.*M3CR043' firmware.properties
+  printf '%s  1/1.bin\n' "$_fw_sha256" | sha256sum -c -
+}
+
+package() {
+  local _dest="$pkgdir/usr/share/$pkgname"
+  install -Dm644 opt/firmware/firmware.properties "$_dest/firmware/firmware.properties"
+  install -Dm644 opt/firmware/1/1.bin "$_dest/firmware/1/1.bin"
+  printf '%s\n' "$pkgver" > VERSION
+  install -Dm644 VERSION "$_dest/VERSION"
+  install -Dm755 crucial-mx500-fwupdate.sh "$pkgdir/usr/bin/crucial-mx500-fwupdate"
+
+  install -d "$pkgdir/usr/share/licenses/$pkgname"
+  printf '%s\n' \
+    "The firmware image and manifest under /usr/share/$pkgname/firmware" \
+    'belong to Micron Technology, Inc. They were retrieved at build time from' \
+    "$url" \
+    'The downloaded zip, its ISO and the ISO initramfs contain no license text,' \
+    'so none is reproduced here. All rights in the firmware remain with Micron.' \
+    > "$pkgdir/usr/share/licenses/$pkgname/NOTICE"
+}

@@ -1,0 +1,447 @@
+diff -Naur gcc-12.5.0.orig/gcc/config/i386/minix.h gcc-12.5.0/gcc/config/i386/minix.h
+--- gcc-12.5.0.orig/gcc/config/i386/minix.h
++++ gcc-12.5.0/gcc/config/i386/minix.h
+@@ -0,0 +1,78 @@
++/* Definitions for Intel 386 running MINIX with ELF format
++   Copyright (C) 1996, 2000, 2002, 2004 Free Software Foundation, Inc.
++   Contributed by Eric Youngdale.
++   Modified for stabs-in-ELF by H.J. Lu.
++   Adapted from GNU/Linux version by John Polstra.
++   Continued development by David O'Brien <obrien@freebsd.org>
++   Adapted for MINIX by Lionel Sambuc <lionel@minix3.org>
++
++   This file is part of GCC.
++
++   GCC is free software; you can redistribute it and/or modify it
++   under the terms of the GNU General Public License as published
++   by the Free Software Foundation; either version 2, or (at your
++   option) any later version.
++
++   GCC is distributed in the hope that it will be useful, but WITHOUT
++   ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
++   or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public
++   License for more details.
++
++   You should have received a copy of the GNU General Public License
++   along with GCC; see the file COPYING.  If not, write to the
++   Free Software Foundation, 51 Franklin Street, Fifth Floor, Boston,
++   MA 02110-1301, USA.  */
++
++/* Define the actual types of some ANSI-mandated types.
++   Needs to agree with <machine/ansi.h>.  GCC defaults come from c-decl.c,
++   c-common.c, and config/<arch>/<arch>.h. */
++#undef  SIZE_TYPE
++#define SIZE_TYPE	(TARGET_64BIT ? "long unsigned int" : "unsigned int")
++
++#undef  PTRDIFF_TYPE
++#define PTRDIFF_TYPE	(TARGET_64BIT ? "long int" : "int")
++
++/* Override the default comment-starter of "/".  */
++#undef  ASM_COMMENT_START
++#define ASM_COMMENT_START "#"
++
++#undef  ASM_APP_ON
++#define ASM_APP_ON "#APP\n"
++
++#undef  ASM_APP_OFF
++#define ASM_APP_OFF "#NO_APP\n"
++
++#undef  DBX_REGISTER_NUMBER
++#define DBX_REGISTER_NUMBER(n) \
++  (TARGET_64BIT ? dbx64_register_map[n] : svr4_dbx_register_map[n])
++
++#undef  NO_PROFILE_COUNTERS
++#define NO_PROFILE_COUNTERS	1
++
++/* Tell final.c that we don't need a label passed to mcount.  */
++#undef  MCOUNT_NAME
++#define MCOUNT_NAME ".mcount"
++
++/* A C statement to output to the stdio stream FILE an assembler
++   command to advance the location counter to a multiple of 1<<LOG
++   bytes if it is within MAX_SKIP bytes.
++
++   This is used to align code labels according to Intel recommendations.  */
++#ifdef HAVE_GAS_MAX_SKIP_P2ALIGN
++#undef  ASM_OUTPUT_MAX_SKIP_ALIGN
++#define ASM_OUTPUT_MAX_SKIP_ALIGN(FILE, LOG, MAX_SKIP)			\
++  if ((LOG) != 0) {							\
++    if ((MAX_SKIP) == 0) fprintf ((FILE), "\t.p2align %d\n", (LOG));	\
++    else fprintf ((FILE), "\t.p2align %d,,%d\n", (LOG), (MAX_SKIP));	\
++  }
++#endif
++
++/* ix86_option_override_internal reads SUBTARGET32_DEFAULT_CPU as the 32-bit
++   -march floor and defaults it to i386, so MINIX states its own i586 floor
++   here.  */
++#undef SUBTARGET32_DEFAULT_CPU
++#define SUBTARGET32_DEFAULT_CPU "i586"
++
++#undef X87_ENABLE_ARITH
++#define X87_ENABLE_ARITH(MODE) \
++  (flag_excess_precision == EXCESS_PRECISION_FAST || (MODE) == DFmode)
+diff -Naur gcc-12.5.0.orig/gcc/config/minix.h gcc-12.5.0/gcc/config/minix.h
+--- gcc-12.5.0.orig/gcc/config/minix.h
++++ gcc-12.5.0/gcc/config/minix.h
+@@ -0,0 +1,120 @@
++/* Base configuration file for all MINIX targets.
++   Copyright (C) 1999, 2000, 2001 Free Software Foundation, Inc.
++
++This file is part of GCC.
++
++GCC is free software; you can redistribute it and/or modify
++it under the terms of the GNU General Public License as published by
++the Free Software Foundation; either version 2, or (at your option)
++any later version.
++
++GCC is distributed in the hope that it will be useful,
++but WITHOUT ANY WARRANTY; without even the implied warranty of
++MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++GNU General Public License for more details.
++
++You should have received a copy of the GNU General Public License
++along with GCC; see the file COPYING.  If not, write to
++the Free Software Foundation, 51 Franklin Street, Fifth Floor,
++Boston, MA 02110-1301, USA.  */
++
++/* Common MINIX configuration.
++ * This file maps GCC defines to MINIX defines
++ *
++ * For this to work properly, the order in the tm_file variable has
++ * to be the following:
++ *   minix-spec.h $arch/minix.h minix.h
++ *
++ * minix-spec.h	: specifies default arch-independent values
++ * $arch/minix.h: redefines as needed default minix values
++ * minix.h	: maps GCC defines to the minix defines.
++ */
++
++/* In case we need to know.  */
++#define USING_CONFIG_MINIX 1
++
++#undef  TARGET_OS_CPP_BUILTINS
++#define TARGET_OS_CPP_BUILTINS() MINIX_TARGET_OS_CPP_BUILTINS()
++
++#undef  CPP_SPEC
++#define CPP_SPEC MINIX_CPP_SPEC
++
++#undef  STARTFILE_SPEC
++#define STARTFILE_SPEC MINIX_STARTFILE_SPEC
++
++#undef  ENDFILE_SPEC
++#define ENDFILE_SPEC MINIX_ENDFILE_SPEC
++
++#undef  LIB_SPEC
++#define LIB_SPEC MINIX_LIB_SPEC
++
++#undef	LINK_SPEC
++#define LINK_SPEC MINIX_LINK_SPEC
++
++#undef LINK_GCC_C_SEQUENCE_SPEC
++#define LINK_GCC_C_SEQUENCE_SPEC MINIX_LINK_GCC_C_SEQUENCE_SPEC
++
++/* MINIX_LINK_SPEC names %(minix_dynamic_linker), so the spec table carries
++   that entry for the driver to resolve.  */
++#undef  SUBTARGET_EXTRA_SPECS
++#define SUBTARGET_EXTRA_SPECS \
++  { "minix_dynamic_linker", MINIX_DYNAMIC_LINKER }
++
++/* All MINIX Architectures support the ELF object file format.  */
++#undef  OBJECT_FORMAT_ELF
++#define OBJECT_FORMAT_ELF
++
++#undef TARGET_UNWIND_TABLES_DEFAULT
++#define TARGET_UNWIND_TABLES_DEFAULT MINIX_TARGET_UNWIND_TABLES_DEFAULT
++
++/* Use periods rather than dollar signs in special g++ assembler names.
++   This ensures the configuration knows our system correctly so we can link
++   with libraries compiled with the native cc.  */
++#undef NO_DOLLAR_IN_LABEL
++
++/* We always use gas here, so we don't worry about ECOFF assembler
++   problems.  */
++#undef TARGET_GAS
++#define TARGET_GAS	1
++
++/* Default to pcc-struct-return, because this is the ELF abi and
++   we don't care about compatibility with older gcc versions.  */
++#undef DEFAULT_PCC_STRUCT_RETURN
++#define DEFAULT_PCC_STRUCT_RETURN 1
++
++/* When building shared libraries, the initialization and finalization
++   functions for the library are .init and .fini respectively.  */
++
++#define COLLECT_SHARED_INIT_FUNC(STREAM,FUNC)				\
++  do {									\
++    fprintf ((STREAM), "void __init() __asm__ (\".init\");");		\
++    fprintf ((STREAM), "void __init() {\n\t%s();\n}\n", (FUNC));	\
++  } while (0)
++
++#define COLLECT_SHARED_FINI_FUNC(STREAM,FUNC)				\
++  do {									\
++    fprintf ((STREAM), "void __fini() __asm__ (\".fini\");");		\
++    fprintf ((STREAM), "void __fini() {\n\t%s();\n}\n", (FUNC));	\
++  } while (0)
++
++#undef TARGET_POSIX_IO
++#define TARGET_POSIX_IO
++
++/* Define some types that are the same on all NetBSD platforms,
++   making them agree with <machine/ansi.h>.  */
++
++#undef WCHAR_TYPE
++#define WCHAR_TYPE "int"
++
++#undef WCHAR_TYPE_SIZE
++#define WCHAR_TYPE_SIZE 32
++
++#undef WINT_TYPE
++#define WINT_TYPE "int"
++
++#define LINK_EH_SPEC "%{!static:--eh-frame-hdr} "
++
++/* Use --as-needed -lgcc_s for eh support.  */
++#ifdef HAVE_LD_AS_NEEDED
++#define USE_LD_AS_NEEDED 1
++#endif
+diff -Naur gcc-12.5.0.orig/gcc/config/minix-spec.h gcc-12.5.0/gcc/config/minix-spec.h
+--- gcc-12.5.0.orig/gcc/config/minix-spec.h
++++ gcc-12.5.0/gcc/config/minix-spec.h
+@@ -0,0 +1,144 @@
++/* Base configuration file for all MINIX targets.
++   Copyright (C) 1999, 2000, 2001, 2004, 2005 Free Software Foundation, Inc.
++   Adapted for MINIX by Lionel Sambuc <lionel@minix3.org>
++
++   This file is part of GCC.
++
++   GCC is free software; you can redistribute it and/or modify it
++   under the terms of the GNU General Public License as published
++   by the Free Software Foundation; either version 2, or (at your
++   option) any later version.
++
++   GCC is distributed in the hope that it will be useful, but WITHOUT
++   ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
++   or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public
++   License for more details.
++
++   You should have received a copy of the GNU General Public License
++   along with GCC; see the file COPYING.  If not, write to the
++   Free Software Foundation, 51 Franklin Street, Fifth Floor, Boston,
++   MA 02110-1301, USA.  */
++
++/* MINIX defines
++ * Default, architecture independent values for MINIX
++ *
++ * For this to work properly, the order in the tm_file variable has
++ * to be the following:
++ *   minix-spec.h $arch/minix.h minix.h
++ *
++ * minix-spec.h	: specifies default arch-independent values
++ * $arch/minix.h: redefines as needed default minix values
++ * minix.h	: maps GCC defines to the minix defines.
++ *
++ * WARNING:
++ *   When changing any default, also check in the arch headers
++ *   if the default is redefined and update them as required.
++ */
++
++/* In case we need to know.  */
++#define USING_CONFIG_MINIX_SPEC 1
++
++/* MINIX's clang states the release in each of the three spellings, its
++   MinixTargetInfo::getOSDefines carrying the comment "list based off of gcc
++   output", so the compiler that builds this system's userland publishes
++   __minix, __minix__, and __Minix__ as 3. This target publishes the same
++   values, which leaves source that tests the release rather than the name
++   reading one answer whichever compiler front end sees it.  */
++#define MINIX_TARGET_OS_CPP_BUILTINS()					\
++  do									\
++    {									\
++		builtin_define_with_int_value ("__minix", 3);		\
++		builtin_define_with_int_value ("__minix__", 3);		\
++		builtin_define_with_int_value ("__Minix__", 3);		\
++		builtin_define ("__unix__");				\
++		builtin_assert ("system=bsd");				\
++		builtin_assert ("system=unix");				\
++		builtin_assert ("system=minix");			\
++		MINIX_TARGET_CPU_CPP_BUILTINS();			\
++    }									\
++  while (0)
++
++/* Define the default MINIX-specific per-CPU hook code.  */
++#define MINIX_TARGET_CPU_CPP_BUILTINS() do {} while (0)
++
++/* Provide a CPP_SPEC appropriate for MINIX.  We just deal with the GCC
++   option `-posix'.  */
++#define MINIX_CPP_SPEC "%{posix:-D_POSIX_SOURCE}"
++
++/* MINIX's rtld is installed under the NetBSD name it inherits, and the
++   sysroot carries it at this path.  */
++#define MINIX_DYNAMIC_LINKER "/usr/libexec/ld.elf_so"
++
++#define MINIX_LINK_GCC_C_SEQUENCE_SPEC \
++	"%{static:--start-group} %G %L %{static:--end-group}%{!static:%G}"
++
++/* Provide a STARTFILE_SPEC appropriate for MINIX.  Here we add
++   the magical crtbegin.o file (see crtstuff.c) which provides part
++   of the support for getting C++ file-scope static object constructed
++   before entering `main'.  */
++#define MINIX_STARTFILE_SPEC	\
++  "%{!shared:			\
++     %{pg:gcrt0%O%s}		\
++     %{!pg:			\
++	 %{p:gcrt0%O%s}		\
++	 %{!p:%{profile:gcrt0%O%s} \
++	      %{!profile:crt0%O%s}}}} \
++   %:if-exists(crti%O%s)	\
++   %{static:%:if-exists-else(crtbeginT%O%s crtbegin%O%s)} \
++   %{!static:                   \
++     %{!shared:			\
++	 %{!pie:crtbegin%O%s}	\
++	 %{pie:crtbeginS%O%s}}	\
++     %{shared:crtbeginS%O%s}}"
++
++/* Provide an ENDFILE_SPEC appropriate for NetBSD ELF.  Here we
++   add crtend.o, which provides part of the support for getting
++   C++ file-scope static objects deconstructed after exiting "main".  */
++#define MINIX_ENDFILE_SPEC	\
++  "%{!shared:                   \
++    %{!pie:crtend%O%s}          \
++    %{pie:crtendS%O%s}}         \
++   %{shared:crtendS%O%s}        \
++   %:if-exists(crtn%O%s)"
++
++/* Provide a LIB_SPEC appropriate for MINIX.  Just select the appropriate
++   libc, depending on whether we're doing profiling or need threads support.
++   (similar to the default, except no -lg, and no -p).  */
++#define MINIX_LIB_SPEC "						\
++%{pthread: %eThe -pthread option is only supported on MINIX when gcc	\
++is built with the --enable-threads configure-time option.}		\
++  %{shared:-lc}			\
++  %{!shared:			\
++    %{!symbolic:		\
++      %{!p:			\
++	%{!pg:-lc}}		\
++      %{p:-lc_p}		\
++      %{pg:-lc_p}}}"
++
++/* Provide a LINK_SPEC appropriate for MINIX.  Here we provide support
++   for the special GCC options -static and -shared, which allow us to
++   link things in one of these three modes by applying the appropriate
++   combinations of options at link-time. We like to support here for
++   as many of the other GNU linker options as possible. But I don't
++   have the time to search for those flags. I am sure how to add
++   support for -soname shared_object_name. H.J.
++
++   I took out %{v:%{!V:-V}}. It is too much :-(. They can use
++   -Wl,-V.
++
++   When the -shared link option is used a final link is not being
++   done.  */
++#define MINIX_LINK_SPEC "						\
++  -X									\
++  %{p:%nconsider using `-pg' instead of `-p' with gprof(1) }		\
++  %{assert*} %{R*} %{rpath*}						\
++  %{shared:-Bshareable %{h*} %{soname*}}				\
++  %{symbolic:-Bsymbolic}						\
++  %{!shared:								\
++    -dc -dp								\
++    %{!static:								\
++      %{rdynamic:-export-dynamic}					\
++      %{!dynamic-linker:-dynamic-linker %(minix_dynamic_linker) }}	\
++    %{static:-Bstatic}}"
++
++#define MINIX_TARGET_UNWIND_TABLES_DEFAULT true
+diff -Naur gcc-12.5.0.orig/gcc/config.gcc gcc-12.5.0/gcc/config.gcc
+--- gcc-12.5.0.orig/gcc/config.gcc
++++ gcc-12.5.0/gcc/config.gcc
+@@ -898,6 +898,12 @@
+       ;;
+   esac
+   ;;
++*-*-minix*)
++  tmake_file="t-slibgcc"
++  gas=yes
++  gnu_ld=yes
++  default_use_cxa_atexit=yes
++  ;;
+ *-*-netbsd*)
+   tm_p_file="${tm_p_file} netbsd-protos.h"
+   tmake_file="t-netbsd t-slibgcc"
+@@ -1928,6 +1934,10 @@
+ x86_64-*-freebsd*)
+ 	tm_file="${tm_file} i386/unix.h i386/att.h dbxelf.h elfos.h ${fbsd_tm_file} i386/x86-64.h i386/freebsd.h i386/freebsd64.h"
+ 	;;
++i[34567]86-*-minix*)
++	tm_file="${tm_file} i386/unix.h i386/att.h dbxelf.h elfos.h netbsd-stdint.h minix-spec.h i386/minix.h minix.h"
++	extra_options="${extra_options} netbsd.opt netbsd-elf.opt"
++	;;
+ i[34567]86-*-netbsdelf*)
+ 	tm_file="${tm_file} i386/unix.h i386/att.h dbxelf.h elfos.h ${nbsd_tm_file} i386/netbsd-elf.h"
+ 	extra_options="${extra_options} netbsd.opt netbsd-elf.opt"
+diff -Naur gcc-12.5.0.orig/gcc/ginclude/stddef.h gcc-12.5.0/gcc/ginclude/stddef.h
+--- gcc-12.5.0.orig/gcc/ginclude/stddef.h
++++ gcc-12.5.0/gcc/ginclude/stddef.h
+@@ -46,7 +46,7 @@
+ /* This avoids lossage on SunOS but only if stdtypes.h comes first.
+    There's no way to win with the other order!  Sun lossage.  */
+ 
+-#if defined(__NetBSD__)
++#if defined(__NetBSD__) || defined(__minix)
+ #include <machine/ansi.h>
+ #endif
+ 
+@@ -54,7 +54,7 @@
+ #include <sys/_types.h>
+ #endif
+ 
+-#if defined(__NetBSD__)
++#if defined(__NetBSD__) || defined(__minix)
+ #if !defined(_SIZE_T_) && !defined(_BSD_SIZE_T_)
+ #define _SIZE_T
+ #endif
+@@ -361,7 +361,7 @@
+ #undef __need_wint_t
+ #endif
+ 
+-#if defined(__NetBSD__)
++#if defined(__NetBSD__) || defined(__minix)
+ /*  The references to _GCC_PTRDIFF_T_, _GCC_SIZE_T_, and _GCC_WCHAR_T_
+     are probably typos and should be removed before 2.8 is released.  */
+ #ifdef _GCC_PTRDIFF_T_
+diff -Naur gcc-12.5.0.orig/libgcc/config/t-minix gcc-12.5.0/libgcc/config/t-minix
+--- gcc-12.5.0.orig/libgcc/config/t-minix
++++ gcc-12.5.0/libgcc/config/t-minix
+@@ -0,0 +1,6 @@
++# MINIX turns unwind tables on by default through TARGET_UNWIND_TABLES_DEFAULT,
++# which gives crtstuff.c's own functions an FDE. crtend.o has to leave
++# __FRAME_END__ as the last thing in .eh_frame or the linker builds no
++# .eh_frame_hdr table, and -fno-asynchronous-unwind-tables suppresses only the
++# asynchronous kind, so the crt objects opt out of both.
++CRTSTUFF_T_CFLAGS += -fno-unwind-tables
+diff -Naur gcc-12.5.0.orig/libgcc/config.host gcc-12.5.0/libgcc/config.host
+--- gcc-12.5.0.orig/libgcc/config.host
++++ gcc-12.5.0/libgcc/config.host
+@@ -303,6 +303,12 @@
+   tmake_file="$tmake_file t-lynx $cpu_type/t-crtstuff t-crtstuff-pic t-libgcc-pic"
+   extra_parts="crtbegin.o crtbeginS.o crtend.o crtendS.o"
+   ;;
++*-*-minix*)
++  tmake_file="$tmake_file t-crtstuff-pic t-libgcc-pic t-minix"
++  tmake_file="$tmake_file t-slibgcc t-slibgcc-gld t-slibgcc-elf-ver"
++  tmake_file="$tmake_file t-slibgcc-libgcc"
++  extra_parts="crtbegin.o crtend.o crtbeginS.o crtendS.o crtbeginT.o"
++  ;;
+ *-*-netbsd*)
+   tmake_file="$tmake_file t-crtstuff-pic t-libgcc-pic t-eh-dw2-dip"
+   tmake_file="$tmake_file t-slibgcc t-slibgcc-gld t-slibgcc-elf-ver"
+@@ -762,6 +768,9 @@
+ 	tmake_file="${tmake_file} i386/t-freebsd i386/t-crtstuff"
+ 	md_unwind_header=i386/freebsd-unwind.h
+ 	;;
++i[34567]86-*-minix*)
++	tmake_file="${tmake_file} i386/t-crtstuff"
++	;;
+ i[34567]86-*-netbsdelf*)
+ 	tmake_file="${tmake_file} i386/t-crtstuff"
+ 	;;

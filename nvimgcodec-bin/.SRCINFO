@@ -1,0 +1,16 @@
+pkgbase = nvimgcodec-bin
+	pkgdesc = NVIDIA nvImageCodec 0.10.1 GPU image decode and encode, CUDA 13 x86_64 archive
+	pkgver = 0.10.1.12
+	pkgrel = 1
+	url = https://github.com/NVIDIA/nvImageCodec
+	arch = x86_64
+	license = Apache-2.0
+	depends = cuda>=13
+	depends = nvidia-utils>=530
+	provides = nvimgcodec
+	conflicts = nvimgcodec
+	options = !strip
+	source = nvimgcodec-linux-x86_64-0.10.1.12_cuda13-archive.tar.xz::https://developer.download.nvidia.com/compute/nvimgcodec/redist/nvimgcodec/linux-x86_64/nvimgcodec-linux-x86_64-0.10.1.12_cuda13-archive.tar.xz
+	sha256sums = d7483edf242035706c79ef4460bc2730a3a95547d3026a45b95ef47d0bcb6851
+
+pkgname = nvimgcodec-bin

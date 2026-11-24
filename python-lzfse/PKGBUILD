@@ -1,0 +1,109 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+# Fork of the AUR python-lzfse package, dropping the vendored lzfse C
+# submodule from site-packages and keeping the wheel's RECORD consistent
+# with what the package actually installs. It also gains a check() that
+# proves the extension round-trips, because the AUR build ships an
+# untested binary. epoch=1 keeps this build ahead of the AUR package.
+#
+# unblob/handlers/compression/lzfse.py does a top-level "import lzfse", so
+# unblob's handler registry fails to load without this package, and the
+# extension is ABI-tagged cpython-3xx: a Python minor bump breaks unblob at
+# startup until python-lzfse is rebuilt.
+# Contributor: haxibami <contact at haxibami dot net>
+
+pkgname=python-lzfse
+epoch=1
+_pkg="${pkgname#python-}"
+pkgver=0.4.2
+pkgrel=1
+pkgdesc='Python bindings for the LZFSE reference implementation'
+arch=('x86_64')
+url='https://github.com/m1stadev/lzfse'
+license=('MIT' 'BSD-3-Clause')
+depends=('python')
+makedepends=('git' 'python-build' 'python-installer' 'python-setuptools' 'python-wheel')
+# A tag moves; both sources pin an immutable commit. 868a05b is refs/tags/v0.4.2
+# of the binding repository, 88e2d27 is the lzfse reference implementation the
+# binding carries as its "lzfse" submodule.
+source=("$pkgname-$pkgver::git+$url.git#commit=868a05bae250f3a6263ccde046b051f42da672e2"
+        "git+https://github.com/lzfse/lzfse.git#commit=88e2d2788b4021d0b2eb9fe2d97352ae9190f128")
+sha256sums=('SKIP'
+            'SKIP')
+
+prepare() {
+	cd "$pkgname-$pkgver"
+	git submodule init
+	git config submodule.lzfse.url "$srcdir/lzfse"
+	git -c protocol.file.allow=always submodule update
+}
+
+build() {
+	cd "$pkgname-$pkgver"
+	python -m build --wheel --no-isolation
+}
+
+check() {
+	cd "$pkgname-$pkgver"
+	# The wheel is unpacked rather than installed: python -m installer refuses
+	# to overwrite an existing tree, so a second makepkg -f in the same srcdir
+	# would fail on the extension module instead of on the binding.
+	local _root="$srcdir/check-root"
+	python -m zipfile -e dist/*.whl "$_root"
+	PYTHONPATH="$_root" python -c '
+import lzfse
+
+payload = b"the quick brown fox jumps over the lazy dog " * 64
+packed = lzfse.compress(payload)
+assert len(packed) < len(payload), (len(packed), len(payload))
+assert lzfse.decompress(packed) == payload
+
+# compress() emits a well-formed empty stream -- a zero-length raw block
+# followed by the end block -- that decompress() then rejects, because the
+# binding reports a zero-byte result as failure. The unblob lzfse handler
+# carries the same constant in its own handler to recognize the stream
+# without decoding it, so
+# the behavior is pinned here rather than treated as a defect to fix.
+assert lzfse.compress(b"") == b"bvx-\x00\x00\x00\x00bvx$"
+try:
+    lzfse.decompress(lzfse.compress(b""))
+except lzfse.error:
+    pass
+else:
+    raise AssertionError("empty stream decoded; the binding changed behavior")
+'
+}
+
+package() {
+	cd "$pkgname-$pkgver"
+	python -m installer --destdir="$pkgdir" dist/*.whl
+
+	# The wheel packs the vendored lzfse submodule into site-packages: build
+	# scaffolding (.gitignore, .travis.yml, appveyor.yml, the Xcode project,
+	# CMakeLists.txt, Makefile) plus the reference encoder and decoder
+	# sources, none of which the extension reads at runtime. That directory
+	# also sits beside lzfse.cpython-*.so under the same name; FileFinder
+	# gives an extension precedence over a namespace package, so "import
+	# lzfse" resolves to the .so either way and removing the tree changes no
+	# import. RECORD names all 25 paths, so it is rewritten in the same step:
+	# pruning the files alone leaves a dist-info that reports its own
+	# contents missing to every installer that verifies it.
+	local _site
+	_site="$pkgdir$(python -c 'import site; print(site.getsitepackages()[0])')"
+	rm -r "$_site/$_pkg"
+	python -c '
+import pathlib
+import sys
+
+record = pathlib.Path(sys.argv[1])
+record.write_text(
+    "".join(
+        line
+        for line in record.read_text().splitlines(keepends=True)
+        if not line.startswith("lzfse/")
+    )
+)
+' "$_site/$_pkg-$pkgver.dist-info/RECORD"
+
+	install -Dm644 COPYING "$pkgdir/usr/share/licenses/$pkgname/COPYING"
+	install -Dm644 LICENSE.lzfse "$pkgdir/usr/share/licenses/$pkgname/LICENSE.lzfse"
+}

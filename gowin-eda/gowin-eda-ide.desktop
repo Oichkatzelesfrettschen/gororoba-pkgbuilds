@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=Gowin EDA IDE
+Comment=A GUI tool for GOWIN FPGA: RTL/post-synthesis, design, synthesis, P&R, bitstream gen.
+Exec=/usr/bin/gw_ide %U
+Icon=gowin-eda-ide
+MimeType=application/x-gowin-eda-ide-project
+Categories=Development;Electronics;

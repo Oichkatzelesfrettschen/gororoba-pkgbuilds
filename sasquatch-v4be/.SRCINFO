@@ -1,0 +1,19 @@
+pkgbase = sasquatch-v4be
+	pkgdesc = Big-endian SquashFS v4 build of sasquatch, the extractor unblob calls for byte-swapped images
+	pkgver = 4.5.1_6
+	pkgrel = 1
+	url = https://github.com/onekey-sec/sasquatch
+	arch = x86_64
+	license = GPL-2.0-or-later
+	makedepends = git
+	depends = glibc
+	depends = gcc-libs
+	depends = lz4
+	depends = lzo
+	depends = xz
+	depends = zlib
+	depends = zstd
+	source = git+https://github.com/onekey-sec/sasquatch.git#tag=sasquatch-v4.5.1-6
+	sha512sums = a0d7837941b01746146fa5ecb1a854c6462cfaee7f3c78322655185a727f985fc322e022b14fb6930c44520f1b1bd154e901aeaed5c6996181b26bcf37e3b673
+
+pkgname = sasquatch-v4be

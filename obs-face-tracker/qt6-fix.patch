@@ -1,0 +1,46 @@
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -110,7 +110,7 @@ add_library(${CMAKE_PROJECT_NAME} MODULE ${PLUGIN_SOURCES})
+
+ if (WITH_DOCK)
+ 	set(plugin_additional_incs ${plugin_additional_incs} src)
+-	set(plugin_additional_libs ${plugin_additional_libs} Qt::Gui Qt::Widgets Qt::GuiPrivate)
++	set(plugin_additional_libs ${plugin_additional_libs} Qt::Gui Qt::Widgets)
+ endif()
+
+ include_directories(
+--- a/cmake/ObsPluginHelpers.cmake
++++ b/cmake/ObsPluginHelpers.cmake
+@@ -167,9 +167,6 @@ function(setup_plugin_target target)
+ 			REQUIRED)
+ 	endif()
+
+-	if("Gui" IN_LIST FIND_QT_COMPONENTS)
+-		list(APPEND FIND_QT_COMPONENTS "GuiPrivate")
+-	endif()
+
+ 	foreach(_COMPONENT IN LISTS FIND_QT_COMPONENTS FIND_QT_COMPONENTS_WIN
+ 			FIND_QT_COMPONENTS_MAC FIND_QT_COMPONENTS_LINUX)
+--- a/ui/obsgui-helper.hpp
++++ b/ui/obsgui-helper.hpp
+@@ -1,9 +1,6 @@
+ #pragma once
+ #include <QWindow>
+-#if !defined(_WIN32) && !defined(__APPLE__) // if Linux
+ #include <obs-nix-platform.h>
+-#include <QGuiApplication>
+-#include <qpa/qplatformnativeinterface.h>
+-#endif
++#include <QtGui/qnativeinterface.h>
+
+ // copied from obs-studio/UI/qt-wrappers.cpp and modified to support OBS-26
+@@ -26,7 +23,7 @@ bool QTToGSWindow(QWindow *window, gs_window &gswindow)
+ 		break;
+ 	case OBS_NIX_PLATFORM_WAYLAND: {
+-		QPlatformNativeInterface *native = QGuiApplication::platformNativeInterface();
+-		gswindow.display = native->nativeResourceForWindow("surface", window);
++		auto *native = window->nativeInterface<QNativeInterface::QWaylandWindow>();
++		gswindow.display = native ? native->surface() : nullptr;
+ 		success = gswindow.display != nullptr;
+ 		break;
+ 	}

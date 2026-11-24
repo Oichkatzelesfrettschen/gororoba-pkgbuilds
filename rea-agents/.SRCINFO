@@ -1,0 +1,20 @@
+pkgbase = rea-agents
+	pkgdesc = Reverse engineer anything from your terminal or agent with one CLI and MCP server
+	pkgver = 6.10.1
+	pkgrel = 1
+	url = https://github.com/morluto/rea
+	arch = any
+	license = MIT
+	depends = nodejs
+	depends = npm
+	optdepends = ghidra: native binary analysis (Ghidra provider)
+	optdepends = hopper: native binary analysis (Hopper provider)
+	optdepends = jadx: Android APK analysis
+	optdepends = android-tools: ADB device analysis
+	provides = rea=6.10.1
+	conflicts = rea
+	noextract = rea-agents-6.10.1.tgz
+	source = rea-agents-6.10.1.tgz::https://registry.npmjs.org/rea-agents/-/rea-agents-6.10.1.tgz
+	sha256sums = e8cf08c9fa954e998fc8868c23fa8e5f518cdb9553488ec227b31a3bb6903150
+
+pkgname = rea-agents

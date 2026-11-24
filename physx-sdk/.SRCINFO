@@ -1,0 +1,24 @@
+pkgbase = physx-sdk
+	pkgdesc = NVIDIA PhysX SDK 5.9.0 with the GPU library built from source for sm_89
+	pkgver = 5.9.0
+	pkgrel = 4
+	url = https://github.com/NVIDIA-Omniverse/PhysX
+	arch = x86_64
+	license = BSD-3-Clause
+	makedepends = cmake
+	makedepends = ninja
+	makedepends = gcc15
+	depends = cuda>=13
+	depends = nvidia-utils>=580
+	provides = physx-sdk
+	options = !strip
+	options = !buildflags
+	options = !lto
+	source = PhysX-5.9.0-517a0073715120e114ee055b63b26c95e00d9039.tar.gz::https://github.com/NVIDIA-Omniverse/PhysX/archive/517a0073715120e114ee055b63b26c95e00d9039.tar.gz
+	source = physx-cuda13-ctxcreate.patch
+	source = physx-cuda13-launch-stubs.patch
+	sha256sums = bc894626070f0658a3235231c825c3e0f8ad1fd9d5077a63cb5bdaffe8816407
+	sha256sums = ae2084b25ffc1233d3f568b271ffb15c8aaa7bb3d2223ab505cbc11d4f0eb0de
+	sha256sums = 42df8dbbe5c09553e9bcd5413d89df20942008cdbf0b45018f747eadf340ead8
+
+pkgname = physx-sdk

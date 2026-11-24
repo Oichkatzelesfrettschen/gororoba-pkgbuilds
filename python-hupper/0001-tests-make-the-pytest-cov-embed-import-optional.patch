@@ -1,0 +1,36 @@
+From: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+Subject: [PATCH] tests: make the pytest_cov.embed import optional
+
+tests/myapp exists to flush subprocess coverage on SIGTERM, the
+workaround for pytest-dev/pytest-cov#139.  pytest-cov 7 removed the
+pytest_cov.embed module, so the unconditional import kills every app
+the reload tests spawn and those tests fail by timeout:
+
+  ModuleNotFoundError: No module named 'pytest_cov.embed'
+  RuntimeError: timeout waiting for change to file=...
+
+The handler now exits on SIGTERM whether or not the coverage flush is
+available, which is the whole contract when the suite runs with the
+coverage plugin off.
+
+--- a/tests/myapp/__init__.py
++++ b/tests/myapp/__init__.py
+@@ -1,12 +1,17 @@
+-import pytest_cov.embed
+ import signal
+ import sys
+ 
++try:
++    import pytest_cov.embed
++except ImportError:  # pytest-cov 7 dropped the embed module
++    pytest_cov = None
++
+ 
+ def cleanup(*args, **kwargs):  # pragma: no cover
+     # see https://github.com/pytest-dev/pytest-cov/issues/139
+-    pytest_cov.embed.cleanup()
++    if pytest_cov is not None:
++        pytest_cov.embed.cleanup()
+     sys.exit(1)
+ 
+ 
