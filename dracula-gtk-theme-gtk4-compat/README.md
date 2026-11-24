@@ -280,12 +280,6 @@ makepkg -si
 
 ---
 
-## Related Documentation
-
-- **Patch Details:** See `~/dotfiles/patches/dracula-gtk4/README.md`
-- **Strategy Document:** See `~/dotfiles/DRACULA-GTK4-PATCH-STRATEGY.md`
-- **Technical Report:** See `~/MATE-SESSION-DIAGNOSTIC-ANALYSIS.md`
-
 ---
 
 ## Support

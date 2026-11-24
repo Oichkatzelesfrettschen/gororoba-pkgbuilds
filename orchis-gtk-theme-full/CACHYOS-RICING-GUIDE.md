@@ -26,7 +26,7 @@ Based on CachyOS branding and default themes:
 
 ## OLED-Optimized Pure Black Theme
 
-For OLED displays (like your RTX 4070 Ti connected monitor), use pure black backgrounds to:
+For OLED displays, use pure black backgrounds to:
 - **Save power**: Black pixels consume no power on OLED
 - **Reduce eye strain**: True black reduces glare
 - **Increase contrast**: Perfect blacks enhance color vibrancy

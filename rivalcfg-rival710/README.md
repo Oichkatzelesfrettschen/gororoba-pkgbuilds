@@ -22,8 +22,8 @@ sleep timeout, onboard profile slots, full button/wheel remapping, accel /
 decel / angle-snapping / smoothing.
 
 Each future setting will land here only after end-to-end verification
-against the physical hardware per the [wiggly-catmull verification
-protocol][plan] (capture under SteelSeries GG → compare wire bytes →
+against the physical hardware per the wiggly-catmull verification
+protocol (capture under SteelSeries GG → compare wire bytes →
 dry-run via `RIVALCFG_DRY=1` → live test → power-cycle persistence
 check).
 
@@ -69,4 +69,3 @@ follow-up PR with the captured pcap excerpt as evidence.
 
 [i189]: https://github.com/flozz/rivalcfg/issues/189
 [p133]: https://github.com/flozz/rivalcfg/pull/133
-[plan]: ~/.claude/plans/build-a-plan-for-wiggly-catmull.md

@@ -9,8 +9,7 @@
 #      reads, so cmake is invoked directly on physx/compiler/public with the
 #      linux-gcc preset's switches spelled out. nvcc refuses a host compiler
 #      newer than GCC 15, so g++-15 is both the C++ and the CUDA host compiler.
-#      The GPU SASS list is cut to sm_89 alone: the workstation's RTX 4070 Ti
-#      is the only device this build serves, and the upstream list of seven
+#      The GPU SASS list is cut to sm_89 alone: the upstream list of seven
 #      architectures multiplies the CUDA compile time by that count. Snippets
 #      and the PVD runtime are off; the qwen-physics-service is the consumer.
 #      Installed under /opt/nvidia/physx with a loader entry. makepkg build
