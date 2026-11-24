@@ -1,0 +1,46 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+
+# qiskit-dynamics 0.6.0 requires qiskit<=1.3, while the system python-qiskit is
+# 2.x. The stack keeps Qiskit 1.3.0 and the dynamics solvers under /opt, apart
+# from the system Qiskit. The version tracks qiskit-dynamics.
+pkgname=qiskit-legacy-stack
+pkgver=0.6.0
+pkgrel=1
+pkgdesc="qiskit-dynamics 0.6.0 on Qiskit 1.3 as a hash-locked Python 3.13 environment"
+arch=('x86_64')
+url="https://github.com/qiskit-community/qiskit-dynamics"
+license=('Apache-2.0')
+depends=(python313 gcc-libs glibc)
+_prefix=/opt/$pkgname
+source=(requirements.in requirements.lock test_qiskit_legacy_stack.py qiskit-legacy-python)
+sha256sums=('506d568e0673bdbaf9fafe72b7029a7fb3c03b3fbc18ae88dc16f9a3d52f23eb'
+            'd1ecb85e0da06701c7cb1dbb3bc454597d11428a4387031a358b81b5b76f67d9'
+            'fc239f81bc6b79479d73b51bb94b71236b946156e935bc85f34b2210d8ccca58'
+            'd9e069bc6849be6ff809c5ae543e8c4f560295e0e2ae0dfab5c45c70d4f3756d')
+
+build() {
+	/usr/bin/python3.13 -m venv --clear "$srcdir/stack"
+	"$srcdir/stack/bin/python" -m pip install -q --no-cache-dir --upgrade pip==25.3
+	# --require-hashes binds every distribution to the lock and --no-deps keeps
+	# the installed set equal to it.
+	"$srcdir/stack/bin/python" -m pip install -q --no-cache-dir --require-hashes --no-deps --only-binary :all: \
+		-r "$srcdir/requirements.lock"
+}
+
+check() {
+	cd "$srcdir"
+	"$srcdir/stack/bin/python" -P -m unittest discover -v -s "$srcdir" -p test_qiskit_legacy_stack.py
+	"$srcdir/stack/bin/python" -m pip check
+}
+
+package() {
+	install -d "$pkgdir$_prefix"
+	cp -a "$srcdir/stack/." "$pkgdir$_prefix/"
+	# Entry-point shebangs and activate scripts carry the build path.
+	grep -rlI --null "$srcdir/stack" "$pkgdir$_prefix/bin" "$pkgdir$_prefix/pyvenv.cfg" |
+		xargs -0 -r sed -i "s|$srcdir/stack|$_prefix|g"
+	find "$pkgdir$_prefix" -name __pycache__ -prune -exec rm -r {} +
+	"$pkgdir$_prefix/bin/python" -m compileall -q -j0 -d "$_prefix/lib" "$pkgdir$_prefix/lib" >/dev/null
+	install -Dm644 requirements.in requirements.lock test_qiskit_legacy_stack.py -t "$pkgdir/usr/share/$pkgname/"
+	install -Dm755 qiskit-legacy-python "$pkgdir/usr/bin/qiskit-legacy-python"
+}

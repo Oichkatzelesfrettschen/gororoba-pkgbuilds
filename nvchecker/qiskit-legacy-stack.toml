@@ -1,0 +1,3 @@
+[qiskit-legacy-stack]
+source = "pypi"
+pypi = "qiskit-dynamics"

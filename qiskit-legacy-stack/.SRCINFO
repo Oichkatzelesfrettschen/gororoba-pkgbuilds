@@ -1,0 +1,20 @@
+pkgbase = qiskit-legacy-stack
+	pkgdesc = qiskit-dynamics 0.6.0 on Qiskit 1.3 as a hash-locked Python 3.13 environment
+	pkgver = 0.6.0
+	pkgrel = 1
+	url = https://github.com/qiskit-community/qiskit-dynamics
+	arch = x86_64
+	license = Apache-2.0
+	depends = python313
+	depends = gcc-libs
+	depends = glibc
+	source = requirements.in
+	source = requirements.lock
+	source = test_qiskit_legacy_stack.py
+	source = qiskit-legacy-python
+	sha256sums = 506d568e0673bdbaf9fafe72b7029a7fb3c03b3fbc18ae88dc16f9a3d52f23eb
+	sha256sums = d1ecb85e0da06701c7cb1dbb3bc454597d11428a4387031a358b81b5b76f67d9
+	sha256sums = fc239f81bc6b79479d73b51bb94b71236b946156e935bc85f34b2210d8ccca58
+	sha256sums = d9e069bc6849be6ff809c5ae543e8c4f560295e0e2ae0dfab5c45c70d4f3756d
+
+pkgname = qiskit-legacy-stack
