@@ -104,7 +104,6 @@ jobs:
           useradd -m builder
           printf 'builder ALL=(ALL) NOPASSWD: ALL\n' > /etc/sudoers.d/builder
           install -d -o builder -g builder /var/tmp/build/work /var/tmp/build/src /var/tmp/build/pkg
-          printf '\n[ci-local]\nSigLevel = Optional TrustAll\nServer = file:///var/tmp/build/pkg\n' >> /etc/pacman.conf
       - uses: actions/checkout@v4
       - name: Build changed recipes
         env:
@@ -116,7 +115,7 @@ jobs:
           for d in $DIRS; do grep -qxF "$d" ci/build-allowlist.txt && allowed="$allowed $d"; done
           order=$(sh scripts/build-order.sh $allowed)
           printf 'build order: %s\n' "$(echo $order)"
-          repo-add -q /var/tmp/build/pkg/ci-local.db.tar.gz 2>/dev/null || true
+          local_repo=no
           for d in $order; do
             # Only recipes on ci/build-allowlist.txt build here (Tier A in
             # docs/package-update-ci.md); CUDA, proprietary-download and
@@ -132,6 +131,12 @@ jobs:
                 makepkg --syncdeps --noconfirm --needed --cleanbuild ) || { status=1; printf '::endgroup::\n'; continue; }
             # Publish into the container-local repository so later recipes resolve it.
             repo-add -q /var/tmp/build/pkg/ci-local.db.tar.gz /var/tmp/build/pkg/*.pkg.tar.zst
+            # pacman refuses every sync operation while a configured repository
+            # lacks its database, so the section is added after the first repo-add.
+            if [ "$local_repo" = no ]; then
+              printf '\n[ci-local]\nSigLevel = Optional TrustAll\nServer = file:///var/tmp/build/pkg\n' >> /etc/pacman.conf
+              local_repo=yes
+            fi
             pacman -Sy --noconfirm >/dev/null
             printf '::endgroup::\n'
           done
