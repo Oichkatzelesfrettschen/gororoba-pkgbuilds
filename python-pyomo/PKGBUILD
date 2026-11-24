@@ -11,7 +11,7 @@ pkgver=6.11.0
 pkgrel=1
 pkgdesc='Pyomo: Python Optimization Modeling Objects'
 url='https://github.com/Pyomo/pyomo'
-arch=('any')
+arch=('x86_64') # the build compiles optional Cython and pybind11 extensions
 license=('BSD-3-Clause')
 depends=('python')
 optdepends=('python-numpy: matrix and expression support'
@@ -28,7 +28,7 @@ optdepends=('python-numpy: matrix and expression support'
             'glpk: GNU Linear Programming Kit solver'
             'highs: HiGHS solver'
             'scip: SCIP solver')
-makedepends=('python-build' 'python-installer' 'python-setuptools' 'python-wheel')
+makedepends=('cython' 'pybind11' 'python-build' 'python-installer' 'python-setuptools' 'python-wheel')
 checkdepends=('python-pytest' 'python-parameterized')
 source=("https://files.pythonhosted.org/packages/source/${_name:0:1}/${_name}/${_name}-$pkgver.tar.gz")
 sha256sums=('5eba11b6ec1325954a5a6751329a314c54e1260baffd5112814ff699be0d29e0')

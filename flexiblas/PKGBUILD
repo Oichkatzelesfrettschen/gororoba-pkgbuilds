@@ -71,7 +71,8 @@ check() {
     --parallel "$(nproc)"
     --exclude-regex "${ctest_exclude_regex}"
   )
-  # export LD_LIBRARY_PATH="${srcdir}/${ctest_options[1]}/build/lib:${LD_LIBRARY_PATH}"
+  # The test binaries load the freshly built libflexiblas.so.3 from the build tree.
+  export LD_LIBRARY_PATH="${srcdir}/${_pkgsrc}/build/lib:${LD_LIBRARY_PATH:-}"
 
   cd "${srcdir}"
   ctest "${ctest_options[@]}"
