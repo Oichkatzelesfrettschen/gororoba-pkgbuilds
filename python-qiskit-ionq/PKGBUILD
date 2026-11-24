@@ -1,0 +1,34 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+
+pkgname=python-qiskit-ionq
+_name=qiskit-ionq
+pkgver=1.1.1
+pkgrel=1
+pkgdesc='Qiskit provider for IonQ trapped-ion backends'
+arch=('any')
+url='https://github.com/qiskit-community/qiskit-ionq'
+license=('Apache-2.0')
+depends=('python-decorator' 'python-dotenv' 'python-importlib-metadata' 'python-qiskit' 'python-requests')
+makedepends=('python-build' 'python-installer' 'python-setuptools' 'python-wheel')
+checkdepends=('python-pytest' 'python-qiskit-qasm3-import' 'python-requests-mock')
+source=("$_name-$pkgver.tar.gz::$url/archive/refs/tags/v$pkgver.tar.gz")
+sha256sums=('a93cc7bbc343414f8f21eee0400002b01735771541da3a6852fedb0d9126513a')
+
+build() {
+	cd "$_name-$pkgver"
+	python -m build --wheel --no-isolation
+}
+
+check() {
+	cd "$_name-$pkgver"
+	python -m venv --system-site-packages test-env
+	test-env/bin/python -m installer dist/*.whl
+	# The tests run against requests-mock; the coverage addopts need pytest-cov.
+	test-env/bin/python -P -m pytest -o addopts="" -p no:cacheprovider test
+}
+
+package() {
+	cd "$_name-$pkgver"
+	python -m installer --destdir="$pkgdir" dist/*.whl
+	install -Dm644 LICENSE.txt "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}

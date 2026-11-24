@@ -1,0 +1,5 @@
+[python-qiskit-algorithms]
+source = "github"
+github = "qiskit-community/qiskit-algorithms"
+use_latest_release = true
+exclude_regex = "(alpha|beta|rc|dev|a[0-9]|b[0-9])"

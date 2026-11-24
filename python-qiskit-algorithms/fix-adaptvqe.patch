@@ -1,0 +1,46 @@
+From 1cff1f6b315433763fd0697ae608c0cc7aa18a18 Mon Sep 17 00:00:00 2001
+From: Tristan NEMOZ <tristan.nemoz@gmail.com>
+Date: Tue, 2 Sep 2025 19:51:14 +0200
+Subject: [PATCH 1/2] Added 2.1.2 to caught versions of Qiskit in AdaptVQE
+
+---
+ qiskit_algorithms/minimum_eigensolvers/adapt_vqe.py | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/qiskit_algorithms/minimum_eigensolvers/adapt_vqe.py b/qiskit_algorithms/minimum_eigensolvers/adapt_vqe.py
+index 2d8586fe..d4033d9a 100644
+--- a/qiskit_algorithms/minimum_eigensolvers/adapt_vqe.py
++++ b/qiskit_algorithms/minimum_eigensolvers/adapt_vqe.py
+@@ -238,9 +238,9 @@ def _compute_gradients(
+         # The excitations operators are applied later as exp(i*theta*excitation).
+         # For this commutator, we need to explicitly pull in the imaginary phase.
+         commutators = [1j * (operator @ exc - exc @ operator) for exc in self._excitation_pool]
+-        # We have to call simplify on it since Qiskit doesn't do so in versions 2.1.0 and 2.1.1, see
++        # We have to call simplify on it since Qiskit doesn't do so in versions 2.1.X, see
+         # Qiskit/qiskit/issues/14567
+-        if get_qiskit_version_info() in ["2.1.0", "2.1.1"]:
++        if get_qiskit_version_info() in ["2.1.0", "2.1.1", "2.1.2"]:
+             commutators = [obs.simplify() for obs in commutators]
+ 
+         # If the ansatz has been transpiled
+
+From 694243a064d9b64e770089feb1ce26eabf071c9d Mon Sep 17 00:00:00 2001
+From: Tristan NEMOZ <tristan.nemoz@gmail.com>
+Date: Tue, 2 Sep 2025 20:26:58 +0200
+Subject: [PATCH 2/2] Added release note
+
+---
+ .../notes/fix-adaptvqe-qiskit-2.1.2-8ca695d06e88e972.yaml     | 4 ++++
+ 1 file changed, 4 insertions(+)
+ create mode 100644 releasenotes/notes/fix-adaptvqe-qiskit-2.1.2-8ca695d06e88e972.yaml
+
+diff --git a/releasenotes/notes/fix-adaptvqe-qiskit-2.1.2-8ca695d06e88e972.yaml b/releasenotes/notes/fix-adaptvqe-qiskit-2.1.2-8ca695d06e88e972.yaml
+new file mode 100644
+index 00000000..21059adc
+--- /dev/null
++++ b/releasenotes/notes/fix-adaptvqe-qiskit-2.1.2-8ca695d06e88e972.yaml
+@@ -0,0 +1,4 @@
++---
++fixes:
++  - |
++    :class:`.AdaptVQE` now works correctly when using qiskit in version 2.1.2.

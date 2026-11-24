@@ -1,0 +1,6 @@
+[python-plum-dispatch]
+source = "github"
+github = "beartype/plum"
+use_latest_release = true
+prefix = "v"
+exclude_regex = "(alpha|beta|rc|dev|a[0-9]|b[0-9])"
