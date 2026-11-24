@@ -1,0 +1,18 @@
+From: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+Subject: [PATCH] devices/__init__: register the new rival710 profile
+
+The Rival 710 (1038:1730) now has its own ``rival710.py`` device profile.
+``_generate_profiles()`` uses a hardcoded import list so the new module has
+to be added explicitly for the profile to land in ``PROFILES`` and for
+``--list``, CLI option generation, and ``get_profile()`` to find the 710.
+
+--- a/rivalcfg/devices/__init__.py
++++ b/rivalcfg/devices/__init__.py
+@@ -253,6 +253,7 @@ def _generate_profiles():
+         rival600,
+         rival650,
+         rival700,
++        rival710,
+         sensei310,
+         sensei_raw,
+         sensei_ten,

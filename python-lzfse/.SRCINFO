@@ -1,0 +1,21 @@
+pkgbase = python-lzfse
+	pkgdesc = Python bindings for the LZFSE reference implementation
+	pkgver = 0.4.2
+	pkgrel = 1
+	epoch = 1
+	url = https://github.com/m1stadev/lzfse
+	arch = x86_64
+	license = MIT
+	license = BSD-3-Clause
+	makedepends = git
+	makedepends = python-build
+	makedepends = python-installer
+	makedepends = python-setuptools
+	makedepends = python-wheel
+	depends = python
+	source = python-lzfse-0.4.2::git+https://github.com/m1stadev/lzfse.git#commit=868a05bae250f3a6263ccde046b051f42da672e2
+	source = git+https://github.com/lzfse/lzfse.git#commit=88e2d2788b4021d0b2eb9fe2d97352ae9190f128
+	sha256sums = SKIP
+	sha256sums = SKIP
+
+pkgname = python-lzfse

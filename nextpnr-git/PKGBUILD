@@ -1,0 +1,134 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+# Contributor: xiretza <xiretza+aur@xiretza.xyz>
+# Contributor: Graham Edgecombe <gpe@grahamedgecombe.com>
+
+: ${_use_sodeps:=false}
+
+: ${_archs=ecp5;ice40;himbaechel;nexus;generic}
+
+_pkgname="nextpnr"
+pkgname="$_pkgname-git"
+pkgver=0.9.r33.g9ccd132
+pkgrel=1
+pkgdesc='Portable FPGA place and route tool'
+url='https://github.com/YosysHQ/nextpnr'
+license=('ISC')
+arch=('i686' 'x86_64')
+
+depends=(
+  'boost-libs'
+  'python'
+  'qt6-base'
+)
+makedepends=(
+  'boost'
+  'cmake'
+  'eigen'
+  'git'
+  'ninja'
+)
+
+provides=("nextpnr=$pkgver")
+conflicts=('nextpnr')
+
+_pkgsrc="$_pkgname"
+source=("$_pkgsrc"::"git+$url.git")
+sha256sums=('SKIP')
+
+pkgver() {
+  cd "$_pkgsrc"
+  git describe --long --tags --abbrev=7 \
+    | sed -E 's/^[^0-9]*//;s/([^-]*-g)/r\1/;s/-/./g'
+}
+
+prepare() {
+  cd "$_pkgsrc"
+  git rm -r 3rdparty/corrosion
+  git rm -r himbaechel/uarch/xilinx/meta
+  git submodule update --init --recursive --depth=1
+
+  # force Qt6
+  sed -E -e '/Qt6 COMPONENTS/s&\bQUIET\b&REQUIRED&' -i CMakeLists.txt
+
+  # fix for Boost 1.89
+  sed -E -e 's&\bsystem\b&&g' -i CMakeLists.txt bba/CMakeLists.txt
+}
+
+build() {
+  local _cmake_options=(
+    -B build
+    -S "$_pkgsrc"
+    -G Ninja
+    -DCMAKE_BUILD_TYPE=None
+    -DCMAKE_INSTALL_PREFIX='/usr'
+    -DBUILD_TESTS=$CHECKFUNC
+    -Wno-dev
+
+    -DARCH="$_archs"
+    -DBUILD_GUI=ON
+    -DUSE_IPO=OFF
+    -DUSE_OPENMP=ON
+    "${_CONFIG[@]}"
+  )
+
+  cmake "${_cmake_options[@]}"
+  cmake --build build
+}
+
+check() {
+  ctest --test-dir build --output-on-failure
+}
+
+package() {
+  if [[ "${_use_sodeps::1}" == "t" ]]; then
+    eval "depends+=(
+      'libboost_filesystem.so'
+      'libboost_iostreams.so'
+      'libboost_program_options.so'
+      'libboost_thread.so'
+    )"
+  fi
+
+  DESTDIR="$pkgdir" cmake --install build
+  install -Dm644 "$_pkgsrc"/COPYING -t "$pkgdir/usr/share/licenses/$pkgname/"
+}
+
+_CONFIG=()
+for _arch in ${_archs//;/ }; do
+  case $_arch in
+    ice40)
+      makedepends+=(
+        'icestorm' # AUR
+      )
+      _CONFIG+=('-DICESTORM_INSTALL_PREFIX=/usr')
+      ;;
+    ecp5)
+      makedepends+=(
+        'prjtrellis'
+        'prjtrellis-db>=r269' # AUR
+      )
+      _CONFIG+=('-DTRELLIS_INSTALL_PREFIX=/usr')
+      ;;
+    nexus)
+      makedepends+=(
+        'prjoxide' # AUR
+        # capnproto-java # AUR
+      )
+      _CONFIG+=('-DOXIDE_INSTALL_PREFIX=/usr')
+      ;;
+    himbaechel)
+      makedepends+=(
+        'prjapicula-git' # AUR
+        # 'python-crc' # AUR
+      )
+      _CONFIG+=('-DHIMBAECHEL_UARCH=gowin')
+      ;;
+    generic)
+      # NOOP
+      ;;
+    *)
+      echo "Unhandled architecture: $_arch" >&2
+      false # let makepkg handle error
+      ;;
+  esac
+done

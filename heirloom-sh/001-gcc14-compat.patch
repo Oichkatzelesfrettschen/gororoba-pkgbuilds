@@ -1,0 +1,74 @@
+--- a/fault.c
++++ b/fault.c
+@@ -43,10 +43,10 @@
+ 
+ #define	ENOMEM	12
+ 
+-static	void (*psig0_func)() = SIG_ERR;	/* previous signal handler for signal 0 */
+-static	char sigsegv_stack[SIGSTKSZ];
++static	void (*psig0_func)(int) = SIG_ERR;	/* previous signal handler for signal 0 */
++static	char sigsegv_stack[8192];  /* Use fixed size instead of SIGSTKSZ */
+ 
+-static BOOL sleeping = 0;
++static BOOL sleeping = FALSE;
+ static unsigned char *trapcom[MAXTRAP]; /* array of actions, one per signal */
+ static BOOL trapflg[MAXTRAP] =
+ {
+@@ -88,9 +88,8 @@ static BOOL trapflg[MAXTRAP] =
+ 	0	/* check point thaw */
+ };
+ 
+-void (*(
+-sigval[MAXTRAP]))() =
+-{
++/* Signal handler array - modernized for GCC 14+ */
++void (*sigval[MAXTRAP])(int) = {
+ 	0,
+ 	0,	/* 	done, 	   hangup */
+ 	0,	/* 	fault,	   interrupt */
+@@ -471,6 +470,14 @@ sigsegv(int sig, siginfo_t *sip)
+ 	}
+ }
+ 
++/* Wrapper for sigsegv to match standard signal handler signature */
++static void
++sigsegv_wrapper(int sig)
++{
++	/* Pass NULL for siginfo_t - will cause exit(ERROR) as fallback */
++	sigsegv(sig, (siginfo_t *)NULL);
++}
++
+ void
+ sh_sleep(unsigned int ticks)
+ {
+@@ -510,7 +517,8 @@ sh_sleep(unsigned int ticks)
+ void 
+ init_sigval(void)
+ {
+-	extern void	(*(sigval[]))();
++	/* Reference to the global signal handler array */
++	extern void	(*sigval[])(int);
+ 
+ #ifdef	SIGHUP
+ 	if (SIGHUP < MAXTRAP)
+@@ -550,7 +558,7 @@ init_sigval(void)
+ #endif
+ #ifdef	SIGSEGV
+ 	if (SIGSEGV < MAXTRAP)
+-		sigval[SIGSEGV] = sigsegv;
++		sigval[SIGSEGV] = sigsegv_wrapper;
+ #endif
+ #ifdef	SIGEMT
+ 	if (SIGEMT < MAXTRAP)
+--- a/test.c
++++ b/test.c
+@@ -268,7 +268,7 @@ nxtarg(int mt)
+ static int 
+ filtyp(const unsigned char *f, int field)
+ {
+ 	struct stat statb;
+-	int (*statf)() = (field == S_IFLNK) ? lstat : stat;
++	int (*statf)(const char *, struct stat *) = (field == S_IFLNK) ? lstat : stat;
+ 
+ 	if ((*statf)(f, &statb) < 0)
+ 		return(0);

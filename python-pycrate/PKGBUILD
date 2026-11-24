@@ -1,0 +1,31 @@
+# shellcheck shell=bash
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+
+pkgname=python-pycrate
+_pkg=pycrate
+pkgver=0.8.1
+pkgrel=1
+pkgdesc="Protocol encoders and decoders for cellular and telecom formats"
+arch=('any')
+url="https://github.com/pycrate-org/pycrate"
+license=('LGPL-2.1-or-later')
+depends=('python')
+optdepends=('python-cryptomobile: NAS LTE and 5G security algorithms'
+            'python-crcmod: SEDebugMux support'
+            'python-gmpy2: faster large-integer handling in pycrate_core'
+            'ipython: pretty-printed corenet UE handler state'
+            'python-lxml: Diameter dictionary parsing')
+makedepends=('python-build' 'python-installer' 'python-setuptools' 'python-wheel')
+source=("$pkgname-$pkgver.tar.gz::https://files.pythonhosted.org/packages/source/p/$_pkg/$_pkg-$pkgver.tar.gz")
+sha256sums=('a408c942d219c646a5a81073b8036f48a81c4540dd1f25fda2f8bbde0607db98')
+
+build() {
+	cd "$_pkg-$pkgver"
+	python -m build --wheel --no-isolation
+}
+
+package() {
+	cd "$_pkg-$pkgver"
+	python -m installer --destdir="$pkgdir/" dist/*.whl
+	install -Dm644 license.txt "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}

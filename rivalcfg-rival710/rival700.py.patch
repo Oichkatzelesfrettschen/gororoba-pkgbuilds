@@ -1,0 +1,33 @@
+From: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+Subject: [PATCH] devices: remove Rival 710 from rival700 profile
+
+The Rival 710 (1038:1730) is being moved to its own profile,
+``devices/rival710.py``, so that 710-specific work can land independently
+of the Rival 700.
+
+This change does not affect the Rival 700 (1038:1700) in any way.
+
+--- a/rivalcfg/devices/rival700.py
++++ b/rivalcfg/devices/rival700.py
+@@ -13,7 +13,7 @@
+ )
+
+ profile = {
+-    "name": "SteelSeries Rival 700 / SteelSeries Rival 710",
++    "name": "SteelSeries Rival 700",
+     "models": [
+         {
+             "name": "SteelSeries Rival 700",
+@@ -21,12 +21,6 @@
+             "product_id": 0x1700,
+             "endpoint": 0,
+         },
+-        {
+-            "name": "SteelSeries Rival 710",
+-            "vendor_id": 0x1038,
+-            "product_id": 0x1730,
+-            "endpoint": 0,
+-        },
+     ],
+     "settings": {
+         "sensitivity1": {

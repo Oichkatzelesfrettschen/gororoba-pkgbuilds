@@ -1,0 +1,17 @@
+From: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+Subject: [PATCH] handlers/__init__: register oled_image handler
+
+The new value_type "oled_image" for the Rival 710 OLED display needs
+its handler module imported in handlers/__init__.py.  Adjacent to the
+tactile_button_map import added by handlers-init.py.patch.
+
+--- a/rivalcfg/handlers/__init__.py
++++ b/rivalcfg/handlers/__init__.py
+@@ -9,6 +9,7 @@
+ from . import multidpi_range_choice
+ from . import multidpi_range_choice_xy
+ from . import tactile_button_map
++from . import oled_image
+ from .buttons import buttons
+
+ # flake8: noqa

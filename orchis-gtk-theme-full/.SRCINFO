@@ -1,0 +1,26 @@
+pkgbase = orchis-gtk-theme-full
+	pkgdesc = Complete Orchis Material Design theme with all variants (GTK2/3/4, libadwaita, GNOME Shell)
+	pkgver = 2025_04_25
+	pkgrel = 1
+	url = https://github.com/vinceliuice/Orchis-theme
+	install = orchis-gtk-theme-full.install
+	arch = any
+	license = GPL-3.0-or-later
+	makedepends = git
+	optdepends = gtk-engine-murrine: for GTK2 theme support
+	optdepends = gnome-themes-extra: for GTK2 theme support
+	optdepends = gtk3: for GTK3 theme support
+	optdepends = gtk4: for GTK4/libadwaita theme support
+	optdepends = gnome-shell: for GNOME Shell theme
+	optdepends = gnome-shell-extension-user-theme: to apply GNOME Shell themes
+	optdepends = gnome-tweaks: GUI for theme management
+	optdepends = papirus-icon-theme: highly recommended icon theme (comprehensive coverage)
+	optdepends = tela-circle-icon-theme: recommended circular icon theme (by same author)
+	optdepends = qogir-icon-theme: minimalist professional icon theme
+	optdepends = nordzy-icon: Nord color palette icon theme (matches CachyOS branding)
+	optdepends = vimix-cursors: recommended cursor theme
+	optdepends = char-white: CachyOS official Nord icon theme
+	source = orchis-gtk-theme-full::git+https://github.com/vinceliuice/Orchis-theme.git#tag=2025-04-25
+	sha256sums = SKIP
+
+pkgname = orchis-gtk-theme-full

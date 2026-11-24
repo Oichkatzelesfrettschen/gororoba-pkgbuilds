@@ -1,0 +1,87 @@
+# shellcheck shell=sh
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+# Contributor: Orchis Theme Community
+
+pkgname=orchis-gtk-theme-full
+pkgver=2025_04_25
+pkgrel=1
+pkgdesc="Complete Orchis Material Design theme with all variants (GTK2/3/4, libadwaita, GNOME Shell)"
+arch=('any')
+url="https://github.com/vinceliuice/Orchis-theme"
+license=('GPL-3.0-or-later')
+depends=()
+makedepends=('git')
+install="${pkgname}.install"
+optdepends=(
+    'gtk-engine-murrine: for GTK2 theme support'
+    'gnome-themes-extra: for GTK2 theme support'
+    'gtk3: for GTK3 theme support'
+    'gtk4: for GTK4/libadwaita theme support'
+    'gnome-shell: for GNOME Shell theme'
+    'gnome-shell-extension-user-theme: to apply GNOME Shell themes'
+    'gnome-tweaks: GUI for theme management'
+    'papirus-icon-theme: highly recommended icon theme (comprehensive coverage)'
+    'tela-circle-icon-theme: recommended circular icon theme (by same author)'
+    'qogir-icon-theme: minimalist professional icon theme'
+    'nordzy-icon: Nord color palette icon theme (matches CachyOS branding)'
+    'vimix-cursors: recommended cursor theme'
+    'char-white: CachyOS official Nord icon theme'
+)
+source=("${pkgname}::git+https://github.com/vinceliuice/Orchis-theme.git#tag=${pkgver//_/-}")
+sha256sums=('SKIP')
+
+prepare() {
+    cd "${srcdir}/${pkgname}"
+
+    # Make install script executable
+    chmod +x install.sh
+}
+
+build() {
+    cd "${srcdir}/${pkgname}"
+
+    # Build with sassc if available (optional dependency for theme compilation)
+    if command -v sassc &> /dev/null; then
+        echo "Building theme with sassc..."
+    else
+        echo "Warning: sassc not found. Theme will be installed without compilation."
+        echo "Install sassc for optimal theme rendering: sudo pacman -S sassc"
+    fi
+}
+
+package() {
+    cd "${srcdir}/${pkgname}"
+
+    install -dm755 "${pkgdir}/usr/share/themes"
+
+    # Install all color variants (default, purple, pink, red, orange, yellow, green, teal, grey)
+    # for all color schemes (standard, light, dark) and both sizes (standard, compact)
+    #
+    # The install script requires separate runs for each scheme/size combination
+    # -t all: installs all 9 color variants
+    # -c: specifies color scheme (standard, light, or dark)
+    # -s: specifies size (standard or compact)
+    # --tweaks: visual enhancements (black, solid, submenu)
+
+    # Standard size variants
+    ./install.sh -d "${pkgdir}/usr/share/themes" -t all -c standard --tweaks black solid submenu
+    ./install.sh -d "${pkgdir}/usr/share/themes" -t all -c light --tweaks black solid submenu
+    ./install.sh -d "${pkgdir}/usr/share/themes" -t all -c dark --tweaks black solid submenu
+
+    # Compact size variants
+    ./install.sh -d "${pkgdir}/usr/share/themes" -t all -c standard -s compact --tweaks black solid submenu
+    ./install.sh -d "${pkgdir}/usr/share/themes" -t all -c light -s compact --tweaks black solid submenu
+    ./install.sh -d "${pkgdir}/usr/share/themes" -t all -c dark -s compact --tweaks black solid submenu
+
+    # Install libadwaita theme for GTK4 applications
+    ./install.sh -d "${pkgdir}/usr/share/themes" --libadwaita
+
+    # Install documentation
+    install -Dm644 README.md "${pkgdir}/usr/share/doc/${pkgname}/README.md"
+    if [ -f INSTALL.md ]; then
+        install -Dm644 INSTALL.md "${pkgdir}/usr/share/doc/${pkgname}/INSTALL.md"
+    fi
+
+    # Install license
+    install -Dm644 COPYING "${pkgdir}/usr/share/licenses/${pkgname}/COPYING"
+}

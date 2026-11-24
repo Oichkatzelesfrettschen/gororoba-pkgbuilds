@@ -1,0 +1,35 @@
+pkgbase = rivalcfg-rival710
+	pkgdesc = rivalcfg fork carrying the Rival 710 split-profile refactor (scaffold for future 710-specific features)
+	pkgver = 4.17.0
+	pkgrel = 5
+	url = https://github.com/flozz/rivalcfg
+	arch = any
+	license = WTFPL
+	makedepends = python-build
+	makedepends = python-installer
+	makedepends = python-flit-core
+	makedepends = python-wheel
+	depends = python
+	depends = python-hidapi
+	depends = python-pillow
+	provides = rivalcfg=4.17.0
+	conflicts = rivalcfg
+	replaces = rivalcfg
+	source = rivalcfg-4.17.0.tar.gz::https://github.com/flozz/rivalcfg/archive/refs/tags/v4.17.0.tar.gz
+	source = rival710.py
+	source = rival700.py.patch
+	source = devices-init.py.patch
+	source = handlers-init.py.patch
+	source = tactile_button_map.py
+	source = handlers-init-oled.py.patch
+	source = oled_image.py
+	sha256sums = 9ef0512b097ce46b77d0c74eb9c84411250c91a4dea1c77469a41bfacbe8705d
+	sha256sums = 74e6329974db51496416404ea7f542deed1b83643e2c5ad215a96e33d5d5d282
+	sha256sums = 6248ce146d0949ee28000662fbe2728e9f6f1acf1ac6c36ac240151cc38dfe73
+	sha256sums = 1f20821ba74aba664c8d5e9b3345d3a23ef5403ec1da486a71695b4fcc942866
+	sha256sums = 5a1138b75ad939451e16b7add564d2978fbeac95746131f60f1e06f60ab0b7bd
+	sha256sums = cd5be04e43bc64fa8c84096c7bbc6bfba181557962c6c614ef1534f91e380f5e
+	sha256sums = 89796c6bf8b41e1862889d57394413fd810b45a8ff10a9927da56fad67982d43
+	sha256sums = c457559238bb45b2227dcf16253c868b43d2e45fb15b44bb4fd756860912718a
+
+pkgname = rivalcfg-rival710
