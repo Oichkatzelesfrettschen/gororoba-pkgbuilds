@@ -1,0 +1,4 @@
+[python-pubchempy]
+source = "pypi"
+pypi = "pubchempy"
+exclude_regex = "[0-9](a|b|rc|dev)[0-9]*$"

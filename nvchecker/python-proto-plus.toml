@@ -1,0 +1,4 @@
+[python-proto-plus]
+source = "pypi"
+pypi = "proto-plus"
+exclude_regex = "[0-9](a|b|rc|dev)[0-9]*$"

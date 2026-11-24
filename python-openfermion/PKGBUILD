@@ -1,0 +1,35 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+# Contributor: Damien Nguyen <damien1@huawei.com>
+
+pkgname=python-openfermion
+_name=openfermion
+pkgver=1.8.1
+pkgrel=1
+pkgdesc="The electronic structure package for quantum computers."
+arch=(any)
+url=https://github.com/quantumlib/OpenFermion
+license=(Apache-2.0)
+depends=(
+    'python-cirq-core>=1.6.0'
+    python-deprecation
+    python-h5py
+    python-networkx
+    python-numpy
+    python-pubchempy
+    python-requests
+    python-scipy
+    python-sympy
+)
+makedepends=(
+    python-build
+    python-installer
+    python-setuptools
+    python-wheel
+)
+# The PyPI release is a wheel with no test suite, so no check() is declared.
+source=("https://files.pythonhosted.org/packages/e2/64/14780633d9bafe69a485b67739e228b925c74d32e46e0da15d70a2aed7ba/openfermion-1.8.1-py3-none-any.whl")
+sha256sums=('b3768d3d885d95789db7872e07b5164861689696d1b053cd8684c145cc0a0661')
+
+package() {
+    python -m installer --destdir="$pkgdir" "$srcdir/openfermion-$pkgver-py3-none-any.whl"
+}
