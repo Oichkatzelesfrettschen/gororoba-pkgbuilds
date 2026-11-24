@@ -23,6 +23,7 @@ while read -r name current latest status; do
     readiness=-
     if [ "$status" = outdated ]; then
         readiness='no recipe directory'
+        set +f
         for d in */; do
             [ -f "${d}.SRCINFO" ] || continue
             if grep -qxF "pkgname = $name" "${d}.SRCINFO"; then
@@ -33,6 +34,7 @@ while read -r name current latest status; do
                 break
             fi
         done
+        set -f
     fi
     printf '| %s | %s | %s | %s | %s |\n' "$name" "$current" "$latest" "$status" "$readiness"
 done < "$1"

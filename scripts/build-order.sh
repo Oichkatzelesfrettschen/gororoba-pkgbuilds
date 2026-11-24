@@ -24,6 +24,7 @@ edges=$work/edges
 
 # "kind name directory" for every pkgname (n) and provides entry (p), version
 # constraints stripped.
+set +f
 for srcinfo in */.SRCINFO; do
     [ -f "$srcinfo" ] || continue
     dir=${srcinfo%/.SRCINFO}
@@ -40,6 +41,7 @@ for srcinfo in */.SRCINFO; do
         }
     ' "$srcinfo" >> "$map"
 done
+set -f
 
 # In-repository directories that supply a dependency of directory $1.
 deps_of() {

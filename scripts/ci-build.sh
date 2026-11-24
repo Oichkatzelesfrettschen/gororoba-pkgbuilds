@@ -59,12 +59,14 @@ while IFS=' ' read -r dir verdict; do
         continue
     fi
     produced=0
+    set +f
     for pkg in "$root/pkg/$dir"/*.pkg.tar.zst; do
         [ -f "$pkg" ] || continue
         cp -- "$pkg" "$root/repo/"
         repo-add -q "$root/repo/ci-local.db.tar.gz" "$root/repo/$(basename -- "$pkg")"
         produced=1
     done
+    set -f
     if [ "$produced" -eq 0 ]; then
         printf '::endgroup::\n'
         report "$dir" refused:no_package_produced
