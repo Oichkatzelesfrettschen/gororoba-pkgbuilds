@@ -1,0 +1,27 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+# shellcheck shell=bash disable=SC2034,SC2154
+# The sdist ships no LICENSE file; the MIT license is the license field of its setup.py.
+# The sdist ships no test suite, so check() is absent.
+# setup.py is the build script (no pyproject.toml); python -m build --no-isolation uses the system setuptools.
+
+pkgname=python-grapheme
+pkgver=0.6.0
+pkgrel=1
+pkgdesc='Unicode grapheme helpers'
+arch=('any')
+url='https://github.com/alvinlindstam/grapheme'
+license=('MIT')
+depends=('python')
+makedepends=('python-build' 'python-installer' 'python-setuptools' 'python-wheel')
+source=("https://files.pythonhosted.org/packages/ce/e7/bbaab0d2a33e07c8278910c1d0d8d4f3781293dfbc70b5c38197159046bf/grapheme-${pkgver}.tar.gz")
+sha256sums=('44c2b9f21bbe77cfb05835fec230bd435954275267fea1858013b102f8603cca')
+
+build() {
+  cd "grapheme-$pkgver" || exit
+  python -m build --wheel --no-isolation
+}
+
+package() {
+  cd "grapheme-$pkgver" || exit
+  python -m installer --destdir="$pkgdir" dist/*.whl
+}
