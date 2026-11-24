@@ -1,0 +1,4 @@
+[python-pytket]
+source = "pypi"
+pypi = "pytket"
+exclude_regex = "(alpha|beta|rc|dev)"

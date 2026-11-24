@@ -1,0 +1,4 @@
+[python-tensornetwork]
+source = "pypi"
+pypi = "tensornetwork"
+exclude_regex = "(alpha|beta|rc|dev)"
