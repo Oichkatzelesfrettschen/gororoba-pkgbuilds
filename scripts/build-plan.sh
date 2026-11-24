@@ -36,8 +36,7 @@ if [ ! -s "$work/allowed" ]; then
     exit 0
 fi
 
-tr '\n' ' ' < "$work/allowed" > "$work/args"
-read -r args < "$work/args"
+args=$(tr '\n' ' ' < "$work/allowed")
 # shellcheck disable=SC2086
 if ! sh "$here/build-order.sh" $args > "$work/order"; then
     printf 'plan=refused reason=build_order_failed\n' >&2
