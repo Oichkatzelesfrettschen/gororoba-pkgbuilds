@@ -1,0 +1,23 @@
+pkgbase = python-qubasic
+	pkgdesc = Quantum BASIC interactive terminal on Qiskit Aer
+	pkgver = 0.34.0
+	pkgrel = 1
+	url = https://github.com/CharlesCNorton/qubasic
+	arch = any
+	license = MIT
+	makedepends = python-build
+	makedepends = python-installer
+	makedepends = python-setuptools
+	makedepends = python-wheel
+	depends = python
+	depends = python-qiskit
+	depends = python-qiskit-aer
+	depends = python-numpy
+	depends = python-scipy
+	depends = python-rustworkx
+	depends = python-psutil
+	depends = python-rich
+	source = https://files.pythonhosted.org/packages/source/q/qubasic/qubasic-0.34.0.tar.gz
+	b2sums = 372dee60a24955084a48b20f2d21c8518c80587f2800c5ec7e101b3d2b62f00eb28d45b27784fc046d4a618d09eae063e55e8978db66f151e9b996e2a902a0e7
+
+pkgname = python-qubasic

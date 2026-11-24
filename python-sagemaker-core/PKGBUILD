@@ -1,0 +1,28 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+# shellcheck shell=bash disable=SC2034,SC2154
+
+# Upstream pins that this system does not meet, and that this recipe does not downgrade:
+# rich<15 (installed 15.0.0), protobuf<7 (installed 7.36.1),
+# importlib-metadata<7 (installed 9.0.1), mock<5 (installed 5.2.0).
+# boto3>=1.43.90 is met by 1.43.108. cryptography>=46 is met by 50.0.2.
+# The sagemaker 3.27.0 distribution is only a dependency pointer at train, serve and mlops.
+# Those three require an unpackaged MLflow closure (mlflow, mlflow-skinny, mlflow-tracing,
+# huey, skops) and pyiceberg[glue]. They are not in this set.
+
+pkgname=python-sagemaker-core
+pkgver=2.27.0
+pkgrel=1
+pkgdesc='Low-level SageMaker Python SDK interfaces'
+arch=('any')
+url='https://github.com/aws/sagemaker-python-sdk'
+license=('Apache-2.0')
+depends=('python' 'python-boto3' 'python-pydantic' 'python-yaml' 'python-jsonschema' 'python-platformdirs' 'python-rich' 'python-mock' 'python-importlib-metadata' 'python-typing_extensions' 'python-pytz' 'python-requests' 'python-attrs' 'python-packaging' 'python-protobuf' 'python-pandas' 'python-numpy' 'python-smdebug-rulesconfig' 'python-schema' 'python-omegaconf' 'python-scipy' 'python-cloudpickle' 'python-paramiko' 'python-tblib' 'python-cryptography')
+makedepends=('python-installer')
+_wheel='sagemaker_core-2.27.0-py3-none-any.whl'
+source=("$_wheel::https://files.pythonhosted.org/packages/8b/fd/1906a96e2f7a622af6e272651fe5c4c6f5b5c033aecc6fc7b5f76de1b49e/sagemaker_core-2.27.0-py3-none-any.whl")
+noextract=("$_wheel")
+sha256sums=('62e5b4e2296dd26c042f28d26b9292501cdcf0c83a02656e280d61f132114312')
+
+package() {
+	python -m installer --destdir="$pkgdir" "$_wheel"
+}

@@ -1,0 +1,59 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+
+# qBraid client stack as one self-contained Python 3.13 environment.
+# qbraid 0.13.0 requires pyqasm<2.0.0 and qbraid-core<1.0, and neither is
+# packaged for the system interpreter; the lock also moves numpy, pydantic
+# and openqasm3 with qbraid rather than with the system, so the stack lives
+# under /opt with a hash lock. qbraid is Apache-2.0, while qbraid-core 0.6.36
+# declares the license field "Proprietary", recorded as LicenseRef-qBraid-proprietary.
+pkgname=qbraid-stack
+pkgver=0.13.0
+pkgrel=1
+pkgdesc="qBraid client stack (qbraid 0.13, qbraid-core 0.6.36) as a hash-locked Python 3.13 environment"
+arch=('x86_64')
+url="https://github.com/qBraid/qBraid"
+license=('Apache-2.0' 'LicenseRef-qBraid-proprietary')
+depends=(python313 gcc-libs glibc)
+_prefix=/opt/$pkgname
+source=(
+	requirements.in
+	requirements.lock
+	test_qbraid_stack.py
+	qbraid-python
+)
+b2sums=('c750f881d4e2e14e22f5e7e4aafaa70ddd7b4fd9b1606ba584776ac2f955478518fe35dafd55acd66afdee891f15ad7e857637a52944b572df860d8597ed23b4'
+        '5dfab277898d9e1b0ce85db988990751d618d115727fb22fbcc779b2bbc365526318bd7f596f6e0f355efc96b89929143b2331c7c21581a6bb1ae7bf15f685c2'
+        '65924c4db7692ef127dcf3cb705c8818674bc48463ba8e0828ada56a9e67ed81b2600f082f3b676c2a60786d333902b50b366c72577f8749361bba3ed64d7fcf'
+        '910d6cb09d118ee05b7f4d2d1bd74fc452f13a2fb9581799847248c89247c7266fb82016875c47023c10812b19f45464f666fcae777d7225b7fc78161ae07a29')
+
+build() {
+	/usr/bin/python3.13 -m venv --clear "$srcdir/stack"
+	"$srcdir/stack/bin/python" -m pip install -q --no-cache-dir --upgrade pip==25.3
+	# --require-hashes binds every distribution to the lock, --only-binary
+	# keeps the install to published wheels, and --no-deps keeps the
+	# resolved set equal to the lock.
+	"$srcdir/stack/bin/python" -m pip install -q --no-cache-dir --require-hashes --no-deps --only-binary :all: \
+		-r "$srcdir/requirements.lock"
+}
+
+check() {
+	cd "$srcdir"
+	"$srcdir/stack/bin/python" -P -m pytest -q -p no:cacheprovider test_qbraid_stack.py
+}
+
+package() {
+	install -d "$pkgdir$_prefix"
+	cp -a "$srcdir/stack/." "$pkgdir$_prefix/"
+	# Entry-point shebangs and activate scripts carry the build path.
+	grep -rlI --null "$srcdir/stack" "$pkgdir$_prefix/bin" "$pkgdir$_prefix/pyvenv.cfg" |
+		xargs -0 -r sed -i "s|$srcdir/stack|$_prefix|g"
+	find "$pkgdir$_prefix" -name __pycache__ -prune -exec rm -r {} +
+	"$pkgdir$_prefix/bin/python" -m compileall -q -j0 -d "$_prefix/lib" "$pkgdir$_prefix/lib" >/dev/null
+	install -Dm644 requirements.in requirements.lock test_qbraid_stack.py -t "$pkgdir/usr/share/$pkgname/"
+	# LicenseRef-qBraid-proprietary is the qbraid-core terms file its wheel ships.
+	install -Dm644 "$srcdir/stack/lib/python3.13/site-packages/qbraid_core-0.6.36.dist-info/licenses/LICENSE" \
+		"$pkgdir/usr/share/licenses/$pkgname/LICENSE-qbraid-core"
+	install -Dm644 "$srcdir/stack/lib/python3.13/site-packages/qbraid-0.13.0.dist-info/licenses/LICENSE" \
+		"$pkgdir/usr/share/licenses/$pkgname/LICENSE-qbraid"
+	install -Dm755 qbraid-python "$pkgdir/usr/bin/qbraid-python"
+}

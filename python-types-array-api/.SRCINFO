@@ -1,0 +1,17 @@
+pkgbase = python-types-array-api
+	pkgdesc = Typing protocols of the Python array API standard
+	pkgver = 1.3.0
+	pkgrel = 1
+	url = https://github.com/34j/types-array-api
+	arch = any
+	license = MIT
+	license = Apache-2.0
+	makedepends = python-build
+	makedepends = python-installer
+	makedepends = python-setuptools
+	depends = python
+	depends = python-typing_extensions
+	source = https://files.pythonhosted.org/packages/source/t/types-array-api/types_array_api-1.3.0.tar.gz
+	sha256sums = 918526e110c1008618cd9b4487f98aa518f3869efc67b0da2491ceff1b53efcd
+
+pkgname = python-types-array-api

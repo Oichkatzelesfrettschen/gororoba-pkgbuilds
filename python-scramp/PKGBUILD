@@ -1,0 +1,23 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+# shellcheck shell=bash disable=SC2034,SC2154
+
+# redshift-connector 2.2.0 requires scramp<1.5.0,>=1.2.0.
+# AUR python-scramp is 1.5.0. Do not install that package.
+
+pkgname=python-scramp
+pkgver=1.4.9
+pkgrel=1
+pkgdesc='SASL SCRAM authentication protocol'
+arch=('any')
+url='https://codeberg.org/tlocke/scramp'
+license=('MIT-0')
+depends=('python' 'python-asn1crypto')
+makedepends=('python-installer')
+_wheel='scramp-1.4.9-py3-none-any.whl'
+source=("$_wheel::https://files.pythonhosted.org/packages/70/25/d563dc2822039e9283a106a3cc948149c46d14d85d96f434722000951267/scramp-1.4.9-py3-none-any.whl")
+noextract=("$_wheel")
+sha256sums=('e8640d915ab4109085b20c464bd7fa664a777fd7f361f90cd2af36e978839614')
+
+package() {
+	python -m installer --destdir="$pkgdir" "$_wheel"
+}

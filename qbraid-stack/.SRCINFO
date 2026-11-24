@@ -1,0 +1,21 @@
+pkgbase = qbraid-stack
+	pkgdesc = qBraid client stack (qbraid 0.13, qbraid-core 0.6.36) as a hash-locked Python 3.13 environment
+	pkgver = 0.13.0
+	pkgrel = 1
+	url = https://github.com/qBraid/qBraid
+	arch = x86_64
+	license = Apache-2.0
+	license = LicenseRef-qBraid-proprietary
+	depends = python313
+	depends = gcc-libs
+	depends = glibc
+	source = requirements.in
+	source = requirements.lock
+	source = test_qbraid_stack.py
+	source = qbraid-python
+	b2sums = c750f881d4e2e14e22f5e7e4aafaa70ddd7b4fd9b1606ba584776ac2f955478518fe35dafd55acd66afdee891f15ad7e857637a52944b572df860d8597ed23b4
+	b2sums = 5dfab277898d9e1b0ce85db988990751d618d115727fb22fbcc779b2bbc365526318bd7f596f6e0f355efc96b89929143b2331c7c21581a6bb1ae7bf15f685c2
+	b2sums = 65924c4db7692ef127dcf3cb705c8818674bc48463ba8e0828ada56a9e67ed81b2600f082f3b676c2a60786d333902b50b366c72577f8749361bba3ed64d7fcf
+	b2sums = 910d6cb09d118ee05b7f4d2d1bd74fc452f13a2fb9581799847248c89247c7266fb82016875c47023c10812b19f45464f666fcae777d7225b7fc78161ae07a29
+
+pkgname = qbraid-stack

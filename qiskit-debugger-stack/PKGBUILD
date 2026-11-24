@@ -1,0 +1,47 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+
+# qiskit-debugger imports qiskit.Aer and qiskit.execute, removed in Qiskit 1.0,
+# and pins qiskit==0.43.2; the stack keeps that release under /opt. The qiskit
+# 0.43.2 metapackage ships only an sdist with a bare setup.py, so it alone
+# builds from source.
+pkgname=qiskit-debugger-stack
+pkgver=0.1.2
+pkgrel=2
+pkgdesc="qiskit-debugger 0.1.2 on its pinned Qiskit 0.43.2 as a hash-locked Python 3.11 environment"
+arch=('x86_64')
+url="https://pypi.org/project/qiskit-debugger/"
+license=('MIT')
+depends=(python311 gcc-libs glibc)
+_prefix=/opt/$pkgname
+source=(requirements.in requirements.lock test_qiskit_debugger_stack.py qiskit-debugger-python)
+b2sums=('d8c499e9763afa056ac64c78cff7da73f23032ea2aec3ec32f233873da960b5d316a2f1cf464f9814be6a2b6677887ae4d024db98ba2c51d67550f796a60be77'
+        '3265c418b8f1880abc61a86d4828cbcf2b8c0e51e89f7627b85afb87b4d3ab0bb7ddf44f7b19d9338012d6b95b99166845281d1cdd23c4d9f1157daa5b95d750'
+        'da44df52f30c11ad04b4549d6f8f4f5ab4221f52a9e4b19b9160d36fa5219e1c6f1e3fd4ebd24e152e023cd4987e93316a95f03708da5d51d3ca61031f2148ae'
+        '055504c85cd91d29d7c1809d266435a8df7eb5896fe9d63a4d735b2aef420d977f92e5d45f5a23253e30bbace21756e4c3ea116d7e1c0c773d64badce0bc98f5')
+
+build() {
+	/usr/bin/python3.11 -m venv --clear "$srcdir/stack"
+	"$srcdir/stack/bin/python" -m pip install -q --no-cache-dir --upgrade pip==25.3
+	# --require-hashes binds every distribution to the lock and --no-deps keeps
+	# the installed set equal to it.
+	"$srcdir/stack/bin/python" -m pip install -q --no-cache-dir --require-hashes --no-deps --only-binary :all: --no-binary qiskit \
+		-r "$srcdir/requirements.lock"
+}
+
+check() {
+	cd "$srcdir"
+	"$srcdir/stack/bin/python" -P -m unittest discover -v -s "$srcdir" -p test_qiskit_debugger_stack.py
+	"$srcdir/stack/bin/python" -m pip check
+}
+
+package() {
+	install -d "$pkgdir$_prefix"
+	cp -a "$srcdir/stack/." "$pkgdir$_prefix/"
+	# Entry-point shebangs and activate scripts carry the build path.
+	grep -rlI --null "$srcdir/stack" "$pkgdir$_prefix/bin" "$pkgdir$_prefix/pyvenv.cfg" |
+		xargs -0 -r sed -i "s|$srcdir/stack|$_prefix|g"
+	find "$pkgdir$_prefix" -name __pycache__ -prune -exec rm -r {} +
+	"$pkgdir$_prefix/bin/python" -m compileall -q -j0 -d "$_prefix/lib" "$pkgdir$_prefix/lib" >/dev/null
+	install -Dm644 requirements.in requirements.lock test_qiskit_debugger_stack.py -t "$pkgdir/usr/share/$pkgname/"
+	install -Dm755 qiskit-debugger-python "$pkgdir/usr/bin/qiskit-debugger-python"
+}

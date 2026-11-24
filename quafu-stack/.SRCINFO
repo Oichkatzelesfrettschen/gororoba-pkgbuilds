@@ -1,0 +1,20 @@
+pkgbase = quafu-stack
+	pkgdesc = Quafu (BAQIS ScQ-Cloud) pyquafu 0.4.5 as a hash-locked Python 3.11 environment
+	pkgver = 0.4.5
+	pkgrel = 1
+	url = https://github.com/ScQ-Cloud/pyquafu
+	arch = x86_64
+	license = Apache-2.0
+	depends = python311
+	depends = gcc-libs
+	depends = glibc
+	source = requirements.in
+	source = requirements.lock
+	source = test_quafu_stack.py
+	source = quafu-python
+	b2sums = 4f4c770237aa46fd325ea8beb2e785d8792d1d19f97c83c9476818b3d19e0ef67271575c8cffffd07b317cb4374b7c4a28671206a898254b84558f487e20c2f6
+	b2sums = 6b9279ab47e8ea72794a5098bfce8474c1d04ee1598786ae3e76a80da12f8b0d695f42e29b39a9c38a3d34d1d4fbe7cba8cfe2736f6dac6b46b4cfa8fad318ba
+	b2sums = b62e2d70797d15470f5023d16890c9c47acdf7cb04048dddb2248c066d11f5406373b805fd3ec4d014b62162192d8294029a3fb32dab378b8e0ed12fec114031
+	b2sums = 996b361aabdf005e97f124cd34a46d30e39d0f374c7ef5803e8830ead635a98e0f08c0fbc994938d8eca538e07b275c144301099580b6f6b1dea8b03087e30d0
+
+pkgname = quafu-stack

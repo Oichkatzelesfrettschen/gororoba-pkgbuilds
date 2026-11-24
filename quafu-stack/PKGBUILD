@@ -1,0 +1,53 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+
+# Quafu SDK as one self-contained Python 3.11 environment.
+# pyquafu 0.4.5 requires numpy<2.0.0, below the system numpy. numpy 1.26.4
+# and pyquafu 0.4.5 publish cp311 manylinux wheels, so the lock resolves to
+# wheels only and build() installs with --only-binary. python311 comes from
+# the AUR package python311.
+pkgname=quafu-stack
+pkgver=0.4.5
+pkgrel=1
+pkgdesc="Quafu (BAQIS ScQ-Cloud) pyquafu 0.4.5 as a hash-locked Python 3.11 environment"
+arch=('x86_64')
+url="https://github.com/ScQ-Cloud/pyquafu"
+license=('Apache-2.0')
+depends=(python311 gcc-libs glibc)
+_prefix=/opt/$pkgname
+source=(
+	requirements.in
+	requirements.lock
+	test_quafu_stack.py
+	quafu-python
+)
+b2sums=('4f4c770237aa46fd325ea8beb2e785d8792d1d19f97c83c9476818b3d19e0ef67271575c8cffffd07b317cb4374b7c4a28671206a898254b84558f487e20c2f6'
+        '6b9279ab47e8ea72794a5098bfce8474c1d04ee1598786ae3e76a80da12f8b0d695f42e29b39a9c38a3d34d1d4fbe7cba8cfe2736f6dac6b46b4cfa8fad318ba'
+        'b62e2d70797d15470f5023d16890c9c47acdf7cb04048dddb2248c066d11f5406373b805fd3ec4d014b62162192d8294029a3fb32dab378b8e0ed12fec114031'
+        '996b361aabdf005e97f124cd34a46d30e39d0f374c7ef5803e8830ead635a98e0f08c0fbc994938d8eca538e07b275c144301099580b6f6b1dea8b03087e30d0')
+
+build() {
+	/usr/bin/python3.11 -m venv --clear "$srcdir/stack"
+	"$srcdir/stack/bin/python" -m pip install -q --no-cache-dir --upgrade pip==25.3
+	# --require-hashes binds every distribution to the lock, --only-binary
+	# keeps the install to published wheels, and --no-deps keeps the
+	# resolved set equal to the lock.
+	"$srcdir/stack/bin/python" -m pip install -q --no-cache-dir --require-hashes --no-deps --only-binary :all: \
+		-r "$srcdir/requirements.lock"
+}
+
+check() {
+	cd "$srcdir"
+	"$srcdir/stack/bin/python" -P -m pytest -q -p no:cacheprovider test_quafu_stack.py
+}
+
+package() {
+	install -d "$pkgdir$_prefix"
+	cp -a "$srcdir/stack/." "$pkgdir$_prefix/"
+	# Entry-point shebangs and activate scripts carry the build path.
+	grep -rlI --null "$srcdir/stack" "$pkgdir$_prefix/bin" "$pkgdir$_prefix/pyvenv.cfg" |
+		xargs -0 -r sed -i "s|$srcdir/stack|$_prefix|g"
+	find "$pkgdir$_prefix" -name __pycache__ -prune -exec rm -r {} +
+	"$pkgdir$_prefix/bin/python" -m compileall -q -j0 -d "$_prefix/lib" "$pkgdir$_prefix/lib" >/dev/null
+	install -Dm644 requirements.in requirements.lock test_quafu_stack.py -t "$pkgdir/usr/share/$pkgname/"
+	install -Dm755 quafu-python "$pkgdir/usr/bin/quafu-python"
+}

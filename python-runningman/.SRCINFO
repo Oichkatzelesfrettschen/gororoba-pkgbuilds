@@ -1,0 +1,17 @@
+pkgbase = python-runningman
+	pkgdesc = Qiskit Runtime backend and job wrappers used by mthree
+	pkgver = 2.3.0
+	pkgrel = 1
+	url = https://pypi.org/project/runningman/
+	arch = any
+	license = Apache-2.0
+	makedepends = python-build
+	makedepends = python-installer
+	makedepends = python-setuptools
+	makedepends = python-wheel
+	depends = python
+	depends = python-qiskit-ibm-runtime
+	source = https://files.pythonhosted.org/packages/source/r/runningman/runningman-2.3.0.tar.gz
+	sha256sums = 99f98ca2c854363083c5a39d2382667f6eed36a8e1db312d4ff0918f417290d7
+
+pkgname = python-runningman
