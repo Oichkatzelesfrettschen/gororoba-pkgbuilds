@@ -6,8 +6,7 @@ This profile splits the Rival 710 (1038:1730) out of the upstream
 the Rival 700.  All commands here are the same byte sequences that upstream
 ships in 4.17.0 for the 700-family; new 710-only features (tactile, OLED,
 lift-off, sleep, profile-slot, etc.) live in ``rival710_extras.py`` and are
-gated until verified end-to-end against this user's specific hardware per
-``wiggly-catmull §8``.
+gated until each is verified end-to-end on the device.
 
 See ``commands.md`` in the package's source dir for the full protocol map.
 """
