@@ -1,0 +1,6 @@
+pkgbase = d
+	pkgver = 1
+	pkgrel = 1
+	provides = zlib
+
+pkgname = d
