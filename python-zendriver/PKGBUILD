@@ -1,0 +1,27 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+# shellcheck shell=bash disable=SC2034,SC2154
+# The test suite drives a Chromium browser (tests/conftest.py, tests/Dockerfile); check() is absent.
+# grapheme is provided by the blackarch repository only; see the DECISION NEEDED item in the PR body.
+
+pkgname=python-zendriver
+pkgver=0.18.0
+pkgrel=1
+pkgdesc='Async-first Chrome automation framework with a stealth-oriented CDP client'
+arch=('any')
+url='https://github.com/cdpdriver/zendriver'
+license=('AGPL-3.0-only')
+depends=('python-asyncio-atexit' 'python-deprecated' 'python-emoji' 'python-grapheme' 'python-mss' 'python-websockets')
+makedepends=('python-build' 'python-installer' 'python-hatchling')
+source=("https://files.pythonhosted.org/packages/d5/f0/36295fa12e4c4cef5fd6877d2aa96bd04232734b3ffa0537d9175407c6a0/zendriver-${pkgver}.tar.gz")
+sha256sums=('bc5c582edc988cd20127263ba8957c327167e59211d95730e48d48c80dab54ad')
+
+build() {
+  cd "zendriver-$pkgver" || exit
+  python -m build --wheel --no-isolation
+}
+
+package() {
+  cd "zendriver-$pkgver" || exit
+  python -m installer --destdir="$pkgdir" dist/*.whl
+  install -Dm644 LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}

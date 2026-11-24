@@ -1,0 +1,32 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+# shellcheck shell=bash disable=SC2034,SC2154
+# asyncio_atexit.py is a top-level module, so the tests import it from the source tree without an install.
+
+pkgname=python-asyncio-atexit
+pkgver=1.0.1
+pkgrel=1
+pkgdesc='atexit for asyncio: run coroutines at interpreter exit'
+arch=('any')
+url='https://github.com/minrk/asyncio-atexit'
+license=('MIT')
+depends=('python')
+makedepends=('python-build' 'python-installer' 'python-setuptools' 'python-wheel')
+checkdepends=('python-pytest')
+source=("https://files.pythonhosted.org/packages/22/d3/dd2974be3f67c7ec96e0d6ab454429d0372cb7c7bffa3d0ac67a483cb801/asyncio-atexit-${pkgver}.tar.gz")
+sha256sums=('1d0c71544b8ee2c484d322844ee72c0875dde6f250c0ed5b6993592ab9f7d436')
+
+build() {
+  cd "asyncio-atexit-$pkgver" || exit
+  python -m build --wheel --no-isolation
+}
+
+check() {
+  cd "asyncio-atexit-$pkgver" || exit
+  PYTHONPATH=. python -m pytest -q test_asyncio_atexit.py
+}
+
+package() {
+  cd "asyncio-atexit-$pkgver" || exit
+  python -m installer --destdir="$pkgdir" dist/*.whl
+  install -Dm644 LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}

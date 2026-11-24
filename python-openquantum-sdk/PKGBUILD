@@ -1,0 +1,26 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+# shellcheck shell=bash disable=SC2034,SC2154
+# The sdist ships no LICENSE file; the license is taken from the Apache Software License classifier.
+# The upstream test suite needs the requests-mock and pytest-mock test extras; check() is absent until it is verified offline.
+
+pkgname=python-openquantum-sdk
+pkgver=1.2.2
+pkgrel=1
+pkgdesc='Python SDK for Open Quantum'
+arch=('any')
+url='https://pypi.org/project/openquantum-sdk/'
+license=('Apache-2.0')
+depends=('python-requests')
+makedepends=('python-build' 'python-installer' 'python-setuptools' 'python-wheel')
+source=("https://files.pythonhosted.org/packages/b6/7a/0f84ce1476bdbef3e7e79b3cb517b8a3c862cabd0c9dd760d9c0206e5fe6/openquantum_sdk-${pkgver}.tar.gz")
+sha256sums=('223b07d687ee6ba819f9b9a0910ed6683ace1f2a6367c2a637d73aabba6112f4')
+
+build() {
+  cd "openquantum_sdk-$pkgver" || exit
+  python -m build --wheel --no-isolation
+}
+
+package() {
+  cd "openquantum_sdk-$pkgver" || exit
+  python -m installer --destdir="$pkgdir" dist/*.whl
+}
