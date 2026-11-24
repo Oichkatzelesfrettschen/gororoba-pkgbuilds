@@ -236,3 +236,23 @@ replaces it.
   4 x 16 GiB from two kits rated 3600 and 2666, all at 3200 MT/s.
 - Rule: tuning values derive from a measurement taken in the same run, and a
   disagreement with older documentation is recorded beside the value.
+
+## D-026 CI builds the in-repository dependency closure through a local repository
+
+- Observation: the first build of qcsuper failed because python-pycrate exists
+  only here; the second failed because a pacman repository section without its
+  database makes every sync operation fail. Run 45471278213 then built
+  python-pycrate, published it to the container-local repository and built
+  qcsuper against it.
+- Rule: scripts/build-order.sh sorts the in-repository closure of depends,
+  makedepends and checkdepends; the build job registers the local repository
+  only after its first repo-add.
+
+## D-027 Local builds are fenced from the AUR by an included IgnorePkg list
+
+- Observation: paru offered AUR builds of ten names built from these recipes,
+  one of them an older recipe than the installed build.
+- Rule: the workstation's pacman.conf includes a generated IgnorePkg list of
+  installed packages without a repository packager that a sync repository or
+  the AUR also offers; official builds of the same names (xorg-server) stay
+  out of the list so their updates continue.
