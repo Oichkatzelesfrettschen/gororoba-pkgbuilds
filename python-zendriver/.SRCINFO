@@ -1,0 +1,20 @@
+pkgbase = python-zendriver
+	pkgdesc = Async-first Chrome automation framework with a stealth-oriented CDP client
+	pkgver = 0.18.0
+	pkgrel = 1
+	url = https://github.com/cdpdriver/zendriver
+	arch = any
+	license = AGPL-3.0-only
+	makedepends = python-build
+	makedepends = python-installer
+	makedepends = python-hatchling
+	depends = python-asyncio-atexit
+	depends = python-deprecated
+	depends = python-emoji
+	depends = python-grapheme
+	depends = python-mss
+	depends = python-websockets
+	source = https://files.pythonhosted.org/packages/d5/f0/36295fa12e4c4cef5fd6877d2aa96bd04232734b3ffa0537d9175407c6a0/zendriver-0.18.0.tar.gz
+	sha256sums = bc5c582edc988cd20127263ba8957c327167e59211d95730e48d48c80dab54ad
+
+pkgname = python-zendriver
