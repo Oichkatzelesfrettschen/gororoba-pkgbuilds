@@ -93,10 +93,9 @@ not use a chroot.
   they exist in this repository on branch `review-20261124`:
   - braket (schemas, default-simulator, sdk): all present.
   - aws-cdk (lib, cloud-assembly-schema, asset-awscli-v1, jsii): all present.
-  - qiskit-ibm (runtime, catalog): present. The names python-qiskit-ibm-serverless
-    and python-qiskit-ibm-noise-learning are not in this repository;
-    python-qiskit-serverless and python-qiskit-noise-learning are, and they are
-    not yet in the group (open decision 4).
+  - qiskit-ibm (python-qiskit-ibm-runtime, python-qiskit-ibm-catalog,
+    python-qiskit-serverless, python-qiskit-noise-learning): all present;
+    catalog pins serverless, and runtime's noise-learning extra needs >= 0.2.0.
   - aer (python-qiskit-aer, python-qiskit-aer-cuda): present. An earlier list also
     named a gororoba-quantum copy, which is not a recipe in this repository.
   - TensorRT (python-torch-tensorrt-cp314): tensorrt and python-tensorrt are not in
@@ -112,7 +111,7 @@ not use a chroot.
 | Tier | Meaning | Packages (2026-11-24) |
 |---|---|---|
 | A, hosted | Auto-bump, build on GitHub-hosted runners, open PR | The 18 names on `ci/build-allowlist.txt` (branch `ci-pipeline`): qcsuper, python-hupper, python-pycrate, deqp-runner, wakaru-bin, jadx-headless-mcp-bin, rea-agents, python-amazon-ion, python-kagglehub, python-kingdon, python-eigenkit, python-hypercomplex-algebra, python-hypercomplex-engine, python-jupytext, python-scmver, python-boltons, python-pauli-prop, python-scramp |
-| A, compute host | Auto-bump, build on a compute host, open PR | aide, datasette, kuna-bin, oci-cli, cvcuda-bin (also Tier B, open decision 5), nvimgcodec-bin (also Tier B, open decision 5), python-pyathena, python-bedrock-agentcore (held on boto3), python-cytoolz (gap), the braket, aws-cdk and qiskit-ibm groups, originquantum-stack, qxelarator-python313 |
+| A, compute host | Auto-bump, build on a compute host, open PR | aide, datasette, kuna-bin, oci-cli, python-pyathena, python-bedrock-agentcore (held on boto3), python-cytoolz (gap), the braket, aws-cdk and qiskit-ibm groups, originquantum-stack, qxelarator-python313 |
 | B | Auto-detect; build and publish after owner review | Patched or toolchain-pinned recipes: perfetto, semgrep-source (multi-hour build), webkit2gtk-4.1-hardened, xorg-server-glamor-r300fix, evil-opencode (bun pin; not in this repository), open-webui-stack and kaggle stacks (lock regeneration), every CUDA recipe (python-qiskit-aer-cuda, python-cuquantum, python-torch-tensorrt-cp314) |
 | C | Never automatic | Configuration packages without an upstream, which live in pkgbuilds-personal (D-022; e.g. case-leds-indigo-dim), deliberate pins (tree-sitter-0.22-compat, gcc13-sidecar-bin, uefitool, obs-face-tracker, rr, which is not in this repository), firmware tools (micron-storage-executive-cli-crucial-mx500-updater), local_only/ |
 
@@ -195,5 +194,3 @@ recipe's 2025-04-25).
 1. Compute host for the runner: answered by D-019 (GitHub-hosted runners on this public repository).
 2. Where the private package repository is served from and which key signs it.
 3. Which gap rows become recipes.
-4. Whether python-qiskit-serverless and python-qiskit-noise-learning join the qiskit-ibm group, and whether the group keeps the names python-qiskit-ibm-serverless and python-qiskit-ibm-noise-learning.
-5. Tier overlap: cvcuda-bin and nvimgcodec-bin are listed under Tier A (compute host) and under Tier B (CUDA recipes). Which tier governs them.
