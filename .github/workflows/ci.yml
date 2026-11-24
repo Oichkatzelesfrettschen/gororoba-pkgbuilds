@@ -169,6 +169,19 @@ jobs:
       - name: Install tools and build user
         run: |
           pacman -Syu --noconfirm --needed git sudo
+          # The CachyOS [cachyos] repository supplies packages the workstation
+          # uses that Arch does not ship (python313, python311). It is appended
+          # after core and extra, so it only fills gaps and never replaces an
+          # Arch build. The key is pinned by full fingerprint; the keyserver
+          # only transports it.
+          key=882DCFE48E2051D48E2562ABF3B607488DB35A47
+          pacman-key --recv-keys "$key" --keyserver hkps://keyserver.ubuntu.com
+          pacman-key --finger "$key" | grep -q 'CachyOS <admin@cachyos.org>'
+          pacman-key --lsign-key "$key"
+          printf 'Server = https://cdn77.cachyos.org/repo/$arch/$repo\nServer = https://us.cachyos.org/repo/$arch/$repo\nServer = https://mirror.cachyos.org/repo/$arch/$repo\n' > /etc/pacman.d/cachyos-mirrorlist
+          printf '\n[cachyos]\nInclude = /etc/pacman.d/cachyos-mirrorlist\n' >> /etc/pacman.conf
+          pacman -Sy --noconfirm
+          pacman -Si python313 > /dev/null
           useradd -m builder
           # makepkg --syncdeps calls "sudo pacman"; nothing else is delegated.
           printf 'builder ALL=(root) NOPASSWD: /usr/bin/pacman\n' > /etc/sudoers.d/builder

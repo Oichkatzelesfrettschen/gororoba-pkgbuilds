@@ -7,7 +7,6 @@ deqp-runner
 flexiblas
 jadx-headless-mcp-bin
 mitiq-stack
-python313
 python-asyncio-atexit
 python-boltons
 python-cirq
