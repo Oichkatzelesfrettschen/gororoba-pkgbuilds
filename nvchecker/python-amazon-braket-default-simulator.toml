@@ -1,0 +1,4 @@
+[python-amazon-braket-default-simulator]
+source = "pypi"
+pypi = "amazon-braket-default-simulator"
+exclude_regex = "(alpha|beta|rc|dev)"

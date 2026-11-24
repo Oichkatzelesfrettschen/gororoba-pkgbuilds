@@ -1,0 +1,4 @@
+[python-kagglehub]
+source = "pypi"
+pypi = "kagglehub"
+exclude_regex = "(alpha|beta|rc|dev)"

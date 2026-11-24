@@ -1,0 +1,4 @@
+[python-amazon-ion]
+source = "pypi"
+pypi = "amazon-ion"
+exclude_regex = "(alpha|beta|rc|dev)"
