@@ -1,7 +1,7 @@
 pkgbase = python-qiskit-aer-cuda
 	pkgdesc = Qiskit Aer with the CUDA GPU backend and cuStateVec/cuTensorNet (cuQuantum) for NVIDIA Ada GPUs
 	pkgver = 0.18.4
-	pkgrel = 1
+	pkgrel = 2
 	url = https://github.com/Qiskit/qiskit-aer
 	arch = x86_64
 	license = Apache-2.0
