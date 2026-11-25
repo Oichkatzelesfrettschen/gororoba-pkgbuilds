@@ -1,0 +1,5 @@
+[python-py-build-cmake]
+source = "pypi"
+pypi = "py-build-cmake"
+# python-amazon-ion pins >=0.5.0,<0.6.0; the 0.6 series is not tracked until the pin moves.
+include_regex = "^0\\.5\\.[0-9]+$"

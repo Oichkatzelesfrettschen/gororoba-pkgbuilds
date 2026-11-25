@@ -1,0 +1,53 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+# Contributor: a821 at mail de
+# Contributor: Sander Vocke <sandervocke@gmail.com>
+
+# Imported from the AUR python-py-build-cmake recipe, source switched from a
+# git tag to the GitHub tag archive so the checksum covers the tree. The 0.5
+# series stays: python-amazon-ion pins py-build-cmake >=0.5.0,<0.6.0 and
+# upstream's 0.6 releases are pre-releases.
+
+pkgname=python-py-build-cmake
+_name=py-build-cmake
+pkgver=0.5.1
+pkgrel=1
+pkgdesc='PEP 517 compliant build backend for creating Python packages with extensions built using CMake'
+arch=('any')
+url='https://github.com/tttapa/py-build-cmake'
+license=('MIT')
+depends=(
+    'python'
+    'python-click'
+    'python-distlib'
+    'python-lark-parser'
+    'python-packaging'
+    'python-pyproject-metadata'
+    'python-tomli'
+)
+makedepends=('python-build' 'python-installer')
+checkdepends=('python-pytest' 'cmake' 'ninja' 'git')
+source=("$pkgname-$pkgver.tar.gz::$url/archive/refs/tags/$pkgver.tar.gz")
+sha256sums=('cdc10365a71823dacf635d60401ab7d9afa95e3230d9a0ce3a55a41428a39c8e')
+
+prepare() {
+  cd "$_name-$pkgver"
+  # The Arch repository carries python-pyproject-metadata 0.9.0; the 0.9
+  # series is API compatible with the pinned ~=0.9.1.
+  sed -i 's/~=0.9.1/~=0.9/' pyproject.toml
+}
+
+build() {
+  cd "$_name-$pkgver"
+  python -m build --wheel --skip-dependency-check --no-isolation
+}
+
+check() {
+  cd "$_name-$pkgver"
+  PYTHONPATH=src pytest -p no:cacheprovider
+}
+
+package() {
+  cd "$_name-$pkgver"
+  python -m installer --destdir="$pkgdir" dist/*.whl
+  install -Dm644 LICENSE -t "$pkgdir/usr/share/licenses/$pkgname"
+}

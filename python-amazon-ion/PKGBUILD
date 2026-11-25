@@ -7,7 +7,7 @@
 
 pkgname=python-amazon-ion
 pkgver=0.16.0
-pkgrel=1
+pkgrel=2
 pkgdesc='Amazon Ion data notation library'
 arch=('x86_64')
 url='https://github.com/amazon-ion/ion-python'

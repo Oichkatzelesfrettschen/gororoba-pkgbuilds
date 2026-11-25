@@ -1,7 +1,7 @@
 pkgbase = python-hupper
 	pkgdesc = Integrated process monitor for developing servers
 	pkgver = 1.12.1
-	pkgrel = 1
+	pkgrel = 2
 	epoch = 1
 	url = https://github.com/pylons/hupper
 	changelog = CHANGES.rst
