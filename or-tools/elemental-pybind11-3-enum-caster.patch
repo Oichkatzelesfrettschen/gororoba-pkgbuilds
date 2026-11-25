@@ -1,0 +1,44 @@
+Backport of upstream google/or-tools commit 48e8023bb ("Disable default
+pybind11-3's default enum caster for elemental AttrType enums", 2026-03-19,
+after v9.15), taken from
+https://github.com/google/or-tools/commit/48e8023bb.patch. It applies to
+v9.15 without changes.
+
+pybind11 3 ships a default type_caster for enum types. or-tools defines its
+own type_caster<AttrType> for the elemental attribute enums
+(ortools/math_opt/elemental/python/elemental.cc), so the compiler reports
+"ambiguous template instantiation for type_caster<...AttrType>". The patch
+sets type_caster_enum_type_enabled to false_type for those enums, which makes
+the or-tools specialization the only candidate.
+
+From 48e8023bb843e39bfecaf1214954c86e75500b06 Mon Sep 17 00:00:00 2001
+From: Clement Courbet <courbet@google.com>
+Date: Wed, 18 Mar 2026 13:57:17 +0000
+Subject: [PATCH] Disable default pybind11-3's default enum caster for
+ elemental `AttrType` enums.
+
+---
+ ortools/math_opt/elemental/python/elemental.cc | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
+
+diff --git a/ortools/math_opt/elemental/python/elemental.cc b/ortools/math_opt/elemental/python/elemental.cc
+index 0e212d86647..d3f2cbdfd67 100644
+--- a/ortools/math_opt/elemental/python/elemental.cc
++++ b/ortools/math_opt/elemental/python/elemental.cc
+@@ -300,6 +300,16 @@ struct type_caster<ElementId<element_type>> {
+   }
+ };
+ 
++#if defined(PYBIND11_HAS_NATIVE_ENUM)
++// We must first disable the default pybind11 handler for enums to make our
++// specialization non-ambiguous:
++// https://pybind11.readthedocs.io/en/stable/classes.html#enumerations-and-internal-types
++template <typename AttrType>
++struct type_caster_enum_type_enabled<
++    AttrType, enable_if_t<(GetIndexIfAttr<AttrType>() >= 0)>>
++    : std::false_type {};
++#endif
++
+ // Type caster for casting enum values from python enums to C++ `Elemental`
+ // enums.
+ template <typename AttrType>
