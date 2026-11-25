@@ -4,7 +4,7 @@
 pkgname=python-pyscf
 _name=pyscf
 pkgver=2.15.1
-pkgrel=1
+pkgrel=2
 pkgdesc="Python module for quantum chemistry"
 arch=('x86_64')
 url="https://github.com/pyscf/pyscf"
