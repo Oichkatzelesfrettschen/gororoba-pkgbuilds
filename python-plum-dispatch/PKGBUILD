@@ -15,7 +15,7 @@ license=('MIT')
 conflicts=('python-plum')
 depends=('python-beartype' 'python-rich' 'python-typing_extensions')
 makedepends=('python-build' 'python-hatch-vcs' 'python-hatchling' 'python-installer')
-checkdepends=('python-numpy' 'python-pytest' 'python-sybil')
+checkdepends=('ipython' 'python-numpy' 'python-pytest' 'python-sybil')
 source=("$pkgname-$pkgver.tar.gz::$url/archive/refs/tags/v$pkgver.tar.gz")
 sha256sums=('d66fbb41118e7f1bf04e861487965b19e37a5e0cfe4fde791cdeffbd8f0b12d1')
 
@@ -28,8 +28,11 @@ check() {
 	cd "$_name-$pkgver"
 	python -m venv --system-site-packages test-env
 	test-env/bin/python -m installer dist/*.whl
+	# test_methodlist_repr compares a repr whose source-location line wraps with the length of the
+	# build path, which the CI work directory changes.
 	# tests/static needs mypy and pyright, which are not packaged.
-	test-env/bin/python -P -m pytest -o addopts="" -p no:doctest -p no:cacheprovider tests --ignore=tests/static
+	test-env/bin/python -P -m pytest -o addopts="" -p no:doctest -p no:cacheprovider tests --ignore=tests/static \
+		--deselect tests/test_method.py::test_methodlist_repr
 }
 
 package() {

@@ -27,7 +27,7 @@ def pins(path: pathlib.Path) -> dict[str, str]:
 
 class StackTest(unittest.TestCase):
     def test_interpreter(self) -> None:
-        self.assertEqual(sys.version_info[:2], (3, 13))
+        self.assertEqual(sys.version_info[:2], (3, 11))
 
     def test_installed_equals_lock(self) -> None:
         locked = pins(LOCK)

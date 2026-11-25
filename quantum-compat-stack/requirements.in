@@ -5,3 +5,4 @@ qiskit-ibm-transpiler==0.18.0
 autograd
 diastatic-malt
 scipy-openblas32
+qiskit<2.5

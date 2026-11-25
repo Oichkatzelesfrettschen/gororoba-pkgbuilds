@@ -6,7 +6,9 @@
 # python-autoray 0.11.0 that python-quimb needs; pennylane-qiskit pins
 # qiskit-ibm-runtime~=0.45 and qiskit-ibm-transpiler pins networkx==2.8.5.
 # The stack keeps these pins under /opt. qiskit-gym ships its wheel for
-# glibc 2.34 and newer. The version tracks pennylane.
+# glibc 2.34 and newer. qiskit-ibm-transpiler 0.18.0 imports
+# qiskit.synthesis.linear.linear_matrix_utils, which Qiskit 2.5 removed, so the
+# stack pins qiskit<2.5. The version tracks pennylane.
 pkgname=quantum-compat-stack
 pkgver=0.45.1
 pkgrel=1
@@ -17,8 +19,8 @@ license=('Apache-2.0')
 depends=(python313 gcc-libs glibc)
 _prefix=/opt/$pkgname
 source=(requirements.in requirements.lock test_quantum_compat_stack.py quantum-compat-python)
-sha256sums=('9e85909ea1e0f96e1a7cdc8ec38f914917d333ff70201b5c1a5f99196ea2f0d8'
-            '796492f36b51b467566d9ce6757e49ce741e1045979f8904a8a7d7fc2da23720'
+sha256sums=('9307033a68ff1ebf4e610b2b045c49cd070365e34cac326dc9147eeca1b8c94d'
+            '54865d37977759d307186dd5a79c2bf194fbb60db6ff362dcd12731e1d4d703d'
             '924adeaa189fc6967a09c8a60201449d944843423fe5e2175e7628c3b8b66543'
             'fccbc9ef84c58ac53af8802c947cae96ae6d3f7f1fce12abf68fcc57b537bbdd')
 

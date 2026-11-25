@@ -1,12 +1,12 @@
 pkgbase = mitiq-stack
-	pkgdesc = mitiq 1.1.0 error mitigation on Qiskit 2.6 and cirq-core 1.6 as a hash-locked Python 3.13 environment
+	pkgdesc = mitiq 1.1.0 error mitigation on Qiskit 2.6 and cirq-core 1.6 as a hash-locked Python 3.11 environment
 	pkgver = 1.1.0
 	pkgrel = 1
 	url = https://github.com/unitaryfoundation/mitiq
 	arch = x86_64
 	license = GPL-3.0-only
 	license = Apache-2.0
-	depends = python313
+	depends = python311
 	depends = gcc-libs
 	depends = glibc
 	source = requirements.in
@@ -14,8 +14,8 @@ pkgbase = mitiq-stack
 	source = test_mitiq_stack.py
 	source = mitiq-python
 	sha256sums = 071498e33f0220f373967e0087bdd39d8e1d670ae8ab99f44003c12cabd21086
-	sha256sums = 467655c7ea0efe4837d3ae24ccc7d8a9691f4935d69feb5415e29a48ed739763
-	sha256sums = bc058ac0cbaecb4ec8a6f11b383c30c4a7828b9a0b81ab52e878f3fcede79dbe
-	sha256sums = cf9c1d6de6ed266f4ad91c20c06074cd9353136ad87a38c56ae5b71a6fa8315b
+	sha256sums = 89ca3e59467bc189c3021b86cf6e73754632b617e3e478bbeb5a446b97121751
+	sha256sums = 5940c8dca67571852af484963b3e554dc251325849c9fc76197eba5295f27e0d
+	sha256sums = 35130429b48532f0e7ddc33bbdeb71980a51588db43ea223991e7716ee8b62e4
 
 pkgname = mitiq-stack
