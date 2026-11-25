@@ -36,6 +36,10 @@ prepare() {
     # imports that class and keeps its semantics. The library code does not import qiskit_ibm_runtime.
     sed -i 's/^from qiskit_ibm_runtime import EstimatorV2, Session$/from qiskit_ibm_runtime import Session\nfrom qiskit_ibm_runtime.server_side import EstimatorV2/' \
         $_pkgname-$pkgver/test/gradients/test_estimator_gradient.py
+    # test_qbayesian.py builds options.SamplerOptions for the top-level SamplerV2, which runtime 0.52
+    # also binds to the client-side executor class; server_side.SamplerV2 takes those options.
+    sed -i 's/^from qiskit_ibm_runtime import SamplerV2, Session$/from qiskit_ibm_runtime import Session\nfrom qiskit_ibm_runtime.server_side import SamplerV2/' \
+        $_pkgname-$pkgver/test/algorithms/inference/test_qbayesian.py
 }
 
 build() {
