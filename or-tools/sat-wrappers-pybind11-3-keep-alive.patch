@@ -1,0 +1,46 @@
+Backport of upstream google/or-tools commit 741965107 ("util: fix python
+wrappers build", 2026-03-19, after v9.15), taken from
+https://github.com/google/or-tools/commit/741965107.patch. The commit edits
+ortools/util/python/wrappers.cc, where upstream later moved the generator; at
+v9.15 the file is ortools/sat/python/wrappers.cc, so the paths below are
+retargeted and the hunks apply unchanged.
+
+The generator writes the pybind11 wrappers of SatParameters from string
+templates. pybind11 3 rejects extra call policies in the def_property family
+("def_property family does not currently support keep_alive"), and the two
+def_property_readonly templates for repeated fields passed
+py::keep_alive<0, 1>(). return_value_policy::reference_internal ties the
+returned reference to the owner object instead. The .def templates keep their
+keep_alive, which .def accepts.
+
+From 741965107e93aca455e84c349edafc7f914debdd Mon Sep 17 00:00:00 2001
+From: Corentin Le Molgat <corentinl@google.com>
+Date: Thu, 19 Mar 2026 10:22:42 +0100
+Subject: [PATCH] util: fix python wrappers build
+
+---
+ ortools/sat/python/wrappers.cc | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/ortools/sat/python/wrappers.cc b/ortools/sat/python/wrappers.cc
+
+--- a/ortools/sat/python/wrappers.cc
++++ b/ortools/sat/python/wrappers.cc
+@@ -370,7 +370,7 @@ class Generator {
+     .def_property_readonly(
+         "$0",
+         []($1 self) { return self->mutable_$2(); },
+-        py::return_value_policy::reference, py::keep_alive<0, 1>()))",
++        py::return_value_policy::reference_internal))",
+           field.name(), current_context_.self_mutable_name, field.name());
+       // We'll need to generate the wrapping for
+       // `google::protobuf::RepeatedPtrField<$3>`.
+@@ -383,7 +383,7 @@ class Generator {
+     .def_property_readonly(
+         "$0",
+         []($1 self) { return self->mutable_$0(); },
+-        py::return_value_policy::reference, py::keep_alive<0, 1>()))",
++        py::return_value_policy::reference_internal))",
+                                 field.name(),
+                                 current_context_.self_mutable_name);
+       // We'll need to generate the wrapping for

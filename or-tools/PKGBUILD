@@ -37,12 +37,14 @@ makedepends=('cmake' 'pkgconf' 'git' 'eigen' 'gtest' 'coin-or-cbc' 'protobuf' 'r
 source=("$pkgbase-$_tag.tar.gz::$url/archive/v$_tag.tar.gz"
         'source-location-absl.patch'
         'cp-model-helper-pybind11-3-keep-alive.patch'
+        'sat-wrappers-pybind11-3-keep-alive.patch'
         "pybind11_protobuf-$_pbp.tar.gz::https://github.com/pybind/pybind11_protobuf/archive/$_pbp.tar.gz"
         'mypy_protobuf-5.1.0-py3-none-any.whl::https://files.pythonhosted.org/packages/e8/ec/5ffcf8f5f53757e01afdece10c664e694ac60d2f17c2036811b85b842a5b/mypy_protobuf-5.1.0-py3-none-any.whl')
 noextract=('mypy_protobuf-5.1.0-py3-none-any.whl')
 sha256sums=('6395a00a97ff30af878ee8d7fd5ad0ab1c7844f7219182c6d71acbee1b5f3026'
             '4cef55e2990f1350fbd3c1277ef6a5c2295ae5910cfe99f521aa82343fe0a0fe'
             '25f762c3002f35ce453a2fea02a789e567df101ee21f37ce9e24a1408ab7a01e'
+            '5d101a223517c34acbd7da7b13beb70bc78f36fe5a98d40441946974a689d79c'
             '43ea0718703b4f75b5bf831d8c40e97564c3ab7b64a05ebafb5324688bb40ff4'
             'd7031f563f806b8bcd448a3e86768bf0994c0af5b0017b344a4fbbba4191f43c')
 
@@ -54,6 +56,9 @@ prepare() {
   # Upstream bdcf172c8 (after 9.15): pybind11 3 rejects py::keep_alive in the
   # def_property family of ortools/sat/python/cp_model_helper.cc.
   patch -Np1 -d "$pkgbase-$_tag" -i "$srcdir/cp-model-helper-pybind11-3-keep-alive.patch"
+  # Upstream 741965107 (after 9.15), retargeted to ortools/sat/python: the
+  # generated SatParameters wrappers pass keep_alive to def_property_readonly.
+  patch -Np1 -d "$pkgbase-$_tag" -i "$srcdir/sat-wrappers-pybind11-3-keep-alive.patch"
   python -m installer --destdir="$srcdir/mypy-protobuf" \
     "$srcdir/mypy_protobuf-5.1.0-py3-none-any.whl"
 
