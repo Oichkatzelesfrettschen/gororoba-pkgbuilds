@@ -1,0 +1,91 @@
+pkgbase = python-cirq
+	pkgver = 1.7.0
+	pkgrel = 1
+	url = https://github.com/quantumlib/Cirq
+	arch = any
+	license = Apache-2.0
+	checkdepends = ipython
+	checkdepends = poppler
+	checkdepends = python-attrs
+	checkdepends = python-duet
+	checkdepends = python-google-api-core
+	checkdepends = python-grpcio
+	checkdepends = python-matplotlib
+	checkdepends = python-networkx
+	checkdepends = python-numpy
+	checkdepends = python-opt_einsum
+	checkdepends = python-pandas
+	checkdepends = python-ply
+	checkdepends = python-protobuf
+	checkdepends = python-proto-plus
+	checkdepends = python-pytest
+	checkdepends = python-pytest-asyncio
+	checkdepends = python-requests
+	checkdepends = python-scipy
+	checkdepends = python-sortedcontainers
+	checkdepends = python-sympy
+	checkdepends = python-typedunits
+	checkdepends = python-typing_extensions
+	checkdepends = python-tqdm
+	checkdepends = texlive-binextra
+	checkdepends = texlive-latex
+	checkdepends = texlive-latexextra
+	checkdepends = texlive-mathscience
+	checkdepends = texlive-pictures
+	makedepends = git
+	makedepends = python-build
+	makedepends = python-installer
+	makedepends = python-setuptools
+	makedepends = python-wheel
+	depends = python
+	source = Cirq::git+https://github.com/quantumlib/Cirq#tag=v1.7.0
+	b2sums = SKIP
+
+pkgname = python-cirq
+	pkgdesc = A framework for creating, editing, and invoking Noisy Intermediate Scale Quantum (NISQ) circuits
+	depends = python-cirq-aqt
+	depends = python-cirq-core
+	depends = python-cirq-google
+	depends = python-cirq-ionq
+	depends = python-cirq-pasqal
+	depends = python-cirq-web
+
+pkgname = python-cirq-aqt
+	pkgdesc = Cirq module to support Alpine Quantum Technologies GmbH quantum computers
+	depends = python
+	depends = python-requests
+
+pkgname = python-cirq-core
+	depends = python
+	depends = python-attrs
+	depends = python-duet
+	depends = python-matplotlib
+	depends = python-networkx
+	depends = python-numpy
+	depends = python-pandas
+	depends = python-scipy
+	depends = python-sympy
+	depends = python-tqdm
+	optdepends = python-pylatex: LaTeX output of circuit diagrams (cirq.contrib.qcircuit)
+
+pkgname = python-cirq-google
+	pkgdesc = Cirq module to support Google's quantum hardware
+	depends = python
+	depends = python-google-api-core
+	depends = python-grpcio
+	depends = python-protobuf
+	depends = python-proto-plus
+	depends = python-typedunits
+
+pkgname = python-cirq-ionq
+	pkgdesc = Cirq module to support IonQ Inc. quantum computers
+	depends = python
+	depends = python-requests
+
+pkgname = python-cirq-pasqal
+	pkgdesc = Cirq module to support Pasqal quantum computers
+	depends = python
+	depends = python-requests
+
+pkgname = python-cirq-web
+	pkgdesc = Cirq module to support browser-based 3D visualization tools

@@ -1,0 +1,47 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+# Replaces the BlackArch brakeman, whose post_install runs "bundle install" and
+# is blocked by the pacman 7.1 scriptlet network sandbox. This recipe resolves
+# and vendors the gem closure in build() (bundle install --standalone), so
+# the package carries every gem and the install scriptlets do nothing.
+
+pkgname=brakeman-bundled
+_name=brakeman
+pkgver=8.1.1
+pkgrel=1
+pkgdesc='Static analysis security scanner for Ruby on Rails (gem closure vendored at build time)'
+arch=('any')
+url='https://brakemanscanner.org/'
+license=('LicenseRef-Brakeman-Public-Use' 'MIT')
+depends=('ruby')
+makedepends=('ruby-bundler')
+provides=("brakeman=$pkgver")
+conflicts=('brakeman')
+replaces=('brakeman')
+options=('!strip')
+source=("$_name-$pkgver.tar.gz::https://github.com/presidentbeef/brakeman/archive/refs/tags/v$pkgver.tar.gz")
+sha256sums=('5c95d0466ac2aa9f84f09bffb11947d297b887e4ea8df7a9412f97413a761ad9')
+
+build() {
+  cd "$_name-$pkgver"
+  # BM_PACKAGE drops the Gemfile test group (rake, minitest).
+  # --standalone writes ./bundle with a relocatable bundler/setup.rb.
+  export BM_PACKAGE=1
+  bundle config set --local path bundle
+  bundle install --standalone
+}
+
+package() {
+  cd "$_name-$pkgver"
+  local dest="$pkgdir/usr/share/brakeman"
+  install -d "$dest"
+  cp -a bin lib bundle "$dest/"
+  find "$dest/bundle" -type d -name .git -prune -exec rm -r {} +
+
+  install -Dm755 /dev/stdin "$pkgdir/usr/bin/brakeman" <<'EOF'
+#!/bin/sh
+exec ruby -r/usr/share/brakeman/bundle/bundler/setup /usr/share/brakeman/bin/brakeman "$@"
+EOF
+
+  install -Dm644 README.md -t "$pkgdir/usr/share/doc/brakeman"
+  install -Dm644 LICENSE.md MIT-LICENSE COPYING.md -t "$pkgdir/usr/share/licenses/$pkgname"
+}

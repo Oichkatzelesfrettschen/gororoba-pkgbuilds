@@ -1,0 +1,5 @@
+[coin-or-coinmumps]
+source = "github"
+github = "coin-or-tools/ThirdParty-Mumps"
+use_max_tag = true
+prefix = "releases/"

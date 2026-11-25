@@ -1,0 +1,6 @@
+[python-cirq]
+source = "github"
+github = "quantumlib/Cirq"
+use_latest_release = true
+prefix = "v"
+exclude_regex = "[0-9](a|b|rc|dev)[0-9]*$"

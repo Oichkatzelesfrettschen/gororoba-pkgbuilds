@@ -1,0 +1,4 @@
+[casadi]
+source = "github"
+github = "casadi/casadi"
+use_latest_release = true

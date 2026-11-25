@@ -1,0 +1,13 @@
+pkgname	origin_repository	origin_path	origin_commit	imported_utc
+flexiblas	AUR	flexiblas	4047ca7af2cda377e53da9ee559500ec237a5fad	2026-11-24T23:10:00Z
+or-tools	AUR	or-tools	e97325cc9ddfae56f46ff3c989b6db2b1104b374	2026-11-24T23:10:00Z
+python-pyutilib	AUR	python-pyutilib	f9a30ebbb7300c6d4188ba68a7249af4a78d55fc	2026-11-24T23:10:00Z
+python-pyomo	AUR	python-pyomo	f24580ffe8eed437ad3e1a95a6dd4c63a6c314c8	2026-11-24T23:10:00Z
+coin-or-coinmumps	AUR	coin-or-coinmumps	5f3a873a3130c601eddaafe8a84d5912f3ea647a	2026-11-24T23:10:00Z
+coin-or-ipopt	AUR	coin-or-ipopt	01ff8628d875f8a9dd85a8370dcaf7b0db6e76c6	2026-11-24T23:10:00Z
+coin-or-qpoases	AUR	coin-or-qpoases	b92f5a833fc480db709301cf025e6a495981db27	2026-11-24T23:10:00Z
+casadi	AUR	casadi	7d66e337b5f57a267b7a342040bd8170debf4fb7	2026-11-24T23:10:00Z
+python-ortools	new	-	-	2026-11-24T23:10:00Z
+python-casadi	new	-	-	2026-11-24T23:10:00Z
+brakeman-bundled	new	-	-	2026-11-24T23:10:00Z
+checkov-bundled	new	-	-	2026-11-24T23:10:00Z
