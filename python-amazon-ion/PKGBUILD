@@ -4,6 +4,10 @@
 # No CPython 3.14 wheel is published. Wheels stop at cp313.
 # Built from the sdist with py-build-cmake. AUR python-py-build-cmake 0.5.1 satisfies ~=0.5.0.
 # The sdist vendors ion-c, including a src/ion-c/.git gitlink. The build must not fetch it.
+# The sdist ships no tests directory (upstream's suite lives in the repository
+# beside the ion-tests submodule), so check() installs the wheel into a scratch
+# root and round-trips values through the text and binary codecs with the C
+# extension active.
 
 pkgname=python-amazon-ion
 pkgver=0.16.0
@@ -20,6 +24,27 @@ sha256sums=('0d96b99f0bcce0822571612c783d7d1049775c55bc0828bf6dfee30c119041ed')
 build() {
 	cd 'amazon_ion-0.16.0' || exit
 	python -m build --wheel --no-isolation
+}
+
+check() {
+	cd 'amazon_ion-0.16.0' || exit
+	local _site
+	_site="$(python -c 'import sysconfig; print(sysconfig.get_path("purelib"))')"
+	python -m installer --destdir="$srcdir/check-root" dist/*.whl
+	PYTHONPATH="$srcdir/check-root$_site" python -P - <<'EOF'
+import amazon.ion.simpleion as ion
+
+if not ion.c_ext:
+    raise SystemExit("C extension not loaded")
+text = '{a: [1, 2.5e0, "s", {{aGk=}}, 2020-01-01T], b: null.int, c: x::(y 3)}'
+value = ion.loads(text)
+for binary in (False, True):
+    if ion.loads(ion.dumps(value, binary=binary)) != value:
+        raise SystemExit("round trip failed, binary=%s" % binary)
+ion.c_ext = False
+if ion.loads(ion.dumps(value, binary=True)) != value:
+    raise SystemExit("pure Python round trip failed")
+EOF
 }
 
 package() {
