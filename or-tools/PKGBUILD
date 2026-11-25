@@ -13,7 +13,7 @@ pkgname=('or-tools' 'python-ortools')
 _tag=9.15
 # The patch level is the upstream commit count that the PyPI release uses.
 pkgver=9.15.6755
-pkgrel=1
+pkgrel=2
 pkgdesc="Google's Operations Research tools"
 arch=('x86_64')
 url='https://github.com/google/or-tools'
