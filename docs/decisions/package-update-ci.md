@@ -265,3 +265,28 @@ replaces it.
   installed packages without a repository packager that a sync repository or
   the AUR also offers; official builds of the same names (xorg-server) stay
   out of the list so their updates continue.
+
+## D-028 CachyOS [cachyos] fills repository gaps in the build container
+
+- Observation: the archlinux container ships neither python313 nor python311,
+  which the venv stacks pin, so a from-source CPython recipe stood in for a
+  package the CachyOS repository already builds; pacman-key --lsign-key then
+  failed because the image carries no local master key.
+- Rule: the build job runs pacman-key --init, imports the CachyOS key by its
+  full fingerprint, and appends [cachyos] after core and extra, so an Arch
+  package of the same name always wins and [cachyos] supplies only names Arch
+  lacks.
+
+## D-029 The compute-host tier builds on hosted runners
+
+- Observation: the recipes held for a compute host (or-tools, casadi, the
+  pyscf chain of libcint, libxc and xcfun, python-qiskit-addon-sqd,
+  python-hupper, python-amazon-ion) fit the hosted build job, whose limit is
+  the 360-minute default; python-qiskit took 65 minutes with its full test
+  suite in the same job. The clean compute-host chroot of D-016 remains
+  unbuilt.
+- Rule: those recipes and their in-repository closure, computed by
+  scripts/build-order.sh before the allowlist change (python-py-build-cmake
+  for python-amazon-ion), join ci/build-allowlist.txt in one change; a recipe
+  that exceeds the runner's time, memory or disk returns to the compute-host
+  tier with the measured limit recorded here.

@@ -1,4 +1,5 @@
 brakeman-bundled
+casadi
 checkov-bundled
 coin-or-coinmumps
 coin-or-ipopt
@@ -6,7 +7,11 @@ coin-or-qpoases
 deqp-runner
 flexiblas
 jadx-headless-mcp-bin
+libcint
+libxc
 mitiq-stack
+or-tools
+python-amazon-ion
 python-asyncio-atexit
 python-boltons
 python-cirq
@@ -14,6 +19,7 @@ python-docplex
 python-duet
 python-eigenkit
 python-grapheme
+python-hupper
 python-hypercomplex-algebra
 python-hypercomplex-engine
 python-ibm-cloud-sdk-core
@@ -30,9 +36,11 @@ python-openquantum-sdk
 python-plum-dispatch
 python-proto-plus
 python-pubchempy
+python-py-build-cmake
 python-pybase64
 python-pycrate
 python-pyomo
+python-pyscf
 python-pytket
 python-pyutilib
 python-qiskit
@@ -40,6 +48,7 @@ python-qiskit-addon-aqc-tensor
 python-qiskit-addon-cutting
 python-qiskit-addon-mpf
 python-qiskit-addon-obp
+python-qiskit-addon-sqd
 python-qiskit-addon-utils
 python-qiskit-aer
 python-qiskit-algorithms
@@ -66,3 +75,4 @@ qiskit-legacy-stack
 quantum-compat-stack
 rea-agents
 wakaru-bin
+xcfun
