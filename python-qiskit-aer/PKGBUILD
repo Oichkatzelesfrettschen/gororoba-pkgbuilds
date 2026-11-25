@@ -55,6 +55,10 @@ prepare() {
 
     # Fix legacy package name
     sed -i -e "s/qiskit.providers.aer.backends.controller_wrappers/qiskit_aer.backends.controller_wrappers/" test/terra/expression/test_classical_expressions.py
+
+    # NumPy 2 rejects np.cross on 2-element vectors; test_kraus compares two single-qubit
+    # statevectors, so the scalar 2-D cross product keeps the same check.
+    sed -i 's/np.cross(sv1, sv2)/(sv1[0] * sv2[1] - sv1[1] * sv2[0])/' test/terra/states/test_aer_statevector.py
 }
 
 build() {

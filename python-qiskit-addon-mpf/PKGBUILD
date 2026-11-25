@@ -51,7 +51,13 @@ check() {
     local python_version=$(python -c 'import sys; print(".".join(map(str, sys.version_info[:2])))')
     python -m installer --destdir=test_dir dist/*.whl
     rm -rf ${_name//-/_}
-    PYTHONPATH="$PWD/test_dir/usr/lib/python$python_version/site-packages" pytest test
+    # The three sum-of-squares tests pass eps_abs and eps_rel to problem.solve(); cvxpy selects
+    # Clarabel for them, whose settings have no eps_abs, so they fail against the repository
+    # cvxpy 1.9.3 and clarabel 0.11.1 whatever mpf computes.
+    PYTHONPATH="$PWD/test_dir/usr/lib/python$python_version/site-packages" pytest test \
+        --deselect test/costs/test_sum_of_squares.py::TestSumOfSquaresCoeffs::test_setup_sum_of_squares_problem \
+        --deselect test/costs/test_sum_of_squares.py::TestSumOfSquaresCoeffs::test_setup_sum_of_squares_problem_max_l1_norm \
+        --deselect test/costs/test_sum_of_squares.py::TestSumOfSquaresCoeffs::test_setup_sum_of_squares_problem_params
 }
 
 package() {
