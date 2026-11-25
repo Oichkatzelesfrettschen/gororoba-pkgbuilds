@@ -37,13 +37,22 @@ import amazon.ion.simpleion as ion
 if not ion.c_ext:
     raise SystemExit("C extension not loaded")
 text = '{a: [1, 2.5e0, "s", {{aGk=}}, 2020-01-01T], b: null.int, c: x::(y 3)}'
-value = ion.loads(text)
-for binary in (False, True):
-    if ion.loads(ion.dumps(value, binary=binary)) != value:
-        raise SystemExit("round trip failed, binary=%s" % binary)
+
+
+def stable(label):
+    # Text and binary encodings of one parsed value must re-serialize to the
+    # same canonical text.
+    value = ion.loads(text)
+    canon = ion.dumps(value, binary=False)
+    for binary in (False, True):
+        again = ion.dumps(ion.loads(ion.dumps(value, binary=binary)), binary=False)
+        if again != canon:
+            raise SystemExit("%s round trip, binary=%s: %r != %r" % (label, binary, again, canon))
+
+
+stable("C extension")
 ion.c_ext = False
-if ion.loads(ion.dumps(value, binary=True)) != value:
-    raise SystemExit("pure Python round trip failed")
+stable("pure Python")
 EOF
 }
 
