@@ -5,7 +5,7 @@
 # status or output. A gate that accepts a known-bad input, or refuses a
 # known-good one, makes its verdict meaningless; CI runs this before trusting
 # the gates. GATE is one of: changed build-order build-plan readiness
-# update-check update-report scrub publish-gate (default: all). Needs git,
+# update-check update-report scrub publish-gate recipe-invariants (default: all). Needs git,
 # jq, bsdtar, vercmp and tsort. Exit 0 all expectations held, 1 otherwise.
 set -eu
 
@@ -240,8 +240,23 @@ gate_publish() {
     run "$pg" "publish-gate: missing package file refused" 2 pgate installed.tsv dkms.tsv "$work/pkgs/none.pkg.tar"
 }
 
+gate_recipe_invariants() {
+    g=$fx/recipe-invariants/good
+    b=$fx/recipe-invariants/bad
+    run "$g" "recipe-invariants: depends and backup invariants hold" 0 sh "$here/recipe-invariants.sh" -r "$g" "$g/table.tsv"
+    saw "ok depends-include lib vulkan-icd-loader"
+    saw "ok backup-covers-envfile svc etc/conf.d/svc"
+    run "$b" "recipe-invariants: missing depends and uncovered EnvironmentFile refused" 1 sh "$here/recipe-invariants.sh" -r "$b" "$b/table.tsv"
+    saw "violated depends-include lib vulkan-icd-loader"
+    saw "violated backup-covers-envfile svc etc/conf.d/svc"
+    run "$b" "recipe-invariants: unknown kind refused" 2 sh "$here/recipe-invariants.sh" -r "$b" "$b/unknown.tsv"
+    run "$b" "recipe-invariants: table without invariants refused" 2 sh "$here/recipe-invariants.sh" -r "$b" "$b/empty.tsv"
+    run "$b" "recipe-invariants: directory without .SRCINFO refused" 2 sh "$here/recipe-invariants.sh" -r "$b" "$b/missing.tsv"
+    run "$b" "recipe-invariants: no arguments refused" 2 sh "$here/recipe-invariants.sh"
+}
+
 gates=$*
-[ -n "$gates" ] || gates="changed build-order build-plan readiness update-check update-report scrub publish-gate"
+[ -n "$gates" ] || gates="changed build-order build-plan readiness update-check update-report scrub publish-gate recipe-invariants"
 for gate in $gates; do
     case "$gate" in
         changed) gate_changed ;;
@@ -252,6 +267,7 @@ for gate in $gates; do
         update-report) gate_update_report ;;
         scrub) gate_scrub ;;
         publish-gate) gate_publish ;;
+        recipe-invariants) gate_recipe_invariants ;;
         *) printf 'calibrate: unknown gate %s\n' "$gate" >&2; exit 2 ;;
     esac
 done
