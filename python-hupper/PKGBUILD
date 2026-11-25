@@ -4,6 +4,9 @@
 # its subprocess hook still imports, so every process hupper spawns dies
 # at startup and the reload tests fail by timeout rather than by defect.
 # epoch=1 keeps this build ahead of the AUR package.
+# watchdog 7 reports touch and utime as attrib events, which the watchdog
+# file monitor ignored; the second patch handles them, so the reload tests
+# in tests/test_it.py pass.
 # Contributor: piernov <piernov@piernov.org>
 # Contributor: Luis Martinez <luis dot martinez at disroot dot org>
 # Contributor: Andrew Sun <adsun701 at gmail dot com>
@@ -25,13 +28,16 @@ makedepends=('python-setuptools' 'python-build' 'python-installer' 'python-wheel
 checkdepends=('python-pytest' 'python-watchdog')
 changelog=CHANGES.rst
 source=("$pkgname-$pkgver.tar.gz::https://files.pythonhosted.org/packages/source/h/$_pkg/$_pkg-$pkgver.tar.gz"
-        "0001-tests-make-the-pytest-cov-embed-import-optional.patch")
+        "0001-tests-make-the-pytest-cov-embed-import-optional.patch"
+        "0002-watchdog-reload-on-attrib-events.patch")
 sha256sums=('06bf54170ff4ecf4c84ad5f188dee3901173ab449c2608ad05b9bfd6b13e32eb'
-            '0539fa10eb4d480ea91370238d213001d8298b04fd6b58737f4be19a45efc9d2')
+            '0539fa10eb4d480ea91370238d213001d8298b04fd6b58737f4be19a45efc9d2'
+            '54e3ef19e2a6845df485bcbd55f0cd486194457acdaa6c135d9b2a8c6ab258cf')
 
 prepare() {
 	cd "$_pkg-$pkgver"
 	patch -p1 -i "$srcdir/0001-tests-make-the-pytest-cov-embed-import-optional.patch"
+	patch -p1 -i "$srcdir/0002-watchdog-reload-on-attrib-events.patch"
 }
 
 build() {

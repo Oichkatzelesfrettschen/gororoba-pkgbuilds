@@ -1,0 +1,24 @@
+From: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+Subject: [PATCH] watchdog: reload on attrib events
+
+watchdog 7 reports a metadata-only change (touch, utime, chmod) as a
+FileAttribEvent; earlier releases reported FileModifiedEvent. The monitor
+handled only created, modified, moved and deleted events, so touching a
+watched file no longer triggered a reload:
+
+  tests/test_it.py::test_myapp_reloads_when_touching_ini
+  RuntimeError: timeout waiting for change to file=...
+
+An attrib event on a watched path now takes the same route as a modified event.
+
+--- a/src/hupper/watchdog.py
++++ b/src/hupper/watchdog.py
+@@ -61,3 +61,8 @@
+ 
+     def on_deleted(self, event):
+         self._check(event.src_path)
++
++    def on_attrib(self, event):
++        # watchdog >= 7 reports a metadata-only change (touch, utime, chmod)
++        # as an attrib event instead of a modified event.
++        self._check(event.src_path)
