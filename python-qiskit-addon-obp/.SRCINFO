@@ -13,7 +13,7 @@ pkgbase = python-qiskit-addon-obp
 	makedepends = python-hatchling
 	depends = python-numpy
 	depends = python-qiskit
-	depends = python-qiskit-ibm-runtime
+	depends = python-qiskit-ibm-runtime>=0.52
 	depends = python-matplotlib
 	source = qiskit-addon-obp-0.3.0.tar.gz::https://github.com/Qiskit/qiskit-addon-obp/archive/refs/tags/0.3.0.tar.gz
 	sha256sums = d40f49903b954b7745c3a67e5fb480b2d42a7e48f10dcbdf62966c71fb187b04

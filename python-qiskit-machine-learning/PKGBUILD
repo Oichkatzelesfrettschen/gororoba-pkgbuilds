@@ -29,6 +29,15 @@ checkdepends=(
 source=($_pkgname-$pkgver.tar.gz::https://github.com/qiskit-community/$_pkgname/archive/refs/tags/$pkgver.tar.gz)
 sha256sums=('2814226ac757c6031912681e847d3a6b1802a51fcbdb1bf80684929e5ae250d9')
 
+prepare() {
+    # qiskit-ibm-runtime 0.52 binds the top-level EstimatorV2 to the client-side executor class, which
+    # accepts only options_models.EstimatorOptions. TestEstimatorGradientRuntime builds the classic
+    # options.EstimatorOptions, which the server_side.EstimatorV2 class still takes, so the test
+    # imports that class and keeps its semantics. The library code does not import qiskit_ibm_runtime.
+    sed -i 's/^from qiskit_ibm_runtime import EstimatorV2, Session$/from qiskit_ibm_runtime import Session\nfrom qiskit_ibm_runtime.server_side import EstimatorV2/' \
+        $_pkgname-$pkgver/test/gradients/test_estimator_gradient.py
+}
+
 build() {
     cd $_pkgname-$pkgver
     python -m build --wheel --no-isolation

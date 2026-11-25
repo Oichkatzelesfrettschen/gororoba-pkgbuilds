@@ -13,7 +13,7 @@ license=(Apache-2.0)
 depends=(
     python-numpy
     python-qiskit
-    python-qiskit-ibm-runtime
+    'python-qiskit-ibm-runtime>=0.52'
     python-matplotlib
 )
 makedepends=(
@@ -28,6 +28,14 @@ checkdepends=(
 )
 source=($_name-$pkgver.tar.gz::https://github.com/Qiskit/$_name/archive/refs/tags/$pkgver.tar.gz)
 sha256sums=('d40f49903b954b7745c3a67e5fb480b2d42a7e48f10dcbdf62966c71fb187b04')
+
+prepare() {
+    # qiskit-ibm-runtime 0.52 removed qiskit_ibm_runtime.utils.noise_learner_result; PauliLindbladError
+    # now lives in qiskit_ibm_runtime.results.noise_learner. obp 0.3.0 imports the old path in its
+    # library modules and tests, so the rewrite is also what makes the installed package import.
+    grep -rl --include=*.py 'qiskit_ibm_runtime.utils.noise_learner_result' $_dir |
+        xargs sed -i 's/qiskit_ibm_runtime\.utils\.noise_learner_result/qiskit_ibm_runtime.results.noise_learner/'
+}
 
 build() {
     cd $_dir
