@@ -1,0 +1,29 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+# Contributor: Patrick Mischke
+
+# The upstream tests need pytest-cov and responses pins that the repositories do
+# not carry as a set, so check() is absent; python-ibm-platform-services imports
+# the package in its own unit tests.
+pkgname='python-ibm-cloud-sdk-core'
+_name='ibm-cloud-sdk-core'
+pkgver=3.28.2
+pkgrel=1
+pkgdesc="Core python functionality required by the IBM Cloud OpenAPI SDK Generator"
+url="https://github.com/IBM/python-sdk-core"
+depends=('python-requests' 'python-dateutil' 'python-pyjwt' 'python-urllib3')
+makedepends=(python-build python-installer python-wheel python-setuptools)
+license=('Apache-2.0')
+arch=('any')
+source=("$pkgname-$pkgver.tar.gz::https://github.com/IBM/python-sdk-core/archive/refs/tags/v$pkgver.tar.gz")
+sha256sums=('575d34079f9169030e89e7e104015f9e241b4ed1c0063799ace63522fead15be')
+
+build() {
+  cd "python-sdk-core-$pkgver"
+  python -m build --wheel --no-isolation
+}
+
+package() {
+  cd "python-sdk-core-$pkgver"
+  python -m installer --destdir="$pkgdir" dist/*.whl
+  install -Dm644 LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}

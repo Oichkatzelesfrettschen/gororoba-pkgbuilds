@@ -23,3 +23,6 @@ python-pybase64	AUR	python-pybase64	6083a79737bab5cc1cead2330fce13c1aff760ed	202
 python-qiskit-qasm3-import	AUR	python-qiskit-qasm3-import	c35d16cc74c5c56b9d8a54ff61494a82bd01a1ea	2026-11-25T02:20:00Z
 python-scipy-doctest	AUR	python-scipy-doctest	422993a88c4994e7ec4afcff3867b9eafa2d8384	2026-11-25T02:20:00Z
 python-openqasm3	AUR	python-openqasm3	468669cfc964514f91025fd1e2d32b9ac25f3f44	2026-11-25T02:20:00Z
+python-ibm-cloud-sdk-core	AUR	python-ibm-cloud-sdk-core	37e2fe3c2661f90ac98673886beb2e0adb1842b7	2026-11-25T05:10:00Z
+python-ibm-platform-services	AUR	python-ibm-platform-services	eb9710779fbe9ce96f873f041f25da75d48e67f9	2026-11-25T05:10:00Z
+python-qiskit-mitigation	AUR	python-qiskit-mitigation	9672c8dff264f435b22469cada86d73f8d9ada79	2026-11-25T05:10:00Z
