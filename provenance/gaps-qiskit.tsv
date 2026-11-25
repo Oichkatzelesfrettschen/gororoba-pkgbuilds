@@ -20,3 +20,6 @@ quantum-compat-stack	new	-	-	2026-11-24T23:10:00Z
 python-rustworkx	AUR	python-rustworkx	df8564e3123b1a903f1f6482e5675a740d13156b	2026-11-24T23:15:00Z
 mitiq-stack	new	-	-	2026-11-24T23:20:00Z
 python-pybase64	AUR	python-pybase64	6083a79737bab5cc1cead2330fce13c1aff760ed	2026-11-24T23:40:00Z
+python-qiskit-qasm3-import	AUR	python-qiskit-qasm3-import	c35d16cc74c5c56b9d8a54ff61494a82bd01a1ea	2026-11-25T02:20:00Z
+python-scipy-doctest	AUR	python-scipy-doctest	422993a88c4994e7ec4afcff3867b9eafa2d8384	2026-11-25T02:20:00Z
+python-openqasm3	AUR	python-openqasm3	468669cfc964514f91025fd1e2d32b9ac25f3f44	2026-11-25T02:20:00Z

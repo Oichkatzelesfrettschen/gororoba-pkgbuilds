@@ -4,6 +4,8 @@ _name=qiskit-addon-aqc-tensor
 pkgname=python-${_name}
 pkgver=0.3.1
 pkgrel=1
+# GitHub tag archives name their top directory without "addon".
+_dir=qiskit-${_name#qiskit-addon-}-$pkgver
 pkgdesc="Approximate quantum compilation with tensor networks"
 arch=(any)
 url=https://github.com/Qiskit/qiskit-addon-aqc-tensor
@@ -30,12 +32,12 @@ source=($_name-$pkgver.tar.gz::https://github.com/Qiskit/$_name/archive/refs/tag
 sha256sums=('6a88600e085f25355ab1031171661280319c611558a37a4452fa91387cc5f50f')
 
 build() {
-    cd $_name-$pkgver
+    cd $_dir
     python -m build --wheel --no-isolation
 }
 
 check() {
-    cd $_name-$pkgver
+    cd $_dir
     python -m venv --system-site-packages test-env
     test-env/bin/python -m installer dist/*.whl
     rm -rf ${_name//-/_}
@@ -43,7 +45,7 @@ check() {
 }
 
 package() {
-    cd $_name-$pkgver
+    cd $_dir
     python -m installer --destdir="$pkgdir" dist/*.whl
     install -D -m644 LICENSE.txt "$pkgdir"/usr/share/licenses/$pkgname/LICENSE
 }

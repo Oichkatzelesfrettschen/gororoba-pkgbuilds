@@ -4,6 +4,8 @@ _name=qiskit-addon-mpf
 pkgname=python-${_name}
 pkgver=0.3.0
 pkgrel=1
+# GitHub tag archives name their top directory without "addon".
+_dir=qiskit-${_name#qiskit-addon-}-$pkgver
 pkgdesc="An addon to reduce the Trotter error of Hamiltonian dynamics with multi-product formulas"
 arch=(any)
 url=https://github.com/Qiskit/qiskit-addon-mpf
@@ -36,16 +38,16 @@ sha256sums=('2f5e0d16aa330eff7fb9cea154169f1e3610b9f28953d3cc7a78193ab760600a'
             '4d23bfe69eb9a8818bf960745ee10dea556025ee2ba4c093c7cd92db49e69c5d')
 
 prepare() {
-    patch -Np1 -d $_name-$pkgver < fix-tests.patch
+    patch -Np1 -d $_dir < fix-tests.patch
 }
 
 build() {
-    cd $_name-$pkgver
+    cd $_dir
     python -m build --wheel --no-isolation
 }
 
 check() {
-    cd $_name-$pkgver
+    cd $_dir
     local python_version=$(python -c 'import sys; print(".".join(map(str, sys.version_info[:2])))')
     python -m installer --destdir=test_dir dist/*.whl
     rm -rf ${_name//-/_}
@@ -53,7 +55,7 @@ check() {
 }
 
 package() {
-    cd $_name-$pkgver
+    cd $_dir
     python -m installer --destdir="$pkgdir" dist/*.whl
     install -D -m644 LICENSE.txt "$pkgdir"/usr/share/licenses/$pkgname/LICENSE
 }

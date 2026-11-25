@@ -4,6 +4,8 @@ _name=qiskit-addon-obp
 pkgname=python-${_name}
 pkgver=0.3.0
 pkgrel=1
+# GitHub tag archives name their top directory without "addon".
+_dir=qiskit-${_name#qiskit-addon-}-$pkgver
 pkgdesc="An addon to reduce the depth of circuits with operator backpropagation"
 arch=(any)
 url=https://github.com/Qiskit/qiskit-addon-obp
@@ -28,12 +30,12 @@ source=($_name-$pkgver.tar.gz::https://github.com/Qiskit/$_name/archive/refs/tag
 sha256sums=('d40f49903b954b7745c3a67e5fb480b2d42a7e48f10dcbdf62966c71fb187b04')
 
 build() {
-    cd $_name-$pkgver
+    cd $_dir
     python -m build --wheel --no-isolation
 }
 
 check() {
-    cd $_name-$pkgver
+    cd $_dir
     local python_version=$(python -c 'import sys; print(".".join(map(str, sys.version_info[:2])))')
     python -m installer --destdir=../test_dir dist/*.whl
     rm -rf ${_name//-/_}
@@ -41,7 +43,7 @@ check() {
 }
 
 package() {
-    cd $_name-$pkgver
+    cd $_dir
     python -m installer --destdir="$pkgdir" dist/*.whl
     install -D -m644 LICENSE.txt "$pkgdir"/usr/share/licenses/$pkgname/LICENSE
 }

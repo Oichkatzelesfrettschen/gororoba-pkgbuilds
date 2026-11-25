@@ -19,7 +19,7 @@ _prefix=/opt/$pkgname
 source=(requirements.in requirements.lock test_mitiq_stack.py mitiq-python)
 sha256sums=('071498e33f0220f373967e0087bdd39d8e1d670ae8ab99f44003c12cabd21086'
             '89ca3e59467bc189c3021b86cf6e73754632b617e3e478bbeb5a446b97121751'
-            '1e21256070a95191697be2639053f8bcfdc985ec3b46e71b749b0466af575fc9'
+            '76db6fe3cf58bc7e13d5aafa61d7de62ff330a4e20279f0468bf732e806e5a69'
             '35130429b48532f0e7ddc33bbdeb71980a51588db43ea223991e7716ee8b62e4')
 
 build() {

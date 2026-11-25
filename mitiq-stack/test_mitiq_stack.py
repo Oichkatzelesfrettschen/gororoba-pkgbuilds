@@ -4,8 +4,6 @@ Every test runs without network access or credentials: it compares the pinned
 distribution set with the lock and exercises one local import or computation.
 """
 
-from __future__ import annotations
-
 import importlib.metadata as md
 import pathlib
 import re
@@ -45,6 +43,8 @@ class StackTest(unittest.TestCase):
         q = cirq.LineQubit(0)
         circuit = cirq.Circuit(cirq.X(q), cirq.measure(q, key="m"))
 
+        # mitiq reads the executor return type from the annotation, so the module
+        # must not use postponed annotation evaluation.
         def executor(c: cirq.Circuit) -> float:
             result = cirq.Simulator().run(c, repetitions=10)
             return float(result.histogram(key="m").get(1, 0)) / 10.0
