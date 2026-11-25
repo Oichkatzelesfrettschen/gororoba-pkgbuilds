@@ -6,6 +6,14 @@
 # library version; PyPI ships wheels only. pybind11_abseil, pybind11_protobuf
 # and mypy-protobuf are not Arch packages: pybind11_abseil and pybind11_protobuf
 # are fetched by CMake at build time (network at build, none at install).
+# pybind11_protobuf is the exception: the commit pinned by or-tools 9.15
+# (2025-02-10) overrides DescriptorDatabase::FindFileByName and its two
+# siblings with const std::string& parameters, and protobuf 34 and later
+# declare them with absl::string_view, so the build stops with "marked
+# 'override', but does not override". The archive of upstream commit 5b61b4c
+# (2026-10-01, after the "Fix DescriptorDatabase override signatures for
+# Protobuf 34+" change) replaces the fetch through
+# FETCHCONTENT_SOURCE_DIR_PYBIND11_PROTOBUF.
 # mypy-protobuf is the protoc plugin that writes the .pyi stubs. CMake would
 # pip-install it into the user site, which the container's PEP 668 marker
 # refuses, so the checksummed wheel is unpacked under $srcdir and exposed
@@ -14,6 +22,7 @@
 pkgbase=or-tools
 pkgname=('or-tools' 'python-ortools')
 _tag=9.15
+_pbp=5b61b4cbc654e8c89a854b0abc814d676986f09c
 # The patch level is the upstream commit count that the PyPI release uses.
 pkgver=9.15.6755
 pkgrel=2
@@ -27,10 +36,12 @@ makedepends=('cmake' 'pkgconf' 'git' 'eigen' 'gtest' 'coin-or-cbc' 'protobuf' 'r
              'python-immutabledict' 'python-typing_extensions' 'mypy')
 source=("$pkgbase-$_tag.tar.gz::$url/archive/v$_tag.tar.gz"
         'source-location-absl.patch'
+        "pybind11_protobuf-$_pbp.tar.gz::https://github.com/pybind/pybind11_protobuf/archive/$_pbp.tar.gz"
         'mypy_protobuf-5.1.0-py3-none-any.whl::https://files.pythonhosted.org/packages/e8/ec/5ffcf8f5f53757e01afdece10c664e694ac60d2f17c2036811b85b842a5b/mypy_protobuf-5.1.0-py3-none-any.whl')
 noextract=('mypy_protobuf-5.1.0-py3-none-any.whl')
 sha256sums=('6395a00a97ff30af878ee8d7fd5ad0ab1c7844f7219182c6d71acbee1b5f3026'
             '4cef55e2990f1350fbd3c1277ef6a5c2295ae5910cfe99f521aa82343fe0a0fe'
+            '43ea0718703b4f75b5bf831d8c40e97564c3ab7b64a05ebafb5324688bb40ff4'
             'd7031f563f806b8bcd448a3e86768bf0994c0af5b0017b344a4fbbba4191f43c')
 
 prepare() {
@@ -67,6 +78,7 @@ build() {
     -DBUILD_VENV=OFF \
     -DBUILD_pybind11_abseil=ON \
     -DBUILD_pybind11_protobuf=ON \
+    -DFETCHCONTENT_SOURCE_DIR_PYBIND11_PROTOBUF="$srcdir/pybind11_protobuf-$_pbp" \
     -DFETCH_PYTHON_DEPS=ON \
     -Wno-dev
   cmake --build build
