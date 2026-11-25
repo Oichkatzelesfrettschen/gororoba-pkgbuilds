@@ -23,6 +23,7 @@ python-kagglehub
 python-kagglesdk
 python-kingdon
 python-openfermion
+python-openqasm3
 python-openquantum-sdk
 python-plum-dispatch
 python-proto-plus
