@@ -65,6 +65,8 @@ jobs:
         run: |
           git config --global --add safe.directory "$GITHUB_WORKSPACE"
           sh scripts/calibrate.sh
+      - name: Check the recipe invariants ci/recipe-invariants.tsv lists
+        run: sh scripts/recipe-invariants.sh ci/recipe-invariants.tsv
 
   recipes:
     runs-on: ubuntu-latest

@@ -1,0 +1,5 @@
+# kind	directory	arguments (see scripts/recipe-invariants.sh)
+# litert-lm's binary loads these libraries through its dynamic loader.
+depends-include	litert-lm	glibc vulkan-icd-loader
+# llama.cpp.service reads /etc/conf.d/llama.cpp; backup= keeps local edits across upgrades.
+backup-covers-envfile	llama.cpp-cuda	llama.cpp.service
