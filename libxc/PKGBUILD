@@ -5,7 +5,7 @@
 # Contributor: Anton Kudelin <kudelin at protonmail dot com>
 pkgname=libxc
 pkgver=7.1.2
-pkgrel=1
+pkgrel=2
 pkgdesc="A library of exchange-correlation functionals for density-functional theory"
 arch=(i686 x86_64 aarch64)
 url="https://${pkgname}.gitlab.io"

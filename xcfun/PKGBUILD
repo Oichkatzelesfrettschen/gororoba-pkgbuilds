@@ -2,7 +2,7 @@
 # Contributor: Jia Li <lijia1608@gmail.com>
 pkgname=xcfun
 pkgver=2.1.1
-pkgrel=1
+pkgrel=2
 pkgdesc="Exchange-Correlation functionals with arbitrary order derivatives"
 arch=(x86_64)
 url="http://dftlibs.org/xcfun/"
