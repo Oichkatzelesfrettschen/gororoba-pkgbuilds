@@ -11,7 +11,7 @@
 pkgbase=casadi
 pkgname=('casadi' 'python-casadi')
 pkgver=3.8.2
-pkgrel=1
+pkgrel=2
 pkgdesc='Symbolic framework for automatic differentiation and numeric optimization'
 arch=('x86_64')
 url='https://github.com/casadi/casadi'
