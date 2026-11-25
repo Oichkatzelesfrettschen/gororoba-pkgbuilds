@@ -1,0 +1,24 @@
+pkgbase = python-py-build-cmake
+	pkgdesc = PEP 517 compliant build backend for creating Python packages with extensions built using CMake
+	pkgver = 0.5.1
+	pkgrel = 1
+	url = https://github.com/tttapa/py-build-cmake
+	arch = any
+	license = MIT
+	checkdepends = python-pytest
+	checkdepends = cmake
+	checkdepends = ninja
+	checkdepends = git
+	makedepends = python-build
+	makedepends = python-installer
+	depends = python
+	depends = python-click
+	depends = python-distlib
+	depends = python-lark-parser
+	depends = python-packaging
+	depends = python-pyproject-metadata
+	depends = python-tomli
+	source = python-py-build-cmake-0.5.1.tar.gz::https://github.com/tttapa/py-build-cmake/archive/refs/tags/0.5.1.tar.gz
+	sha256sums = cdc10365a71823dacf635d60401ab7d9afa95e3230d9a0ce3a55a41428a39c8e
+
+pkgname = python-py-build-cmake
