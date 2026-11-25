@@ -51,6 +51,37 @@ prepare() {
   patch -p1 -d "$pkgbase-$_tag" -i "$srcdir/source-location-absl.patch"
   python -m installer --destdir="$srcdir/mypy-protobuf" \
     "$srcdir/mypy_protobuf-5.1.0-py3-none-any.whl"
+
+  # Python 3 has one integer type, PyLong_Type, and no PyInt_* C-API. The
+  # headers and SWIG typemaps of or-tools 9.15 still call PyInt_AsLong,
+  # PyInt_Check and PyInt_FromLong, which SWIG's Python 3 compatibility
+  # macros used to alias to the PyLong_* functions; the SWIG 4.5 toolchain
+  # no longer defines them ("'PyInt_AsLong' was not declared in this scope").
+  # The PyString_* names that remain are shimmed to PyUnicode_* and
+  # PyBytes_* inside python-swig.h itself and need no edit. python-swig.h
+  # keeps its own PyInt_FromLong alias (an #undef and #define pair).
+  local _src="$pkgbase-$_tag/ortools"
+  sed -i 's/\bPyInt_AsLong\b/PyLong_AsLong/g' \
+    "$_src/base/python-swig.h" \
+    "$_src/constraint_solver/python/routing_types.swig"
+  sed -i -e 's/\bPyInt_Check\b/PyLong_Check/g' \
+    -e 's/\bPyInt_FromLong\b/PyLong_FromLong/g' \
+    "$_src/constraint_solver/python/routing_types.swig" \
+    "$_src/util/python/vector.swig"
+  # Verify the edits: the new names are present and no old name is left
+  # outside the python-swig.h alias.
+  grep -q 'PyLong_AsLong(py)' "$_src/base/python-swig.h"
+  grep -q 'PyLong_AsLong($input)' "$_src/constraint_solver/python/routing_types.swig"
+  grep -q 'PyLong_Check, PyInt_FromIndexT' "$_src/constraint_solver/python/routing_types.swig"
+  grep -q 'PyLong_Check, PyLong_FromLong' "$_src/util/python/vector.swig"
+  if grep -rnE '\bPyInt_(AsLong|Check|FromLong)\b' "$_src" --exclude=python-swig.h; then
+    echo "Python 2 integer C-API names remain" >&2
+    return 1
+  fi
+  if grep -nE '\bPyInt_(AsLong|Check)\b' "$_src/base/python-swig.h"; then
+    echo "Python 2 integer C-API names remain in python-swig.h" >&2
+    return 1
+  fi
 }
 
 build() {
