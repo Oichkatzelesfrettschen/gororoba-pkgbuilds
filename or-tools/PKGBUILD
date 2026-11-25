@@ -24,7 +24,7 @@ license=('Apache-2.0')
 makedepends=('cmake' 'pkgconf' 'git' 'eigen' 'gtest' 'coin-or-cbc' 'protobuf' 're2' 'abseil-cpp'
              'swig' 'pybind11' 'python' 'python-pip' 'python-setuptools' 'python-wheel'
              'python-installer' 'python-numpy' 'python-pandas' 'python-protobuf' 'python-absl'
-             'python-immutabledict' 'python-typing_extensions')
+             'python-immutabledict' 'python-typing_extensions' 'mypy')
 source=("$pkgbase-$_tag.tar.gz::$url/archive/v$_tag.tar.gz"
         'source-location-absl.patch'
         'mypy_protobuf-5.1.0-py3-none-any.whl::https://files.pythonhosted.org/packages/e8/ec/5ffcf8f5f53757e01afdece10c664e694ac60d2f17c2036811b85b842a5b/mypy_protobuf-5.1.0-py3-none-any.whl')

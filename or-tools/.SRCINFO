@@ -27,6 +27,7 @@ pkgbase = or-tools
 	makedepends = python-absl
 	makedepends = python-immutabledict
 	makedepends = python-typing_extensions
+	makedepends = mypy
 	noextract = mypy_protobuf-5.1.0-py3-none-any.whl
 	source = or-tools-9.15.tar.gz::https://github.com/google/or-tools/archive/v9.15.tar.gz
 	source = source-location-absl.patch
