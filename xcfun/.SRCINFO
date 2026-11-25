@@ -1,7 +1,7 @@
 pkgbase = xcfun
 	pkgdesc = Exchange-Correlation functionals with arbitrary order derivatives
 	pkgver = 2.1.1
-	pkgrel = 1
+	pkgrel = 2
 	url = http://dftlibs.org/xcfun/
 	arch = x86_64
 	license = MPL-2.0

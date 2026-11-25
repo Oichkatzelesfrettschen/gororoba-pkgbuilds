@@ -12,10 +12,19 @@
 #   AER_CUDA_ARCH   CMake FindCUDA arch list (default 8.9+PTX: sm_89 cubin and
 #                   compute_89 PTX for Ada GPUs)
 #   AER_BUILD_JOBS  parallel compile jobs (default half the CPUs)
+#   AER_MARCH       host-compiler -march value (default x86-64-v3); it reaches
+#                   CFLAGS, CXXFLAGS and, through nvcc --compiler-options,
+#                   CUDAFLAGS, because Aer compiles bindings.cc and
+#                   qv_avx2.cpp as CUDA sources. -march=x86-64-v3 defines
+#                   __AVX2__ in every host translation unit, which compiles in
+#                   the AVX2 statevector transformer (see python-qiskit-aer);
+#                   the module then faults with an illegal instruction on a
+#                   CPU below that level.
+#   AER_MTUNE       host-compiler -mtune value (default znver3)
 _pkgname=qiskit-aer
 pkgname=python-$_pkgname-cuda
 pkgver=0.18.4
-pkgrel=1
+pkgrel=2
 _nlohmann_json_ver=3.10.2
 pkgdesc="Qiskit Aer with the CUDA GPU backend and cuStateVec/cuTensorNet (cuQuantum) for NVIDIA Ada GPUs"
 arch=(x86_64)
@@ -66,6 +75,19 @@ b2sums=('c1a21c654afb5037f23afece6655d2fab89523e3b7e67d33e9045294aee66faf01acd3c
         'cf3f6507317591e12fa4fed5601c76ff469900cf3d5ec3eadd682319dbc48b279acddbbd893090c8f6489fddaa1e7b5b997395c20d08aa5ee5cbdf2d0b6e1788'
         '8d423b89d8d482fbc215c7fa89de8e8f33d8b0ff07e9aa525c76940023872e50e0d8881e6463c884ca68d9b4bb205e136015e62acaf7e40cd6a89b52eaea4f46')
 
+# Resolve the tuning knobs; the values reach compiler command lines, so they
+# take compiler CPU-name characters only.
+_aer_tuning() {
+    _aer_march=${AER_MARCH:-x86-64-v3}
+    _aer_mtune=${AER_MTUNE:-znver3}
+    case $_aer_march$_aer_mtune in
+        *[!A-Za-z0-9_.+-]*)
+            error "AER_MARCH and AER_MTUNE take a compiler CPU name (letters, digits, _ . + -)"
+            return 1
+            ;;
+    esac
+}
+
 prepare() {
     cd $_pkgname-$pkgver
     sed -i -e '/conan/d' -e '/cmake/d' -e '/ninja/d' pyproject.toml
@@ -97,6 +119,8 @@ prepare() {
 }
 
 build() {
+    _aer_tuning || return 1
+
     # The header-only nlohmann_json from [extra] is unusable:
     # https://github.com/Qiskit/qiskit-aer/issues/1742
     local cmake_options=(
@@ -130,6 +154,12 @@ build() {
     export PATH="/opt/cuda/bin:$PATH"
     export CUDAHOSTCXX="${CUDAHOSTCXX:-/usr/bin/g++}"
     export AER_THRUST_BACKEND=CUDA
+    # Appended after makepkg's own flags: the last -march and -mtune win. The
+    # comma-separated list is one nvcc --compiler-options argument.
+    msg2 "tuning: -march=$_aer_march -mtune=$_aer_mtune"
+    export CFLAGS="$CFLAGS -march=$_aer_march -mtune=$_aer_mtune"
+    export CXXFLAGS="$CXXFLAGS -march=$_aer_march -mtune=$_aer_mtune"
+    export CUDAFLAGS="${CUDAFLAGS:+$CUDAFLAGS }--compiler-options -march=$_aer_march,-mtune=$_aer_mtune"
     export AER_CUDA_ARCH="${AER_CUDA_ARCH:-8.9+PTX}"
     export AER_ENABLE_CUQUANTUM=ON
     export CUQUANTUM_ROOT="$cuquantum_root"

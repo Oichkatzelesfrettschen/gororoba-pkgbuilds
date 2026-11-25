@@ -3,7 +3,7 @@
 _name=qiskit-addon-sqd
 pkgname=python-$_name
 pkgver=0.14.1
-pkgrel=1
+pkgrel=2
 # GitHub tag archives name their top directory without "addon".
 _dir=qiskit-${_name#qiskit-addon-}-$pkgver
 pkgdesc="Sample-based Quantum Diagonalization"

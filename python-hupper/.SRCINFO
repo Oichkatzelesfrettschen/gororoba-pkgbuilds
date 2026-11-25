@@ -1,7 +1,7 @@
 pkgbase = python-hupper
 	pkgdesc = Integrated process monitor for developing servers
 	pkgver = 1.12.1
-	pkgrel = 1
+	pkgrel = 2
 	epoch = 1
 	url = https://github.com/pylons/hupper
 	changelog = CHANGES.rst
@@ -17,7 +17,9 @@ pkgbase = python-hupper
 	optdepends = python-watchdog
 	source = python-hupper-1.12.1.tar.gz::https://files.pythonhosted.org/packages/source/h/hupper/hupper-1.12.1.tar.gz
 	source = 0001-tests-make-the-pytest-cov-embed-import-optional.patch
+	source = 0002-watchdog-reload-on-attrib-events.patch
 	sha256sums = 06bf54170ff4ecf4c84ad5f188dee3901173ab449c2608ad05b9bfd6b13e32eb
 	sha256sums = 0539fa10eb4d480ea91370238d213001d8298b04fd6b58737f4be19a45efc9d2
+	sha256sums = 54e3ef19e2a6845df485bcbd55f0cd486194457acdaa6c135d9b2a8c6ab258cf
 
 pkgname = python-hupper

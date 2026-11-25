@@ -5,13 +5,14 @@
 
 # One build, two packages: the C++ library and the Python binding. The
 # ProxQP interface is off: proxsuite is neither an Arch package nor in this
-# repository. check() is absent: upstream tests need the full test-data tree
-# and optional solvers.
+# repository. The upstream tests need the full test-data tree and optional
+# solvers, so check() solves one NLP and one QP per linked solver (ipopt,
+# qpOASES, OSQP) from the staged install.
 
 pkgbase=casadi
 pkgname=('casadi' 'python-casadi')
 pkgver=3.8.2
-pkgrel=1
+pkgrel=2
 pkgdesc='Symbolic framework for automatic differentiation and numeric optimization'
 arch=('x86_64')
 url='https://github.com/casadi/casadi'
@@ -46,6 +47,28 @@ build() {
     -Wno-dev
   cmake --build "build-$pkgver"
   DESTDIR="$srcdir/stage" cmake --install "build-$pkgver"
+}
+
+check() {
+  local _pkgdir
+  _pkgdir="$(dirname "$(find "$srcdir/stage/usr/lib" -type d -name casadi -path '*python*' | head -n 1)")"
+  LD_LIBRARY_PATH="$srcdir/stage/usr/lib" PYTHONPATH="$_pkgdir" python -P - <<'EOF'
+import casadi as ca
+
+x = ca.SX.sym("x", 2)
+rosenbrock = (1 - x[0]) ** 2 + 100 * (x[1] - x[0] ** 2) ** 2
+sol = ca.nlpsol("s", "ipopt", {"x": x, "f": rosenbrock}, {"ipopt.print_level": 0, "print_time": 0})(x0=[-1, 1])
+if float(ca.norm_2(sol["x"] - ca.DM([1, 1]))) > 1e-4:
+    raise SystemExit("ipopt Rosenbrock solution %r" % sol["x"])
+
+h = ca.DM([[2, 0], [0, 2]])
+a = ca.DM([[1, 1]])
+qp = {"h": h.sparsity(), "a": a.sparsity()}
+for solver, opts in (("qpoases", {"printLevel": "none"}), ("osqp", {"osqp": {"verbose": False}})):
+    res = ca.conic("q", solver, qp, opts)(h=h, g=ca.DM([-2, -2]), a=a, lba=-ca.inf, uba=1)
+    if float(ca.norm_2(res["x"] - ca.DM([0.5, 0.5]))) > 1e-3:
+        raise SystemExit("%s QP solution %r" % (solver, res["x"]))
+EOF
 }
 
 package_casadi() {

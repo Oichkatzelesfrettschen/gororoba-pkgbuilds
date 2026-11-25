@@ -4,7 +4,7 @@
 pkgname=python-pyscf
 _name=pyscf
 pkgver=2.15.1
-pkgrel=1
+pkgrel=2
 pkgdesc="Python module for quantum chemistry"
 arch=('x86_64')
 url="https://github.com/pyscf/pyscf"
@@ -29,6 +29,36 @@ build() {
     export CMAKE_CONFIGURE_ARGS=$(echo $CMAKE_CONFIGURE_ARGS | tr -d '\n')
     python -m build --wheel --no-isolation -x
 
+}
+
+# The upstream suite runs for hours and is not run here. check() installs the
+# wheel into a scratch root and runs closed-shell SCF on H2: Hartree-Fock
+# against the known energy window, and PBE through the libxc and xcfun
+# backends, which exercises libcint, libxc and xcfun through their shared
+# libraries.
+check() {
+    cd "${_name}-${pkgver}"
+    local _site
+    _site="$(python -c 'import sysconfig; print(sysconfig.get_path("purelib"))')"
+    python -m installer --destdir="$srcdir/check-root" dist/*.whl
+    PYTHONPATH="$srcdir/check-root$_site" python -P - <<'EOF'
+from pyscf import dft, gto, scf
+from pyscf.dft import xcfun
+
+mol = gto.M(atom="H 0 0 0; H 0 0 0.74", basis="sto-3g", verbose=0)
+hf = scf.RHF(mol).run()
+if not hf.converged or not -1.118 < hf.e_tot < -1.116:
+    raise SystemExit("RHF energy %r outside the H2 STO-3G window" % hf.e_tot)
+
+ks_libxc = dft.RKS(mol, xc="pbe,pbe").run()
+ks_xcfun = dft.RKS(mol, xc="pbe,pbe")
+ks_xcfun._numint.libxc = xcfun
+ks_xcfun.run()
+if not (ks_libxc.converged and ks_xcfun.converged):
+    raise SystemExit("PBE SCF did not converge")
+if abs(ks_libxc.e_tot - ks_xcfun.e_tot) > 1e-6:
+    raise SystemExit("libxc and xcfun PBE energies differ: %r %r" % (ks_libxc.e_tot, ks_xcfun.e_tot))
+EOF
 }
 
 package() {
