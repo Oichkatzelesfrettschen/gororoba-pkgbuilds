@@ -45,10 +45,12 @@ python-qiskit-ionq
 python-qiskit-machine-learning
 python-qiskit-nature
 python-qiskit-optimization
+python-qiskit-qasm3-import
 python-qutip
 python-qwasm
 python-rustworkx
 python-samplomatic
+python-scipy-doctest
 python-scmver
 python-scramp
 python-seekpath
