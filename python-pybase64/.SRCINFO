@@ -15,9 +15,12 @@ pkgbase = python-pybase64
 	makedepends = python-wheel
 	depends = glibc
 	depends = python
+	noextract = pybase64-1.5.2-tests.tar.gz
 	options = !strip
 	options = !debug
 	source = pybase64-1.5.2.tar.gz::https://files.pythonhosted.org/packages/source/p/pybase64/pybase64-1.5.2.tar.gz
+	source = pybase64-1.5.2-tests.tar.gz::https://github.com/mayeut/pybase64/archive/refs/tags/v1.5.2.tar.gz
 	sha256sums = e7bc140306325a61cb7bd18b78fbf800df6aecaa9928023b7f7425b680a7601e
+	sha256sums = 0cd18b1bf1e46e6c06411fedf2d353cab4285241f97154200f4918b95a41cd7f
 
 pkgname = python-pybase64

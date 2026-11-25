@@ -43,11 +43,11 @@ class StackTest(unittest.TestCase):
         from mitiq import zne
 
         q = cirq.LineQubit(0)
-        circuit = cirq.Circuit(cirq.X(q), cirq.measure(q))
+        circuit = cirq.Circuit(cirq.X(q), cirq.measure(q, key="m"))
 
         def executor(c: cirq.Circuit) -> float:
             result = cirq.Simulator().run(c, repetitions=10)
-            return float(result.histogram(key="0").get(1, 0)) / 10.0
+            return float(result.histogram(key="m").get(1, 0)) / 10.0
 
         value = zne.execute_with_zne(circuit, executor)
         self.assertAlmostEqual(value, 1.0, places=6)
