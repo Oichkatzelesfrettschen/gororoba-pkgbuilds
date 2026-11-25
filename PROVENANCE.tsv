@@ -162,6 +162,7 @@ python-plux	workspace-infrastructure (private)	packaging/python-plux	99a76ed	202
 python-proto-plus	AUR	python-proto-plus	dd9888f947a2369aa62e894fff442bb6caa5236f	2026-11-24T23:05:04Z
 python-pubchempy	AUR	python-pubchempy	e883655f98934b6a963f28bfbbf50a81686875e7	2026-11-24T23:05:04Z
 python-publication	workspace-infrastructure (private)	packaging/python-publication	99a76ed	2026-11-24T18:55:27Z
+python-py-build-cmake	AUR	python-py-build-cmake	6448c53f535c362c656868c1d24396eff046cae4	2026-11-25T16:45:00Z
 python-pyadic	workspace-infrastructure (private)	packaging/python-pyadic	99a76ed	2026-11-24T18:55:27Z
 python-pyathena	workspace-infrastructure (private)	packaging/python-pyathena	99a76ed	2026-11-24T18:55:27Z
 python-pybase64	AUR	python-pybase64	6083a79737bab5cc1cead2330fce13c1aff760ed	2026-11-24T23:40:00Z
