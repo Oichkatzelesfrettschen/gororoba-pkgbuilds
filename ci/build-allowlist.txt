@@ -16,6 +16,8 @@ python-eigenkit
 python-grapheme
 python-hypercomplex-algebra
 python-hypercomplex-engine
+python-ibm-cloud-sdk-core
+python-ibm-platform-services
 python-ibm-quantum-schemas
 python-jsonconversion
 python-jupytext
@@ -44,6 +46,7 @@ python-qiskit-algorithms
 python-qiskit-ibm-runtime
 python-qiskit-ionq
 python-qiskit-machine-learning
+python-qiskit-mitigation
 python-qiskit-nature
 python-qiskit-optimization
 python-qiskit-qasm3-import
