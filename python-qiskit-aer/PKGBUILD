@@ -1,21 +1,47 @@
 # Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+#
+# qiskit-aer, CPU simulator, compiled for the x86-64-v3 CPU class and tuned
+# for Zen 3. python-qiskit-aer-cuda is the GPU twin of this recipe and
+# provides the same package name; the two share the tuning knobs below.
+#
+# Aer builds its AVX2 statevector kernels (qv_avx2.cpp) with -mavx2 -mfma
+# alone, and the rest of the module with the compiler's baseline flags. The
+# header common_macros.hpp defines GNUC_AVX2 only where __AVX2__ is defined,
+# so a baseline x86-64 build compiles the AVX2 transformer out of the
+# statevector backend. -march=x86-64-v3 defines __AVX2__ in every translation
+# unit, which compiles the transformer in; its runtime cpuid check
+# (framework/avx2_detect.hpp) stays. The whole module then needs AVX2, FMA,
+# BMI1/BMI2, LZCNT, MOVBE and POPCNT: a CPU below x86-64-v3 faults with an
+# illegal instruction on import, and check() refuses to run there.
+#
+# Build knobs (environment, all optional):
+#   AER_MARCH  -march value appended to CFLAGS and CXXFLAGS (default
+#              x86-64-v3; x86-64-v2 or x86-64 builds a wider-reaching binary
+#              without the AVX2 transformer; a vendor name such as znver3 or
+#              native tunes for one CPU, and check() cannot verify it)
+#   AER_MTUNE  -mtune value (default znver3: Zen 3 instruction scheduling,
+#              which the x86-64-v3 instruction set still runs on Intel and
+#              later AMD cores)
 _pkgname=qiskit-aer
 pkgname=python-$_pkgname
-pkgver=0.17.2
+pkgver=0.18.4
 pkgver_nlohmann_json=3.10.2
-pkgrel=3
+pkgrel=1
 pkgdesc="A high performance simulator for quantum circuits that includes noise models"
 arch=(x86_64)
 url="https://github.com/Qiskit/qiskit-aer"
 license=(Apache-2.0)
 depends=(
     blas
+    fmt
     lapack
     python-dateutil
     python-numpy
     python-psutil
     python-qiskit
+    python-scipy
     python-sympy
+    spdlog
 )
 optdepends=(
     'openmp: parallelization with OpenMP'
@@ -32,7 +58,6 @@ makedepends=(
     python-installer
     python-scikit-build
     python-setuptools
-    spdlog
 )
 checkdepends=(
     python-ddt
@@ -46,8 +71,21 @@ source=(
     $_pkgname-$pkgver.tar.gz::https://github.com/Qiskit/$_pkgname/archive/$pkgver.tar.gz
     nlohmann-json-$pkgver_nlohmann_json.tar.gz::https://github.com/nlohmann/json/archive/refs/tags/v$pkgver_nlohmann_json.tar.gz
 )
-b2sums=('49dafc4cba948b7e3d474b0b8c73075cc5135a7c8559eebc2c0d5578c19868b4dc0a1dd4e6ab199f67a3996eb35ea11c9e0d8da9d49835bd2d7119774f64d954'
+b2sums=('c1a21c654afb5037f23afece6655d2fab89523e3b7e67d33e9045294aee66faf01acd3c532c743a15f1b71a81427e3d47dd1001fcde3655530fdd844ca4e460f'
         'e7da213fb75d528b1f5425822f5b598e882f232a67670aaae2d8f89c76e72ee23fa3344d1acfef2b0338a6a423d17b231b7e047ff064c984c2ec7783b721a22c')
+
+# Resolve the tuning knobs; the values reach compiler command lines, so they
+# take compiler CPU-name characters only.
+_aer_tuning() {
+    _aer_march=${AER_MARCH:-x86-64-v3}
+    _aer_mtune=${AER_MTUNE:-znver3}
+    case $_aer_march$_aer_mtune in
+        *[!A-Za-z0-9_.+-]*)
+            error "AER_MARCH and AER_MTUNE take a compiler CPU name (letters, digits, _ . + -)"
+            return 1
+            ;;
+    esac
+}
 
 prepare() {
     cd $_pkgname-$pkgver
@@ -55,13 +93,21 @@ prepare() {
 
     # Fix legacy package name
     sed -i -e "s/qiskit.providers.aer.backends.controller_wrappers/qiskit_aer.backends.controller_wrappers/" test/terra/expression/test_classical_expressions.py
+    grep -q 'qiskit_aer.backends.controller_wrappers' test/terra/expression/test_classical_expressions.py
 
-    # NumPy 2 rejects np.cross on 2-element vectors; test_kraus compares two single-qubit
-    # statevectors, so the scalar 2-D cross product keeps the same check.
-    sed -i 's/np.cross(sv1, sv2)/(sv1[0] * sv2[1] - sv1[1] * sv2[0])/' test/terra/states/test_aer_statevector.py
+    # NumPy 2 rejects np.cross on 2-element vectors. Release 0.18.4 already
+    # compares the two single-qubit statevectors with the scalar 2-D cross
+    # product (test_aer_statevector.py, same_1qubit_statevectors_up_to_global_phase),
+    # so the 0.17.2 sed patch is gone; this guard stops the build if the call returns.
+    if grep -rq 'np\.cross(sv1, sv2)' test; then
+        error "test sources call np.cross on 2-element vectors again; restore the scalar cross-product patch"
+        return 1
+    fi
 }
 
 build() {
+    _aer_tuning || return 1
+
     # We cannot use the header-only library from [extra] because of this issue:
     # https://github.com/Qiskit/qiskit-aer/issues/1742
     local cmake_options=(
@@ -83,13 +129,46 @@ build() {
     export DISABLE_CONAN=ON
     export CPATH="$srcdir/tmp/usr/include:$CPATH"
     export nlohmann_json_DIR="$srcdir"/tmp/usr/cmake/nlohmann_json
+
+    # Appended after makepkg's own flags: the last -march and -mtune win.
+    msg2 "tuning: -march=$_aer_march -mtune=$_aer_mtune"
+    export CFLAGS="$CFLAGS -march=$_aer_march -mtune=$_aer_mtune"
+    export CXXFLAGS="$CXXFLAGS -march=$_aer_march -mtune=$_aer_mtune"
     python -m build --wheel --no-isolation
 }
 
 check() {
+    _aer_tuning || return 1
+
+    # The module runs only on a CPU that supports the level it was built for.
+    # ld.so lists the x86-64 levels the host supports; other -march values
+    # (vendor names, native) have no such list.
+    case $_aer_march in
+        x86-64-v[234])
+            if ! /lib/ld-linux-x86-64.so.2 --help | grep -q "$_aer_march (supported"; then
+                error "this host does not support $_aer_march; the module built with it would fault here. Rebuild with AER_MARCH set to a level the host supports."
+                return 1
+            fi
+            ;;
+        x86-64) ;;
+        *)
+            warning "AER_MARCH=$_aer_march is not an x86-64 level; the host is not verified against it"
+            ;;
+    esac
+
     cd $_pkgname-$pkgver
     python -m venv --system-site-packages test-env
     test-env/bin/python -m installer dist/*.whl
+
+    # Observation, not a gate: the AVX2 transformer class is present in the
+    # module only when GNUC_AVX2 was defined at compile time.
+    local module=(test-env/lib/python*/site-packages/qiskit_aer/backends/controller_wrappers*.so)
+    if grep -aq TransformerAVX2 "${module[0]}"; then
+        msg2 "AVX2 statevector transformer: compiled in"
+    else
+        msg2 "AVX2 statevector transformer: absent from the module"
+    fi
+
     rm -rf qiskit_aer
     # Tests that crash Python:
     # - test_mps_options
