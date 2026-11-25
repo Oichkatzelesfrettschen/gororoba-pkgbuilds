@@ -13,6 +13,12 @@ bios_extract-git	PKGBUILDS	local/bios_extract-git	d7f155862f7d7930cd23e684af2fb0
 blender-git-nvidia	PKGBUILDS	blender-git-nvidia	d7f155862f7d7930cd23e684af2fb0334a78ce32	2026-11-24T18:54:38Z
 bluequbit-stack	workspace-infrastructure (private)	packaging/bluequbit-stack	99a76ed	2026-11-24T18:55:27Z
 bout-next	PKGBUILDS	bout-next	d7f155862f7d7930cd23e684af2fb0334a78ce32	2026-11-24T18:54:38Z
+brakeman-bundled	new	-	-	2026-11-24T23:10:00Z
+casadi	AUR	casadi	7d66e337b5f57a267b7a342040bd8170debf4fb7	2026-11-24T23:10:00Z
+checkov-bundled	new	-	-	2026-11-24T23:10:00Z
+coin-or-coinmumps	AUR	coin-or-coinmumps	5f3a873a3130c601eddaafe8a84d5912f3ea647a	2026-11-24T23:10:00Z
+coin-or-ipopt	AUR	coin-or-ipopt	01ff8628d875f8a9dd85a8370dcaf7b0db6e76c6	2026-11-24T23:10:00Z
+coin-or-qpoases	AUR	coin-or-qpoases	b92f5a833fc480db709301cf025e6a495981db27	2026-11-24T23:10:00Z
 cuquantum	workspace-infrastructure (private)	packaging/cuquantum	99a76ed	2026-11-24T18:55:27Z
 cvcuda-bin	PKGBUILDS	local/cvcuda-bin	6ae84a5e582139c6515451b297f02a256818eb1e	2026-11-24T18:54:38Z
 datasette	PKGBUILDS	datasette	6ae84a5e582139c6515451b297f02a256818eb1e	2026-11-24T18:54:38Z
@@ -21,6 +27,7 @@ deqp-runner	PKGBUILDS	deqp-runner	6ae84a5e582139c6515451b297f02a256818eb1e	2026-
 dracula-gtk-theme-gtk4-compat	PKGBUILDS	pkgbuilds-in-progress/dracula-gtk-theme-gtk4-compat	d7f155862f7d7930cd23e684af2fb0334a78ce32	2026-11-24T18:54:38Z
 epsonscan2-bin	PKGBUILDS	epsonscan2-bin	d7f155862f7d7930cd23e684af2fb0334a78ce32	2026-11-24T18:54:38Z
 facecam-tui-git	PKGBUILDS	facecam-tui-git	d7f155862f7d7930cd23e684af2fb0334a78ce32	2026-11-24T18:54:38Z
+flexiblas	AUR	flexiblas	4047ca7af2cda377e53da9ee559500ec237a5fad	2026-11-24T23:10:00Z
 gcc13-sidecar-bin	PKGBUILDS	gcc13-sidecar-bin	d7f155862f7d7930cd23e684af2fb0334a78ce32	2026-11-24T18:54:38Z
 gowin-eda	PKGBUILDS	pkgbuilds-in-progress/fpga/gowin-eda	d7f155862f7d7930cd23e684af2fb0334a78ce32	2026-11-24T18:54:38Z
 graft	PKGBUILDS	local/graft	d7f155862f7d7930cd23e684af2fb0334a78ce32	2026-11-24T18:54:38Z
@@ -40,6 +47,8 @@ kaggle-benchmarks-stack	workspace-infrastructure (private)	packaging/kaggle-benc
 kaggle-environments-stack	workspace-infrastructure (private)	packaging/kaggle-environments-stack	99a76ed	2026-11-24T18:55:27Z
 kuna-bin	PKGBUILDS	kuna-bin	6ae84a5e582139c6515451b297f02a256818eb1e	2026-11-24T18:54:38Z
 lean4-cuda-nightly-bin	workspace-infrastructure (private)	packaging/lean4-cuda-nightly-bin	99a76ed	2026-11-24T18:55:27Z
+libcint	AUR	libcint	936428a227362d312c8c5950413624e4e39e223b	2026-11-24T23:10:00Z
+libxc	AUR	libxc	09603c0d7352b65aa558b649598f82af466cc8c1	2026-11-24T23:10:00Z
 litert-lm	workspace-infrastructure (private)	packaging/litert-lm	99a76ed	2026-11-24T18:55:27Z
 llama.cpp-cuda	workspace-infrastructure (private)	packaging/llama.cpp-cuda	99a76ed	2026-11-24T18:55:27Z
 lttng-tools-generic-kernel	PKGBUILDS	lttng-tools-generic-kernel	d7f155862f7d7930cd23e684af2fb0334a78ce32	2026-11-24T18:54:38Z
@@ -47,6 +56,7 @@ mdns-scan	PKGBUILDS	mdns-scan	d7f155862f7d7930cd23e684af2fb0334a78ce32	2026-11-2
 mdsplus	PKGBUILDS	mdsplus	d7f155862f7d7930cd23e684af2fb0334a78ce32	2026-11-24T18:54:38Z
 micron-storage-executive-cli-crucial-mx500-updater	PKGBUILDS	micron-storage-executive-cli-crucial-mx500-updater	d7f155862f7d7930cd23e684af2fb0334a78ce32	2026-11-24T18:54:38Z
 micropython	PKGBUILDS	local/micropython	d7f155862f7d7930cd23e684af2fb0334a78ce32	2026-11-24T18:54:38Z
+mitiq-stack	new	-	-	2026-11-24T23:20:00Z
 nextpnr-git	PKGBUILDS	pkgbuilds-in-progress/fpga/nextpnr-git	d7f155862f7d7930cd23e684af2fb0334a78ce32	2026-11-24T18:54:38Z
 nvhpc-sidecar-2411-multi	PKGBUILDS	local/nvhpc-sidecar-2411-multi	d7f155862f7d7930cd23e684af2fb0334a78ce32	2026-11-24T18:54:38Z
 nvidia-opticalflow-headers	PKGBUILDS	nvidia-opticalflow-headers	d7f155862f7d7930cd23e684af2fb0334a78ce32	2026-11-24T18:54:38Z
@@ -57,6 +67,7 @@ octane-blender-prime	PKGBUILDS	local/octane-blender-prime	d7f155862f7d7930cd23e6
 octane-server-prime	PKGBUILDS	local/octane-server-prime	d7f155862f7d7930cd23e684af2fb0334a78ce32	2026-11-24T18:54:38Z
 open-webui-stack	workspace-infrastructure (private)	packaging/open-webui-stack	99a76ed	2026-11-24T18:55:27Z
 optix-dev-headers	PKGBUILDS	optix-dev-headers	d7f155862f7d7930cd23e684af2fb0334a78ce32	2026-11-24T18:54:38Z
+or-tools	AUR	or-tools	e97325cc9ddfae56f46ff3c989b6db2b1104b374	2026-11-24T23:10:00Z
 orchis-gtk-theme-full	PKGBUILDS	pkgbuilds-in-progress/orchis-gtk-theme-full	d7f155862f7d7930cd23e684af2fb0334a78ce32	2026-11-24T18:54:38Z
 originquantum-stack	workspace-infrastructure (private)	packaging/originquantum-stack	99a76ed	2026-11-24T18:55:27Z
 perfetto	PKGBUILDS	local/perfetto	6ae84a5e582139c6515451b297f02a256818eb1e	2026-11-24T18:54:38Z
@@ -70,6 +81,7 @@ python-amazon-braket-default-simulator	workspace-infrastructure (private)	packag
 python-amazon-braket-schemas	workspace-infrastructure (private)	packaging/python-amazon-braket-schemas	99a76ed	2026-11-24T18:55:27Z
 python-amazon-braket-sdk	workspace-infrastructure (private)	packaging/python-amazon-braket-sdk	99a76ed	2026-11-24T18:55:27Z
 python-amazon-ion	workspace-infrastructure (private)	packaging/python-amazon-ion	99a76ed	2026-11-24T18:55:27Z
+python-asyncio-atexit	new	-	-	2026-11-24T23:05:46Z
 python-aws-bedrock-token-generator	workspace-infrastructure (private)	packaging/python-aws-bedrock-token-generator	99a76ed	2026-11-24T18:55:27Z
 python-aws-cdk-asset-awscli-v1	workspace-infrastructure (private)	packaging/python-aws-cdk-asset-awscli-v1	99a76ed	2026-11-24T18:55:27Z
 python-aws-cdk-asset-node-proxy-agent-v6	workspace-infrastructure (private)	packaging/python-aws-cdk-asset-node-proxy-agent-v6	99a76ed	2026-11-24T18:55:27Z
@@ -82,23 +94,36 @@ python-awswrangler	workspace-infrastructure (private)	packaging/python-awswrangl
 python-bedrock-agentcore	workspace-infrastructure (private)	packaging/python-bedrock-agentcore	99a76ed	2026-11-24T18:55:27Z
 python-boltons	workspace-infrastructure (private)	packaging/python-boltons	99a76ed	2026-11-24T18:55:27Z
 python-borneo	workspace-infrastructure (private)	packaging/python-borneo	99a76ed	2026-11-24T18:55:27Z
+python-casadi	new	-	-	2026-11-24T23:10:00Z
 python-cayley-calculator	workspace-infrastructure (private)	packaging/python-cayley-calculator	99a76ed	2026-11-24T18:55:27Z
 python-cayley-dickson	workspace-infrastructure (private)	packaging/python-cayley-dickson	99a76ed	2026-11-24T18:55:27Z
+python-cirq-aqt	AUR	python-cirq	5829330bf5b9427c0f2c6f843623e08dd95d16a7	2026-11-24T23:05:04Z
+python-cirq-core	AUR	python-cirq	5829330bf5b9427c0f2c6f843623e08dd95d16a7	2026-11-24T23:05:04Z
+python-cirq-google	AUR	python-cirq	5829330bf5b9427c0f2c6f843623e08dd95d16a7	2026-11-24T23:05:04Z
+python-cirq-ionq	AUR	python-cirq	5829330bf5b9427c0f2c6f843623e08dd95d16a7	2026-11-24T23:05:04Z
+python-cirq-pasqal	AUR	python-cirq	5829330bf5b9427c0f2c6f843623e08dd95d16a7	2026-11-24T23:05:04Z
+python-cirq-web	AUR	python-cirq	5829330bf5b9427c0f2c6f843623e08dd95d16a7	2026-11-24T23:05:04Z
+python-cirq	AUR	python-cirq	5829330bf5b9427c0f2c6f843623e08dd95d16a7	2026-11-24T23:05:04Z
 python-clifford	workspace-infrastructure (private)	packaging/python-clifford	99a76ed	2026-11-24T18:55:27Z
 python-cm-time	workspace-infrastructure (private)	packaging/python-cm-time	99a76ed	2026-11-24T18:55:27Z
 python-constructs	workspace-infrastructure (private)	packaging/python-constructs	99a76ed	2026-11-24T18:55:27Z
 python-cuquantum	workspace-infrastructure (private)	packaging/python-cuquantum	99a76ed	2026-11-24T18:55:27Z
 python-cytoolz	workspace-infrastructure (private)	packaging/python-cytoolz	99a76ed	2026-11-24T18:55:27Z
+python-docplex	AUR	python-docplex	6857d7348dda25955de0b2af6346a067b693a99e	2026-11-24T23:10:00Z
+python-duet	new	-	-	2026-11-24T23:06:35Z
 python-eigenkit	workspace-infrastructure (private)	packaging/python-eigenkit	99a76ed	2026-11-24T18:55:27Z
 python-exqalibur	workspace-infrastructure (private)	packaging/python-exqalibur	99a76ed	2026-11-24T18:55:27Z
 python-flint	workspace-infrastructure (private)	packaging/python-flint	99a76ed	2026-11-24T18:55:27Z
 python-galgebra	workspace-infrastructure (private)	packaging/python-galgebra	99a76ed	2026-11-24T18:55:27Z
+python-grapheme	new	-	-	2026-11-24T23:07:02Z
 python-httpx-sse	PKGBUILDS	local/python-httpx-sse	d7f155862f7d7930cd23e684af2fb0334a78ce32	2026-11-24T18:54:38Z
 python-hupper	PKGBUILDS	python-hupper	d7f155862f7d7930cd23e684af2fb0334a78ce32	2026-11-24T18:54:38Z
 python-hypercomplex-algebra	workspace-infrastructure (private)	packaging/python-hypercomplex-algebra	99a76ed	2026-11-24T18:55:27Z
 python-hypercomplex-engine	workspace-infrastructure (private)	packaging/python-hypercomplex-engine	99a76ed	2026-11-24T18:55:27Z
 python-hypercomplex	workspace-infrastructure (private)	packaging/python-hypercomplex	99a76ed	2026-11-24T18:55:27Z
 python-hyprat	workspace-infrastructure (private)	packaging/python-hyprat	99a76ed	2026-11-24T18:55:27Z
+python-ibm-cloud-sdk-core	AUR	python-ibm-cloud-sdk-core	37e2fe3c2661f90ac98673886beb2e0adb1842b7	2026-11-25T05:10:00Z
+python-ibm-platform-services	AUR	python-ibm-platform-services	eb9710779fbe9ce96f873f041f25da75d48e67f9	2026-11-25T05:10:00Z
 python-ibm-quantum-schemas	workspace-infrastructure (private)	packaging/python-ibm-quantum-schemas	99a76ed	2026-11-24T18:55:27Z
 python-jsii	workspace-infrastructure (private)	packaging/python-jsii	99a76ed	2026-11-24T18:55:27Z
 python-jsonconversion	workspace-infrastructure (private)	packaging/python-jsonconversion	99a76ed	2026-11-24T18:55:27Z
@@ -117,56 +142,90 @@ python-numpy-flint-arb	workspace-infrastructure (private)	packaging/python-numpy
 python-numpy-quaddtype-git	workspace-infrastructure (private)	packaging/python-numpy-quaddtype-git	99a76ed	2026-11-24T18:55:27Z
 python-numpy-quaddtype	workspace-infrastructure (private)	packaging/python-numpy-quaddtype	99a76ed	2026-11-24T18:55:27Z
 python-nvidia-dali-cuda130	PKGBUILDS	python-nvidia-dali-cuda130	d7f155862f7d7930cd23e684af2fb0334a78ce32	2026-11-24T18:54:38Z
-python-ocifs	workspace-infrastructure (private)	packaging/python-ocifs	99a76ed	2026-11-24T18:55:27Z
 python-oci-genai-auth	workspace-infrastructure (private)	packaging/python-oci-genai-auth	99a76ed	2026-11-24T18:55:27Z
 python-oci-openai	workspace-infrastructure (private)	packaging/python-oci-openai	99a76ed	2026-11-24T18:55:27Z
+python-ocifs	workspace-infrastructure (private)	packaging/python-ocifs	99a76ed	2026-11-24T18:55:27Z
 python-octonion-sedenion	workspace-infrastructure (private)	packaging/python-octonion-sedenion	99a76ed	2026-11-24T18:55:27Z
 python-octonion	workspace-infrastructure (private)	packaging/python-octonion	99a76ed	2026-11-24T18:55:27Z
+python-openfermion	AUR	python-openfermion	152640eab3af4e64fcd4cb7ee3e00e2078242f96	2026-11-24T23:05:04Z
 python-openpulse	workspace-infrastructure (private)	packaging/python-openpulse	99a76ed	2026-11-24T18:55:27Z
+python-openqasm3	AUR	python-openqasm3	468669cfc964514f91025fd1e2d32b9ac25f3f44	2026-11-25T02:20:00Z
+python-openquantum-sdk	new	-	-	2026-11-24T23:05:46Z
 python-oqpy	workspace-infrastructure (private)	packaging/python-oqpy	99a76ed	2026-11-24T18:55:27Z
 python-oracle-ads	workspace-infrastructure (private)	packaging/python-oracle-ads	99a76ed	2026-11-24T18:55:27Z
+python-ortools	new	-	-	2026-11-24T23:10:00Z
 python-pauli-prop	workspace-infrastructure (private)	packaging/python-pauli-prop	99a76ed	2026-11-24T18:55:27Z
 python-perceval-interop	workspace-infrastructure (private)	packaging/python-perceval-interop	99a76ed	2026-11-24T18:55:27Z
 python-perceval-quandela	workspace-infrastructure (private)	packaging/python-perceval-quandela	99a76ed	2026-11-24T18:55:27Z
+python-plum-dispatch	AUR	python-plum-dispatch	2610711c4d7724b15582e95696b57a413d72032f	2026-11-24T23:10:00Z
 python-plux	workspace-infrastructure (private)	packaging/python-plux	99a76ed	2026-11-24T18:55:27Z
+python-proto-plus	AUR	python-proto-plus	dd9888f947a2369aa62e894fff442bb6caa5236f	2026-11-24T23:05:04Z
+python-pubchempy	AUR	python-pubchempy	e883655f98934b6a963f28bfbbf50a81686875e7	2026-11-24T23:05:04Z
 python-publication	workspace-infrastructure (private)	packaging/python-publication	99a76ed	2026-11-24T18:55:27Z
 python-pyadic	workspace-infrastructure (private)	packaging/python-pyadic	99a76ed	2026-11-24T18:55:27Z
 python-pyathena	workspace-infrastructure (private)	packaging/python-pyathena	99a76ed	2026-11-24T18:55:27Z
+python-pybase64	AUR	python-pybase64	6083a79737bab5cc1cead2330fce13c1aff760ed	2026-11-24T23:40:00Z
 python-pycrate	PKGBUILDS	python-pycrate	d7f155862f7d7930cd23e684af2fb0334a78ce32	2026-11-24T18:54:38Z
 python-pyoctonion	workspace-infrastructure (private)	packaging/python-pyoctonion	99a76ed	2026-11-24T18:55:27Z
+python-pyomo	AUR	python-pyomo	f24580ffe8eed437ad3e1a95a6dd4c63a6c314c8	2026-11-24T23:10:00Z
 python-pyquaternion	workspace-infrastructure (private)	packaging/python-pyquaternion	99a76ed	2026-11-24T18:55:27Z
+python-pyscf	AUR	python-pyscf	ff097df6f8300af8ca40bfda7cd276eee3ac3d80	2026-11-24T23:10:00Z
 python-pytest-responses	workspace-infrastructure (private)	packaging/python-pytest-responses	99a76ed	2026-11-24T18:55:27Z
+python-pytket	new	-	-	2026-11-24T23:06:00Z
+python-pyutilib	AUR	python-pyutilib	f9a30ebbb7300c6d4188ba68a7249af4a78d55fc	2026-11-24T23:10:00Z
 python-qcog	workspace-infrastructure (private)	packaging/python-qcog	99a76ed	2026-11-24T18:55:27Z
+python-qiskit-addon-aqc-tensor	AUR	python-qiskit-addon-aqc-tensor	1703c066da5bc11f5491e546d0efe434d5c3a01c	2026-11-24T23:10:00Z
+python-qiskit-addon-cutting	AUR	python-qiskit-addon-cutting	78992c89df658839051a070290971e3961b53f46	2026-11-24T23:10:00Z
+python-qiskit-addon-mpf	AUR	python-qiskit-addon-mpf	95462e2746f4c16d40fcd6d24168e6af4f8e5be7	2026-11-24T23:10:00Z
+python-qiskit-addon-obp	AUR	python-qiskit-addon-obp	0931c40779e7db807880ad89e719358f0ca48134	2026-11-24T23:10:00Z
 python-qiskit-addon-slc	workspace-infrastructure (private)	packaging/python-qiskit-addon-slc	99a76ed	2026-11-24T18:55:27Z
+python-qiskit-addon-sqd	AUR	python-qiskit-addon-sqd	7bcb03b89977ca0b0e2cb2293bd3ef7d702d4fb9	2026-11-24T23:10:00Z
 python-qiskit-addon-utils	workspace-infrastructure (private)	packaging/python-qiskit-addon-utils	99a76ed	2026-11-24T18:55:27Z
 python-qiskit-aer-cuda	workspace-infrastructure (private)	packaging/python-qiskit-aer-cuda	99a76ed	2026-11-24T18:55:27Z
 python-qiskit-aer	workspace-infrastructure (private)	packaging/python-qiskit-aer	99a76ed	2026-11-24T18:55:27Z
+python-qiskit-algorithms	AUR	python-qiskit-algorithms	66eb85fccaf8dd2d070dc07ef6ecb6d2d2a33a5d	2026-11-24T23:10:00Z
 python-qiskit-connector	workspace-infrastructure (private)	packaging/python-qiskit-connector	99a76ed	2026-11-24T18:55:27Z
 python-qiskit-experiments	workspace-infrastructure (private)	packaging/python-qiskit-experiments	99a76ed	2026-11-24T18:55:27Z
 python-qiskit-ibm-catalog	workspace-infrastructure (private)	packaging/python-qiskit-ibm-catalog	99a76ed	2026-11-24T18:55:27Z
 python-qiskit-ibm-runtime	workspace-infrastructure (private)	packaging/python-qiskit-ibm-runtime	99a76ed	2026-11-24T18:55:27Z
+python-qiskit-ionq	new	-	-	2026-11-24T23:10:00Z
+python-qiskit-machine-learning	AUR	python-qiskit-machine-learning	d237c4e7d8c0050ea7e16cee4437323b627d06a7	2026-11-24T23:10:00Z
+python-qiskit-mitigation	AUR	python-qiskit-mitigation	9672c8dff264f435b22469cada86d73f8d9ada79	2026-11-25T05:10:00Z
+python-qiskit-nature	AUR	python-qiskit-nature	75ec1c81333aba7c59173537e53159390c7c73dd	2026-11-24T23:10:00Z
 python-qiskit-noise-learning	workspace-infrastructure (private)	packaging/python-qiskit-noise-learning	99a76ed	2026-11-24T18:55:27Z
+python-qiskit-optimization	AUR	python-qiskit-optimization	6d748f04effa687740b8b08fba4b7228cf6b0c99	2026-11-24T23:10:00Z
+python-qiskit-qasm3-import	AUR	python-qiskit-qasm3-import	c35d16cc74c5c56b9d8a54ff61494a82bd01a1ea	2026-11-25T02:20:00Z
 python-qiskit-resume	workspace-infrastructure (private)	packaging/python-qiskit-resume	99a76ed	2026-11-24T18:55:27Z
 python-qiskit-serverless	workspace-infrastructure (private)	packaging/python-qiskit-serverless	99a76ed	2026-11-24T18:55:27Z
 python-qiskit-waveform-sim	workspace-infrastructure (private)	packaging/python-qiskit-waveform-sim	99a76ed	2026-11-24T18:55:27Z
 python-qiskit	workspace-infrastructure (private)	packaging/python-qiskit	99a76ed	2026-11-24T18:55:27Z
 python-quantum-al	workspace-infrastructure (private)	packaging/python-quantum-al	99a76ed	2026-11-24T18:55:27Z
 python-qubasic	workspace-infrastructure (private)	packaging/python-qubasic	99a76ed	2026-11-24T18:55:27Z
+python-qutip	AUR	python-qutip	3da715bc4f8c146fcb9a403545b26a84158de16f	2026-11-24T23:05:04Z
+python-qwasm	new	-	-	2026-11-24T23:06:00Z
 python-redshift-connector	workspace-infrastructure (private)	packaging/python-redshift-connector	99a76ed	2026-11-24T18:55:27Z
 python-runningman	workspace-infrastructure (private)	packaging/python-runningman	99a76ed	2026-11-24T18:55:27Z
+python-rustworkx	AUR	python-rustworkx	df8564e3123b1a903f1f6482e5675a740d13156b	2026-11-24T23:15:00Z
 python-sagemaker-core	workspace-infrastructure (private)	packaging/python-sagemaker-core	99a76ed	2026-11-24T18:55:27Z
 python-samplomatic	workspace-infrastructure (private)	packaging/python-samplomatic	99a76ed	2026-11-24T18:55:27Z
+python-scipy-doctest	AUR	python-scipy-doctest	422993a88c4994e7ec4afcff3867b9eafa2d8384	2026-11-25T02:20:00Z
 python-scmver	workspace-infrastructure (private)	packaging/python-scmver	99a76ed	2026-11-24T18:55:27Z
 python-scramp	workspace-infrastructure (private)	packaging/python-scramp	99a76ed	2026-11-24T18:55:27Z
+python-seekpath	AUR	python-seekpath	1365235237dd4e032f62a2aa158a63523a46281a	2026-11-24T23:05:46Z
 python-smdebug-rulesconfig	workspace-infrastructure (private)	packaging/python-smdebug-rulesconfig	99a76ed	2026-11-24T18:55:27Z
 python-splitoct	workspace-infrastructure (private)	packaging/python-splitoct	99a76ed	2026-11-24T18:55:27Z
 python-stim	workspace-infrastructure (private)	packaging/python-stim	99a76ed	2026-11-24T18:55:27Z
+python-tensornetwork	new	-	-	2026-11-24T23:06:00Z
 python-torch-tensorrt-cp314	workspace-infrastructure (private)	packaging/python-torch-tensorrt-cp314	99a76ed	2026-11-24T18:55:27Z
+python-typedunits	AUR	python-typedunits	a7acf3ede41062782fbbd13576c1bec586036ac6	2026-11-24T23:05:04Z
 python-types-array-api	workspace-infrastructure (private)	packaging/python-types-array-api	99a76ed	2026-11-24T18:55:27Z
+python-zendriver	new	-	-	2026-11-24T23:05:46Z
 qbraid-stack	workspace-infrastructure (private)	packaging/qbraid-stack	99a76ed	2026-11-24T18:55:27Z
 qcsuper	PKGBUILDS	qcsuper	6ae84a5e582139c6515451b297f02a256818eb1e	2026-11-24T18:54:38Z
 qiskit-debugger-stack	workspace-infrastructure (private)	packaging/qiskit-debugger-stack	99a76ed	2026-11-24T18:55:27Z
+qiskit-legacy-stack	new	-	-	2026-11-24T23:10:00Z
 quafu-stack	workspace-infrastructure (private)	packaging/quafu-stack	99a76ed	2026-11-24T18:55:27Z
+quantum-compat-stack	new	-	-	2026-11-24T23:10:00Z
 quantum-pipeline-stack	workspace-infrastructure (private)	packaging/quantum-pipeline-stack	99a76ed	2026-11-24T18:55:27Z
 qxelarator-python313	workspace-infrastructure (private)	packaging/qxelarator-python313	99a76ed	2026-11-24T18:55:27Z
 rea-agents	PKGBUILDS	rea-agents	6ae84a5e582139c6515451b297f02a256818eb1e	2026-11-24T18:54:38Z
@@ -181,5 +240,6 @@ ventoy	PKGBUILDS	pkgbuilds-in-progress/ventoy	d7f155862f7d7930cd23e684af2fb0334a
 wakaru-bin	PKGBUILDS	wakaru-bin	6ae84a5e582139c6515451b297f02a256818eb1e	2026-11-24T18:54:38Z
 webkit2gtk-4.1-hardened	PKGBUILDS	webkit2gtk-4.1-hardened	d7f155862f7d7930cd23e684af2fb0334a78ce32	2026-11-24T18:54:38Z
 weggli	PKGBUILDS	local/weggli	d7f155862f7d7930cd23e684af2fb0334a78ce32	2026-11-24T18:54:38Z
+xcfun	AUR	xcfun	a9de48605429c5734249ae9347c003b6ee1438af	2026-11-24T23:10:00Z
 xorg-server-glamor-r300fix	PKGBUILDS	local/xorg-server-glamor-r300fix	d7f155862f7d7930cd23e684af2fb0334a78ce32	2026-11-24T18:54:38Z
 zpgenerator-stack	workspace-infrastructure (private)	packaging/zpgenerator-stack	99a76ed	2026-11-24T18:55:27Z
