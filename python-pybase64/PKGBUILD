@@ -1,0 +1,45 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+# Contributor: Smoolak <smoolak@gmail.com>
+# Contributor: envolution
+# Contributor: irmluity <45vw4yz8g@mozmail.com>
+
+# The PyPI sdist carries the aklomp/base64 sources and the tests, so no git
+# submodule is fetched.
+pkgname=python-pybase64
+_pkgname=pybase64
+pkgver=1.5.2
+pkgrel=1
+pkgdesc="Fast Base64 encoding/decoding in Python"
+arch=(x86_64)
+url="https://github.com/mayeut/pybase64"
+license=('BSD-2-Clause')
+depends=(glibc python)
+makedepends=(cmake python-build python-installer python-setuptools python-wheel)
+checkdepends=(python-pytest python-packaging python-typing_extensions)
+options=(!strip !debug)
+source=("$_pkgname-$pkgver.tar.gz::https://files.pythonhosted.org/packages/source/p/$_pkgname/$_pkgname-$pkgver.tar.gz"
+        "$_pkgname-$pkgver-tests.tar.gz::$url/archive/refs/tags/v$pkgver.tar.gz")
+noextract=("$_pkgname-$pkgver-tests.tar.gz")
+sha256sums=('e7bc140306325a61cb7bd18b78fbf800df6aecaa9928023b7f7425b680a7601e'
+            '0cd18b1bf1e46e6c06411fedf2d353cab4285241f97154200f4918b95a41cd7f')
+
+build() {
+  cd "$_pkgname-$pkgver"
+  CIBUILDWHEEL=1 python -m build --wheel --no-isolation
+}
+
+check() {
+  cd "$_pkgname-$pkgver"
+  # The sdist ships tests/ without tests/utils.py, so the tests come from the tag archive.
+  rm -rf tests
+  bsdtar -xf "$srcdir/$_pkgname-$pkgver-tests.tar.gz" --strip-components=1 "$_pkgname-$pkgver/tests"
+  python -m venv --system-site-packages test-env
+  test-env/bin/python -m installer dist/*.whl
+  CIBUILDWHEEL=1 test-env/bin/python -P -m pytest -o addopts="" -p no:cacheprovider --import-mode=importlib tests
+}
+
+package() {
+  cd "$_pkgname-$pkgver"
+  python -m installer --destdir="$pkgdir" dist/*.whl
+  install -Dm644 LICENSE -t "$pkgdir/usr/share/licenses/python-$_pkgname/"
+}

@@ -1,0 +1,50 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+
+# mitiq 1.1.0 pins cirq-core<1.7, numpy<2.3 and scipy<=1.17.1, which conflict
+# with the system packages, and its cirq-core needs networkx>=3.4, which
+# conflicts with the networkx==2.8.5 pin of qiskit-ibm-transpiler in
+# quantum-compat-stack. The stack keeps mitiq with Qiskit 2.6.2, Aer and
+# cirq-core 1.6.1 under /opt. mitiq is GPL-3.0-only; Qiskit and Aer are
+# Apache-2.0. mitiq 1.1.0 declares Requires-Python <3.13, so the stack runs on
+# python311. The version tracks mitiq.
+pkgname=mitiq-stack
+pkgver=1.1.0
+pkgrel=1
+pkgdesc="mitiq 1.1.0 error mitigation on Qiskit 2.6 and cirq-core 1.6 as a hash-locked Python 3.11 environment"
+arch=('x86_64')
+url="https://github.com/unitaryfoundation/mitiq"
+license=('GPL-3.0-only' 'Apache-2.0')
+depends=(python311 gcc-libs glibc)
+_prefix=/opt/$pkgname
+source=(requirements.in requirements.lock test_mitiq_stack.py mitiq-python)
+sha256sums=('071498e33f0220f373967e0087bdd39d8e1d670ae8ab99f44003c12cabd21086'
+            '89ca3e59467bc189c3021b86cf6e73754632b617e3e478bbeb5a446b97121751'
+            '76db6fe3cf58bc7e13d5aafa61d7de62ff330a4e20279f0468bf732e806e5a69'
+            '35130429b48532f0e7ddc33bbdeb71980a51588db43ea223991e7716ee8b62e4')
+
+build() {
+	/usr/bin/python3.11 -m venv --clear "$srcdir/stack"
+	"$srcdir/stack/bin/python" -m pip install -q --no-cache-dir --upgrade pip==25.3
+	# --require-hashes binds every distribution to the lock and --no-deps keeps
+	# the installed set equal to it.
+	"$srcdir/stack/bin/python" -m pip install -q --no-cache-dir --require-hashes --no-deps --only-binary :all: \
+		-r "$srcdir/requirements.lock"
+}
+
+check() {
+	cd "$srcdir"
+	"$srcdir/stack/bin/python" -P -m unittest discover -v -s "$srcdir" -p test_mitiq_stack.py
+	"$srcdir/stack/bin/python" -m pip check
+}
+
+package() {
+	install -d "$pkgdir$_prefix"
+	cp -a "$srcdir/stack/." "$pkgdir$_prefix/"
+	# Entry-point shebangs and activate scripts carry the build path.
+	grep -rlI --null "$srcdir/stack" "$pkgdir$_prefix/bin" "$pkgdir$_prefix/pyvenv.cfg" |
+		xargs -0 -r sed -i "s|$srcdir/stack|$_prefix|g"
+	find "$pkgdir$_prefix" -name __pycache__ -prune -exec rm -r {} +
+	"$pkgdir$_prefix/bin/python" -m compileall -q -j0 -d "$_prefix/lib" "$pkgdir$_prefix/lib" >/dev/null
+	install -Dm644 requirements.in requirements.lock test_mitiq_stack.py -t "$pkgdir/usr/share/$pkgname/"
+	install -Dm755 mitiq-python "$pkgdir/usr/bin/mitiq-python"
+}

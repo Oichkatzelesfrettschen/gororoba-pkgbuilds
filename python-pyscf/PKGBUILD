@@ -1,0 +1,37 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+# Contributor: Christopher Hillenbrand <chillenb.lists@gmail.com>
+# Contributor: Dan Maftei <dan.maftei@chem.uaic.ro>
+pkgname=python-pyscf
+_name=pyscf
+pkgver=2.15.1
+pkgrel=1
+pkgdesc="Python module for quantum chemistry"
+arch=('x86_64')
+url="https://github.com/pyscf/pyscf"
+source=("$pkgname-$pkgver.tar.gz::$url/archive/v$pkgver.tar.gz")
+sha256sums=('2157be75fa2ba706740eecabe1a9b432842f8431a41a5573818c63b3fdb67d9c')
+license=('Apache-2.0')
+depends=('python' 'python-numpy' 'python-scipy' 'python-h5py' 'xcfun' 'libcint' 'libxc' 'blas')
+makedepends=('cmake' 'python-build' 'python-installer' 'python-setuptools')
+conflicts=(${pkgname}-git)
+
+build() {
+    cd "${_name}-${pkgver}"
+    CMAKE_CONFIGURE_ARGS="-DCMAKE_BUILD_TYPE=Release \
+                          -DCMAKE_INSTALL_PREFIX='/usr' \
+                          -DBUILD_SHARED_LIBS=ON
+                          -DCMAKE_INSTALL_LIBDIR=lib \
+                          -DBUILD_LIBCINT=OFF \
+                          -DBUILD_LIBXC=OFF \
+                          -DBUILD_XCFUN=OFF \
+                          -LAH \
+                          -Wno-dev"
+    export CMAKE_CONFIGURE_ARGS=$(echo $CMAKE_CONFIGURE_ARGS | tr -d '\n')
+    python -m build --wheel --no-isolation -x
+
+}
+
+package() {
+    cd "${_name}-${pkgver}"
+    python -m installer --destdir="$pkgdir" dist/*.whl
+}

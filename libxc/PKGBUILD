@@ -1,0 +1,43 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+# Contributor: Carlos Aznarán <caznaranl@uni.pe>
+# Contributor: Jingbei Li <i@jingbei.li>
+# Contributor: James Spencer <james.s.spencer@gmail.com>
+# Contributor: Anton Kudelin <kudelin at protonmail dot com>
+pkgname=libxc
+pkgver=7.1.2
+pkgrel=1
+pkgdesc="A library of exchange-correlation functionals for density-functional theory"
+arch=(i686 x86_64 aarch64)
+url="https://${pkgname}.gitlab.io"
+license=(MPL-2.0)
+depends=(python-numpy)
+makedepends=(gcc-fortran cmake python-pytest)
+source=(https://gitlab.com/${pkgname}/${pkgname}/-/archive/${pkgver}/${pkgname}-${pkgver}.tar.gz)
+sha256sums=('c517ce61820ea8114664a4280b6a6bc74a4f22f1fd1ea4ddecd6df0caeeae4f4')
+options=(staticlibs)
+
+build() {
+  cmake \
+    -S ${pkgname}-${pkgver} \
+    -B build \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DCMAKE_INSTALL_PREFIX=/usr \
+    -DBUILD_SHARED_LIBS=ON \
+    -DBUILD_TESTING=ON \
+    -DENABLE_FORTRAN=ON \
+    -DENABLE_GENERIC=ON \
+    -DENABLE_PYTHON=ON \
+    -DENABLE_XHOST=ON \
+    -DCMAKE_POSITION_INDEPENDENT_CODE=TRUE \
+    -Wno-dev
+  cmake --build build --target all
+}
+
+check() {
+  ctest --output-on-failure --test-dir build
+}
+
+package() {
+  DESTDIR="${pkgdir}" cmake --build build --target install
+  install -Dm 644 ${pkgname}-${pkgver}/COPYING -t "${pkgdir}/usr/share/licenses/${pkgname}"
+}

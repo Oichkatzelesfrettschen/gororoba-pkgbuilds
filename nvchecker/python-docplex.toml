@@ -1,0 +1,3 @@
+[python-docplex]
+source = "pypi"
+pypi = "docplex"

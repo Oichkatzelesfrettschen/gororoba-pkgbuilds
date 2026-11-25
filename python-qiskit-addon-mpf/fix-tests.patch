@@ -1,0 +1,95 @@
+From 93baf2c6aa4b33aa95bf10af146645509cb804b4 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Iy=C3=A1n=20M=C3=A9ndez=20Veiga?= <me@iyanmv.com>
+Date: Fri, 5 Sep 2025 11:15:48 +0200
+Subject: [PATCH 1/2] Only define classes if TeNPy is installed
+
+---
+ test/backends/tenpy_layers/test_e2e.py | 13 +++++++------
+ test/backends/tenpy_tebd/test_e2e.py   | 13 +++++++------
+ 2 files changed, 14 insertions(+), 12 deletions(-)
+
+diff --git a/test/backends/tenpy_layers/test_e2e.py b/test/backends/tenpy_layers/test_e2e.py
+index 1b87d13..d8e73ef 100644
+--- a/test/backends/tenpy_layers/test_e2e.py
++++ b/test/backends/tenpy_layers/test_e2e.py
+@@ -53,13 +53,14 @@ def gen_even_coupling_layer(n, Jxx, Jz, J):
+     return qc
+ 
+ 
+-class ConserveXXZChain2(XXZChain2):
+-    """TeNPy's XXZChain2 hard-codes Sz conservation. This subclass makes it configurable."""
++if HAS_TENPY:
++    class ConserveXXZChain2(XXZChain2):
++        """TeNPy's XXZChain2 hard-codes Sz conservation. This subclass makes it configurable."""
+ 
+-    def init_sites(self, model_params):
+-        conserve = model_params.get("conserve", "Sz", bool)
+-        sort_charge = model_params.get("sort_charge", True, bool)
+-        return SpinHalfSite(conserve=conserve, sort_charge=sort_charge)  # use predefined Site
++        def init_sites(self, model_params):
++            conserve = model_params.get("conserve", "Sz", bool)
++            sort_charge = model_params.get("sort_charge", True, bool)
++            return SpinHalfSite(conserve=conserve, sort_charge=sort_charge)  # use predefined Site
+ 
+ 
+ @pytest.mark.skipif(not HAS_TENPY, reason="TeNPy is required for these unittests")
+diff --git a/test/backends/tenpy_tebd/test_e2e.py b/test/backends/tenpy_tebd/test_e2e.py
+index 450d485..65a952e 100644
+--- a/test/backends/tenpy_tebd/test_e2e.py
++++ b/test/backends/tenpy_tebd/test_e2e.py
+@@ -24,13 +24,14 @@
+     from tenpy.networks.site import SpinHalfSite
+ 
+ 
+-class ConserveXXZChain2(XXZChain2):
+-    """TeNPy's XXZChain2 hard-codes Sz conservation. This subclass makes it configurable."""
++if HAS_TENPY:
++    class ConserveXXZChain2(XXZChain2):
++        """TeNPy's XXZChain2 hard-codes Sz conservation. This subclass makes it configurable."""
+ 
+-    def init_sites(self, model_params):
+-        conserve = model_params.get("conserve", "Sz", bool)
+-        sort_charge = model_params.get("sort_charge", True, bool)
+-        return SpinHalfSite(conserve=conserve, sort_charge=sort_charge)  # use predefined Site
++        def init_sites(self, model_params):
++            conserve = model_params.get("conserve", "Sz", bool)
++            sort_charge = model_params.get("sort_charge", True, bool)
++            return SpinHalfSite(conserve=conserve, sort_charge=sort_charge)  # use predefined Site
+ 
+ 
+ @pytest.mark.skipif(not HAS_TENPY, reason="TeNPy is required for these unittests")
+
+From 1cb319dfe962c0edeb94c52229fd9b6c2e3b6b5e Mon Sep 17 00:00:00 2001
+From: Max Rossmannek <oss@zurich.ibm.com>
+Date: Mon, 8 Sep 2025 08:51:24 +0200
+Subject: [PATCH 2/2] fix: lint
+
+---
+ test/backends/tenpy_layers/test_e2e.py | 1 +
+ test/backends/tenpy_tebd/test_e2e.py   | 1 +
+ 2 files changed, 2 insertions(+)
+
+diff --git a/test/backends/tenpy_layers/test_e2e.py b/test/backends/tenpy_layers/test_e2e.py
+index d8e73ef..8344dc8 100644
+--- a/test/backends/tenpy_layers/test_e2e.py
++++ b/test/backends/tenpy_layers/test_e2e.py
+@@ -54,6 +54,7 @@ def gen_even_coupling_layer(n, Jxx, Jz, J):
+ 
+ 
+ if HAS_TENPY:
++
+     class ConserveXXZChain2(XXZChain2):
+         """TeNPy's XXZChain2 hard-codes Sz conservation. This subclass makes it configurable."""
+ 
+diff --git a/test/backends/tenpy_tebd/test_e2e.py b/test/backends/tenpy_tebd/test_e2e.py
+index 65a952e..015bdbe 100644
+--- a/test/backends/tenpy_tebd/test_e2e.py
++++ b/test/backends/tenpy_tebd/test_e2e.py
+@@ -25,6 +25,7 @@
+ 
+ 
+ if HAS_TENPY:
++
+     class ConserveXXZChain2(XXZChain2):
+         """TeNPy's XXZChain2 hard-codes Sz conservation. This subclass makes it configurable."""
+ 

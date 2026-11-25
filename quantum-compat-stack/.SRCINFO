@@ -1,0 +1,20 @@
+pkgbase = quantum-compat-stack
+	pkgdesc = PennyLane 0.45.1 with pennylane-qiskit, pennylane-lightning and qiskit-ibm-transpiler as a hash-locked Python 3.13 environment
+	pkgver = 0.45.1
+	pkgrel = 1
+	url = https://github.com/PennyLaneAI/pennylane-qiskit
+	arch = x86_64
+	license = Apache-2.0
+	depends = python313
+	depends = gcc-libs
+	depends = glibc
+	source = requirements.in
+	source = requirements.lock
+	source = test_quantum_compat_stack.py
+	source = quantum-compat-python
+	sha256sums = 9307033a68ff1ebf4e610b2b045c49cd070365e34cac326dc9147eeca1b8c94d
+	sha256sums = 54865d37977759d307186dd5a79c2bf194fbb60db6ff362dcd12731e1d4d703d
+	sha256sums = 924adeaa189fc6967a09c8a60201449d944843423fe5e2175e7628c3b8b66543
+	sha256sums = fccbc9ef84c58ac53af8802c947cae96ae6d3f7f1fce12abf68fcc57b537bbdd
+
+pkgname = quantum-compat-stack

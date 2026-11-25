@@ -1,0 +1,19 @@
+pkgbase = python-ibm-platform-services
+	pkgdesc = Python client library for IBM Cloud Platform Services
+	pkgver = 0.77.2
+	pkgrel = 1
+	url = https://github.com/IBM/platform-services-python-sdk
+	arch = any
+	license = Apache-2.0
+	checkdepends = python-pytest
+	checkdepends = python-responses
+	checkdepends = python-urllib3
+	makedepends = python-build
+	makedepends = python-installer
+	makedepends = python-setuptools
+	makedepends = python-wheel
+	depends = python-ibm-cloud-sdk-core
+	source = platform-services-python-sdk-0.77.2.tar.gz::https://github.com/IBM/platform-services-python-sdk/archive/refs/tags/v0.77.2.tar.gz
+	sha256sums = 8cd1571a82370a0de9f09e11232fc65d7e54bbd9e45a3869882b1aedd594b492
+
+pkgname = python-ibm-platform-services

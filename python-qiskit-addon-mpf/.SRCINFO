@@ -1,0 +1,25 @@
+pkgbase = python-qiskit-addon-mpf
+	pkgdesc = An addon to reduce the Trotter error of Hamiltonian dynamics with multi-product formulas
+	pkgver = 0.3.0
+	pkgrel = 1
+	url = https://github.com/Qiskit/qiskit-addon-mpf
+	arch = any
+	license = Apache-2.0
+	checkdepends = python-pytest
+	checkdepends = python-pytest-subtests
+	checkdepends = python-qiskit-addon-utils
+	makedepends = python-build
+	makedepends = python-installer
+	makedepends = python-hatchling
+	depends = python-cvxpy
+	depends = python-numpy
+	depends = python-qiskit
+	optdepends = python-quimb: support for tensor networks
+	optdepends = python-qiskit-quimb: simulate circuits using quimb
+	optdepends = python-tenpy: simulate strongly correlated quantum systems with tensor networks
+	source = qiskit-addon-mpf-0.3.0.tar.gz::https://github.com/Qiskit/qiskit-addon-mpf/archive/refs/tags/0.3.0.tar.gz
+	source = fix-tests.patch
+	sha256sums = 2f5e0d16aa330eff7fb9cea154169f1e3610b9f28953d3cc7a78193ab760600a
+	sha256sums = 4d23bfe69eb9a8818bf960745ee10dea556025ee2ba4c093c7cd92db49e69c5d
+
+pkgname = python-qiskit-addon-mpf

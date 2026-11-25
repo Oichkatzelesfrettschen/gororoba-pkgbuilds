@@ -1,0 +1,23 @@
+pkgbase = python-qiskit-addon-aqc-tensor
+	pkgdesc = Approximate quantum compilation with tensor networks
+	pkgver = 0.3.1
+	pkgrel = 1
+	url = https://github.com/Qiskit/qiskit-addon-aqc-tensor
+	arch = any
+	license = Apache-2.0
+	checkdepends = python-pytest
+	checkdepends = python-pytest-randomly
+	checkdepends = python-pytest-subtests
+	checkdepends = python-qiskit-addon-utils
+	makedepends = python-build
+	makedepends = python-installer
+	makedepends = python-hatchling
+	depends = python-numpy
+	depends = python-plum-dispatch
+	depends = python-qiskit
+	depends = python-scipy
+	depends = python-wrapt
+	source = qiskit-addon-aqc-tensor-0.3.1.tar.gz::https://github.com/Qiskit/qiskit-addon-aqc-tensor/archive/refs/tags/0.3.1.tar.gz
+	sha256sums = 6a88600e085f25355ab1031171661280319c611558a37a4452fa91387cc5f50f
+
+pkgname = python-qiskit-addon-aqc-tensor

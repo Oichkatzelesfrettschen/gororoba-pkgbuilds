@@ -1,0 +1,21 @@
+pkgbase = mitiq-stack
+	pkgdesc = mitiq 1.1.0 error mitigation on Qiskit 2.6 and cirq-core 1.6 as a hash-locked Python 3.11 environment
+	pkgver = 1.1.0
+	pkgrel = 1
+	url = https://github.com/unitaryfoundation/mitiq
+	arch = x86_64
+	license = GPL-3.0-only
+	license = Apache-2.0
+	depends = python311
+	depends = gcc-libs
+	depends = glibc
+	source = requirements.in
+	source = requirements.lock
+	source = test_mitiq_stack.py
+	source = mitiq-python
+	sha256sums = 071498e33f0220f373967e0087bdd39d8e1d670ae8ab99f44003c12cabd21086
+	sha256sums = 89ca3e59467bc189c3021b86cf6e73754632b617e3e478bbeb5a446b97121751
+	sha256sums = 76db6fe3cf58bc7e13d5aafa61d7de62ff330a4e20279f0468bf732e806e5a69
+	sha256sums = 35130429b48532f0e7ddc33bbdeb71980a51588db43ea223991e7716ee8b62e4
+
+pkgname = mitiq-stack

@@ -1,0 +1,3 @@
+#!/bin/sh
+# Python 3.13 interpreter of the quantum-compat-stack environment.
+exec /opt/quantum-compat-stack/bin/python "$@"

@@ -1,0 +1,6 @@
+[python-scipy-doctest]
+source = "github"
+github = "scipy/scipy_doctest"
+use_latest_release = true
+prefix = "v"
+exclude_regex = "(alpha|beta|rc|dev|a[0-9]|b[0-9])"

@@ -1,0 +1,7 @@
+[python-openqasm3]
+source = "github"
+github = "openqasm/openqasm"
+use_max_tag = true
+prefix = "ast-py/v"
+include_regex = "^ast-py/v[0-9.]+$"
+exclude_regex = "(alpha|beta|rc|dev|a[0-9]|b[0-9])"

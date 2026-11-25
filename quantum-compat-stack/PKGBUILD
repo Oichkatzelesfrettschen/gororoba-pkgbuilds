@@ -1,0 +1,52 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+
+# Members: pennylane 0.45.1, pennylane-lightning 0.45.0, pennylane-qiskit 0.45.1,
+# qiskit-ibm-transpiler 0.18.0, autograd, diastatic-malt, scipy-openblas32.
+# pennylane 0.45.1 pins autoray==0.8.4, which conflicts with the system
+# python-autoray 0.11.0 that python-quimb needs; pennylane-qiskit pins
+# qiskit-ibm-runtime~=0.45 and qiskit-ibm-transpiler pins networkx==2.8.5.
+# The stack keeps these pins under /opt. qiskit-gym ships its wheel for
+# glibc 2.34 and newer. qiskit-ibm-transpiler 0.18.0 imports
+# qiskit.synthesis.linear.linear_matrix_utils, which Qiskit 2.5 removed, so the
+# stack pins qiskit<2.5. The version tracks pennylane.
+pkgname=quantum-compat-stack
+pkgver=0.45.1
+pkgrel=1
+pkgdesc="PennyLane 0.45.1 with pennylane-qiskit, pennylane-lightning and qiskit-ibm-transpiler as a hash-locked Python 3.13 environment"
+arch=('x86_64')
+url="https://github.com/PennyLaneAI/pennylane-qiskit"
+license=('Apache-2.0')
+depends=(python313 gcc-libs glibc)
+_prefix=/opt/$pkgname
+source=(requirements.in requirements.lock test_quantum_compat_stack.py quantum-compat-python)
+sha256sums=('9307033a68ff1ebf4e610b2b045c49cd070365e34cac326dc9147eeca1b8c94d'
+            '54865d37977759d307186dd5a79c2bf194fbb60db6ff362dcd12731e1d4d703d'
+            '924adeaa189fc6967a09c8a60201449d944843423fe5e2175e7628c3b8b66543'
+            'fccbc9ef84c58ac53af8802c947cae96ae6d3f7f1fce12abf68fcc57b537bbdd')
+
+build() {
+	/usr/bin/python3.13 -m venv --clear "$srcdir/stack"
+	"$srcdir/stack/bin/python" -m pip install -q --no-cache-dir --upgrade pip==25.3
+	# --require-hashes binds every distribution to the lock and --no-deps keeps
+	# the installed set equal to it.
+	"$srcdir/stack/bin/python" -m pip install -q --no-cache-dir --require-hashes --no-deps --only-binary :all: \
+		-r "$srcdir/requirements.lock"
+}
+
+check() {
+	cd "$srcdir"
+	"$srcdir/stack/bin/python" -P -m unittest discover -v -s "$srcdir" -p test_quantum_compat_stack.py
+	"$srcdir/stack/bin/python" -m pip check
+}
+
+package() {
+	install -d "$pkgdir$_prefix"
+	cp -a "$srcdir/stack/." "$pkgdir$_prefix/"
+	# Entry-point shebangs and activate scripts carry the build path.
+	grep -rlI --null "$srcdir/stack" "$pkgdir$_prefix/bin" "$pkgdir$_prefix/pyvenv.cfg" |
+		xargs -0 -r sed -i "s|$srcdir/stack|$_prefix|g"
+	find "$pkgdir$_prefix" -name __pycache__ -prune -exec rm -r {} +
+	"$pkgdir$_prefix/bin/python" -m compileall -q -j0 -d "$_prefix/lib" "$pkgdir$_prefix/lib" >/dev/null
+	install -Dm644 requirements.in requirements.lock test_quantum_compat_stack.py -t "$pkgdir/usr/share/$pkgname/"
+	install -Dm755 quantum-compat-python "$pkgdir/usr/bin/quantum-compat-python"
+}

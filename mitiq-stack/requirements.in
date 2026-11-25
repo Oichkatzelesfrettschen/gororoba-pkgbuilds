@@ -1,0 +1,3 @@
+mitiq==1.1.0
+qiskit==2.6.2
+qiskit-aer

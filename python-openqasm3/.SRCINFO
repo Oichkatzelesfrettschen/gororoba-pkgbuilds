@@ -1,0 +1,20 @@
+pkgbase = python-openqasm3
+	pkgdesc = Reference OpenQASM AST in Python
+	pkgver = 1.0.2
+	pkgrel = 1
+	url = https://github.com/openqasm/openqasm
+	arch = any
+	license = Apache-2.0
+	checkdepends = python-pytest
+	makedepends = antlr4
+	makedepends = git
+	makedepends = python-build
+	makedepends = python-installer
+	makedepends = python-setuptools
+	makedepends = python-wheel
+	depends = python-antlr4
+	depends = python-importlib-metadata
+	source = openqasm::git+https://github.com/openqasm/openqasm#tag=ast-py/v1.0.2
+	sha256sums = SKIP
+
+pkgname = python-openqasm3

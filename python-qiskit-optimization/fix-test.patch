@@ -1,0 +1,54 @@
+From e4b62240a51e7832744e10d8ba3d2e465a3e05a6 Mon Sep 17 00:00:00 2001
+From: Takashi Imamichi <t.imamichi@gmail.com>
+Date: Thu, 4 Sep 2025 12:06:25 +0900
+Subject: [PATCH 1/2] Make test_grover more robust
+
+---
+ test/algorithms/test_grover_optimizer.py | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/test/algorithms/test_grover_optimizer.py b/test/algorithms/test_grover_optimizer.py
+index 58fc9fd0..38a2c3df 100644
+--- a/test/algorithms/test_grover_optimizer.py
++++ b/test/algorithms/test_grover_optimizer.py
+@@ -50,8 +50,8 @@ def setUp(self):
+         super().setUp()
+         algorithm_globals.random_seed = 1
+         self.sampler = {
+-            "v1": Sampler(run_options={"seed_simulator": 123}),
+-            "v2": SamplerV2(seed=123),
++            "v1": Sampler(run_options={"seed_simulator": 123, "shots": 20000}),
++            "v2": SamplerV2(seed=123, default_shots=20000),
+         }
+         self.pass_manager = generate_preset_pass_manager(
+             optimization_level=1, target=AerSimulator().target
+@@ -240,6 +240,7 @@ def test_samples_and_raw_samples(self, version):
+         self.assertAlmostEqual(min(s.fval for s in results.samples if s.status == success), opt_sol)
+         self.assertAlmostEqual(min(s.fval for s in results.raw_samples), opt_sol)
+         for sample in results.raw_samples:
++            print(sample)
+             self.assertEqual(sample.status, success)
+         np.testing.assert_array_almost_equal(results.x, results.samples[0].x)
+         self.assertAlmostEqual(results.fval, results.samples[0].fval)
+
+From 024d8099d398eda56624682cc595bacda4815479 Mon Sep 17 00:00:00 2001
+From: Takashi Imamichi <31178928+t-imamichi@users.noreply.github.com>
+Date: Thu, 4 Sep 2025 17:29:18 +0900
+Subject: [PATCH 2/2] Update test/algorithms/test_grover_optimizer.py
+
+---
+ test/algorithms/test_grover_optimizer.py | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/test/algorithms/test_grover_optimizer.py b/test/algorithms/test_grover_optimizer.py
+index 38a2c3df..df5e2d49 100644
+--- a/test/algorithms/test_grover_optimizer.py
++++ b/test/algorithms/test_grover_optimizer.py
+@@ -240,7 +240,6 @@ def test_samples_and_raw_samples(self, version):
+         self.assertAlmostEqual(min(s.fval for s in results.samples if s.status == success), opt_sol)
+         self.assertAlmostEqual(min(s.fval for s in results.raw_samples), opt_sol)
+         for sample in results.raw_samples:
+-            print(sample)
+             self.assertEqual(sample.status, success)
+         np.testing.assert_array_almost_equal(results.x, results.samples[0].x)
+         self.assertAlmostEqual(results.fval, results.samples[0].fval)
