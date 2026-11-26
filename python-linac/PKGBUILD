@@ -1,0 +1,38 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+
+pkgname=python-linac
+_pkg=linac
+pkgver=1.0.1
+pkgrel=1
+pkgdesc="Linear algebra with CUDA: dense row reduction over real, complex and finite fields"
+arch=('any')
+url="https://github.com/GDeLaurentis/linac"
+license=('GPL-3.0-only')
+depends=('python' 'python-numpy' 'python-pyadic' 'python-pycoretools' 'python-syngular')
+makedepends=('python-build' 'python-installer' 'python-setuptools' 'python-wheel')
+checkdepends=('python-pytest' 'python-mpmath')
+optdepends=('python-pycuda: GPU row reduction through cuda_row_reduce'
+            'cuda: nvcc compiles the row-reduction kernel at run time'
+            'python-galois: optional finite-field reference arithmetic (AUR)'
+            'python-mpmath: multiprecision reference arithmetic')
+source=("https://files.pythonhosted.org/packages/source/l/$_pkg/$_pkg-$pkgver.tar.gz")
+sha256sums=('3679915b4432ebf8dee270e638610f730914069d14d17830b79bddc231d08c3f')
+
+build() {
+	cd "$_pkg-$pkgver"
+	python -m build --wheel --no-isolation
+}
+
+# The CPU tests run without pycuda; the CUDA tests skip when pycuda is absent.
+# Tests that read cached matrices are left out: the sdist ships no data files.
+check() {
+	cd "$_pkg-$pkgver"
+	PYTHONPATH="$PWD" python -m pytest -o addopts='' \
+		tests/test_permutations.py tests/test_row_reduce_random.py
+}
+
+package() {
+	cd "$_pkg-$pkgver"
+	python -m installer --destdir="$pkgdir" dist/*.whl
+	install -Dm644 LICENSE.txt "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}

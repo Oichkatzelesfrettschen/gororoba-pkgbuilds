@@ -1,0 +1,31 @@
+# Maintainer: Oichkatzelesfrettschen <151315375+Oichkatzelesfrettschen@users.noreply.github.com>
+
+pkgname=python-syngular
+_pkg=syngular
+pkgver=0.6.2
+pkgrel=1
+pkgdesc="Python interface to Singular: rings, ideals, varieties and finite-field points"
+arch=('any')
+url="https://github.com/GDeLaurentis/syngular"
+license=('GPL-3.0-only')
+depends=('python' 'python-numpy' 'python-sympy' 'python-packaging' 'python-pycoretools' 'python-pyadic' 'python-multiset' 'singular')
+makedepends=('python-build' 'python-installer' 'python-setuptools' 'python-wheel')
+checkdepends=('python-pytest')
+source=("https://files.pythonhosted.org/packages/source/${_pkg::1}/$_pkg/$_pkg-$pkgver.tar.gz")
+sha256sums=('77a971aace3c209156cbf99bd39ef9056f0995ed340e4b4d4cb6e802efca9d07')
+
+build() {
+	cd "$_pkg-$pkgver"
+	python -m build --wheel --no-isolation
+}
+
+check() {
+	cd "$_pkg-$pkgver"
+	PYTHONPATH="$PWD" python -m pytest -o addopts='' tests
+}
+
+package() {
+	cd "$_pkg-$pkgver"
+	python -m installer --destdir="$pkgdir" dist/*.whl
+	install -Dm644 LICENSE.txt "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}

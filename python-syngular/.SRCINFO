@@ -1,0 +1,24 @@
+pkgbase = python-syngular
+	pkgdesc = Python interface to Singular: rings, ideals, varieties and finite-field points
+	pkgver = 0.6.2
+	pkgrel = 1
+	url = https://github.com/GDeLaurentis/syngular
+	arch = any
+	license = GPL-3.0-only
+	checkdepends = python-pytest
+	makedepends = python-build
+	makedepends = python-installer
+	makedepends = python-setuptools
+	makedepends = python-wheel
+	depends = python
+	depends = python-numpy
+	depends = python-sympy
+	depends = python-packaging
+	depends = python-pycoretools
+	depends = python-pyadic
+	depends = python-multiset
+	depends = singular
+	source = https://files.pythonhosted.org/packages/source/s/syngular/syngular-0.6.2.tar.gz
+	sha256sums = 77a971aace3c209156cbf99bd39ef9056f0995ed340e4b4d4cb6e802efca9d07
+
+pkgname = python-syngular

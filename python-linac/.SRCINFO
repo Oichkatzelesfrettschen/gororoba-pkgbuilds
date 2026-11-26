@@ -1,0 +1,26 @@
+pkgbase = python-linac
+	pkgdesc = Linear algebra with CUDA: dense row reduction over real, complex and finite fields
+	pkgver = 1.0.1
+	pkgrel = 1
+	url = https://github.com/GDeLaurentis/linac
+	arch = any
+	license = GPL-3.0-only
+	checkdepends = python-pytest
+	checkdepends = python-mpmath
+	makedepends = python-build
+	makedepends = python-installer
+	makedepends = python-setuptools
+	makedepends = python-wheel
+	depends = python
+	depends = python-numpy
+	depends = python-pyadic
+	depends = python-pycoretools
+	depends = python-syngular
+	optdepends = python-pycuda: GPU row reduction through cuda_row_reduce
+	optdepends = cuda: nvcc compiles the row-reduction kernel at run time
+	optdepends = python-galois: optional finite-field reference arithmetic (AUR)
+	optdepends = python-mpmath: multiprecision reference arithmetic
+	source = https://files.pythonhosted.org/packages/source/l/linac/linac-1.0.1.tar.gz
+	sha256sums = 3679915b4432ebf8dee270e638610f730914069d14d17830b79bddc231d08c3f
+
+pkgname = python-linac

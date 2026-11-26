@@ -1,0 +1,4 @@
+[python-linac]
+source = "pypi"
+pypi = "linac"
+exclude_regex = "(alpha|beta|rc|dev)"

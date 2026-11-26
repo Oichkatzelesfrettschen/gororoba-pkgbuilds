@@ -1,0 +1,17 @@
+pkgbase = python-pycoretools
+	pkgdesc = Core tools for Python projects: flatten, crease and thread-mapped execution
+	pkgver = 0.1.1
+	pkgrel = 1
+	url = https://github.com/GDeLaurentis/pycoretools
+	arch = any
+	license = GPL-3.0-only
+	checkdepends = python-pytest
+	makedepends = python-build
+	makedepends = python-installer
+	makedepends = python-setuptools
+	makedepends = python-wheel
+	depends = python
+	source = https://files.pythonhosted.org/packages/source/p/pycoretools/pycoretools-0.1.1.tar.gz
+	sha256sums = b8eba0bc38b1feac6e01c00a4cf194963e6cdc3161939ca402e37dbcc29b9c2c
+
+pkgname = python-pycoretools

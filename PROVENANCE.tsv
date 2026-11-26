@@ -244,3 +244,6 @@ weggli	PKGBUILDS	local/weggli	d7f155862f7d7930cd23e684af2fb0334a78ce32	2026-11-2
 xcfun	AUR	xcfun	a9de48605429c5734249ae9347c003b6ee1438af	2026-11-24T23:10:00Z
 xorg-server-glamor-r300fix	PKGBUILDS	local/xorg-server-glamor-r300fix	d7f155862f7d7930cd23e684af2fb0334a78ce32	2026-11-24T18:54:38Z
 zpgenerator-stack	workspace-infrastructure (private)	packaging/zpgenerator-stack	99a76ed	2026-11-24T18:55:27Z
+python-linac	gororoba-pkgbuilds (new recipe from the upstream sdist)	python-linac	75203e9	2026-11-26T17:20:00Z
+python-pycoretools	gororoba-pkgbuilds (new recipe from the upstream sdist)	python-pycoretools	75203e9	2026-11-26T17:20:00Z
+python-syngular	gororoba-pkgbuilds (new recipe from the upstream sdist)	python-syngular	75203e9	2026-11-26T17:20:00Z

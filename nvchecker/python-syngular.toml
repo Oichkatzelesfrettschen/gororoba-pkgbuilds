@@ -1,0 +1,4 @@
+[python-syngular]
+source = "pypi"
+pypi = "syngular"
+exclude_regex = "(alpha|beta|rc|dev)"

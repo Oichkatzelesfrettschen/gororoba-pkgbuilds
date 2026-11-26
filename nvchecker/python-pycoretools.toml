@@ -1,0 +1,4 @@
+[python-pycoretools]
+source = "pypi"
+pypi = "pycoretools"
+exclude_regex = "(alpha|beta|rc|dev)"
